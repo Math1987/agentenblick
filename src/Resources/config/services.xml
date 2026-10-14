@@ -4,6 +4,25 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <defaults autowire="true" autoconfigure="true" public="false"/>
+        <service id="Aithos\Agentenblick\Benchmark\SecretVault">
+            <argument key="$kernelSecret">%kernel.secret%</argument>
+        </service>
+        <service id="Aithos\Agentenblick\Benchmark\State">
+            <argument key="$environment">%kernel.environment%</argument>
+        </service>
+        <service id="Aithos\Agentenblick\Benchmark\Drafts">
+            <argument key="$shopwareVersion">%kernel.shopware_version%</argument>
+        </service>
+        <service id="Aithos\Agentenblick\Benchmark\Transport" autowire="false"/>
+        <service id="Aithos\Agentenblick\Benchmark\Manager" public="true"/>
+        <service id="Aithos\Agentenblick\Controller\BenchmarkController" public="true">
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="Aithos\Agentenblick\Command\BenchmarkCommand"/>
+        <service id="Aithos\Agentenblick\ScheduledTask\BenchmarkTask"><tag name="shopware.scheduled.task"/></service>
+        <service id="Aithos\Agentenblick\ScheduledTask\BenchmarkTaskHandler">
+            <argument key="$scheduledTaskRepository" type="service" id="scheduled_task.repository"/>
+        </service>
         <service id="Aithos\Agentenblick\Admin\AnalyticsReader"/>
         <service id="Aithos\Agentenblick\Admin\RangeApprovals"/>
         <service id="Aithos\Agentenblick\Admin\AclPrivilegesSubscriber"/>

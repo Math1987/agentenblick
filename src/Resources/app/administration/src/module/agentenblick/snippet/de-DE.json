@@ -17,7 +17,11 @@
       "next": "Weiter",
       "cancel": "Abbrechen"
     },
-    "tabs": { "overview": "Übersicht", "agents": "Agenten" },
+    "tabs": {
+      "overview": "Übersicht",
+      "agents": "Agenten",
+      "benchmark": "Benchmark"
+    },
     "filters": {
       "period": "Zeitraum",
       "lastDays": "Letzte {days} Tage",
@@ -106,7 +110,100 @@
       "export": "Die CSV-Datei konnte nicht heruntergeladen werden. Versuchen Sie es erneut oder prüfen Sie Ihr Leserecht.",
       "approve": "Die IP-Bereiche konnten nicht bestätigt werden. Prüfen Sie Ihr Bearbeitungsrecht und versuchen Sie es erneut.",
       "permission": "Sie haben keine Berechtigung, Agentenblick anzuzeigen."
+    },
+    "benchmark": {
+      "title": "Zum Shopware-Benchmark beitragen",
+      "description": "Die Teilnahme ist freiwillig und standardmäßig deaktiviert. Prüfen Sie unten die genaue Wochenmeldung, bevor Sie die automatische Übermittlung an den Aithos-Benchmark aktivieren.",
+      "loading": "Lokale Benchmark-Einstellungen werden geladen…",
+      "demo": "Demonstrationsmodus: Synthetische Daten werden getrennt von den Benchmark-Meldungen echter Shops verarbeitet.",
+      "offline": "Der Offline-Modus ist aktiv. Es werden keine Benchmark-Netzwerkanfragen gesendet. Vorschau und lokales Protokoll bleiben verfügbar.",
+      "withdrawalPending": "Die Teilnahme wurde lokal beendet. Die serverseitige Löschung steht aus und wird bei verfügbarem Netzwerkzugang erneut versucht.",
+      "privacy": {
+        "aggregate": "Übermittelt werden nur abgeschlossene ISO-Wochen: auf 0,1 Prozentpunkt gerundete Anteile, grobe Segmente und eine zufällige Installationskennung. Verkaufskanal-Kennungen werden in der Meldung pseudonymisiert.",
+        "excluded": "Keine Roh-IP, Besucher- oder Sitzungskennung, Shop-Domain, Anfrageinhalte, URL-Parameter, Bestellkennung oder einzelne Anfrage wird übermittelt.",
+        "threshold": "Bei einem Nenner unter 10 Sitzungen wird die Shop-Kennzahl unterdrückt. Eine veröffentlichte Benchmark-Kennzahl benötigt mindestens 5 berechtigte Installationen; mehrere Kanäle eines Shops zählen als ein Teilnehmer.",
+        "retention": "Meldungen werden 13 Monate aufbewahrt. Ein Widerruf beendet künftige Meldungen und fordert die Löschung gespeicherter Meldungen dieser Installation an."
+      },
+      "methodology": "Öffentliche Methodik und Datenschutzregeln lesen",
+      "installation": "Zufällige Installations-ID",
+      "consentAt": "Einwilligung erfasst (UTC)",
+      "consent": "Ich habe die Meldungsvorschau und die Methodik geprüft. Ich stimme der Übermittlung der beschriebenen Wochenaggregate an den Aithos-Benchmark gemäß Einwilligungsversion 1 zu. Ich kann die Teilnahme jederzeit widerrufen.",
+      "enable": "Wöchentliche Teilnahme aktivieren",
+      "send": "Ausstehende Wochenaggregate senden",
+      "disable": "Teilnahme widerrufen",
+      "editorRequired": "Zum Aktivieren, Senden und Widerrufen ist die Bearbeitungsberechtigung erforderlich.",
+      "previewTitle": "Vorschau der exakten Meldung",
+      "previewHint": "Diese Vorschau wird lokal erzeugt. Beim Öffnen oder Aktualisieren werden keine Daten an den Benchmark gesendet.",
+      "previewPrivacy": "Das JSON zeigt die exakten Meldungsbytes einschließlich unterdrückter Werte. Die hier angezeigten lokalen Verkaufskanal-Kennungen werden nicht in dieser Form übermittelt.",
+      "period": "ISO-Woche",
+      "noPreview": "Es liegt noch keine abgeschlossene Woche für eine Meldung vor.",
+      "channel": "Lokaler Verkaufskanal",
+      "exactJson": "Exakte JSON-Meldung",
+      "refreshLocal": "Lokale Vorschau und Protokoll aktualisieren",
+      "historyTitle": "Übermittlungsprotokoll",
+      "historyHint": "Prüfen Sie die genaue Meldung und ihren Hash für jede lokale Übermittlung. Alle Zeitangaben sind in UTC.",
+      "noHistory": "Es wurden noch keine Meldungen vorbereitet oder gesendet.",
+      "status": "Status",
+      "sentAt": "Gesendet (UTC)",
+      "inspect": "Meldung ansehen",
+      "comparisonTitle": "Mit einer veröffentlichten Kohorte vergleichen",
+      "comparisonHint": "Die Kennzahlen stammen aus vergleichbaren, disjunkten Kohorten. Der Median ist ein Anteil je Installation; die Quartile zeigen die mittlere Hälfte der veröffentlichten Werte.",
+      "comparisonNetwork": "Der Abruf kontaktiert shopware.aithos.app. Dafür muss die Teilnahme aktiviert und der Offline-Modus ausgeschaltet sein.",
+      "compare": "Veröffentlichten Benchmark abrufen",
+      "openDashboard": "Forschungsdashboard öffnen",
+      "insufficient": "Es ist keine vergleichbare Kennzahl verfügbar. Sie ist möglicherweise unveröffentlicht, nicht erreichbar oder unterschreitet die Schwelle von fünf Installationen.",
+      "cohort": "Veröffentlichte Kohorte",
+      "median": "Agentenanteil: Median",
+      "quartiles": "25.–75. Perzentil",
+      "installations": "Berechtigte Installationen",
+      "withdrawTitle": "Benchmark-Teilnahme widerrufen",
+      "withdrawText": "Künftige Meldungen stoppen und die Löschung gespeicherter Meldungen dieser Installation anfordern? Die lokale Verkehrsmessung läuft weiter.",
+      "withdrawOffline": "Im Offline-Modus kann die Löschanfrage jetzt nicht gesendet werden. Sie bleibt ausstehend, bis Netzwerkzugang verfügbar ist.",
+      "confirmWithdrawal": "Teilnahme beenden und Löschung anfordern",
+      "state": {
+        "withdrawal_pending": "Löschung ausstehend",
+        "offline": "Offline",
+        "ready": "Teilnahme aktiviert",
+        "disabled": "Teilnahme deaktiviert",
+        "registration_pending": "Registrierung ausstehend",
+        "test_identity_conflict": "Echte Identität im Test gesperrt"
+      },
+      "submission": {
+        "draft": "Lokaler Entwurf",
+        "pending": "Übermittlung ausstehend",
+        "sent": "Gesendet",
+        "failed": "Fehlgeschlagen; Wiederholung ausstehend",
+        "unknown": "Unbekannter Status",
+        "rejected": "Abgelehnt; Meldung prüfen",
+        "expired": "Abgelaufen; außerhalb des Übermittlungsfensters von 13 Wochen",
+        "withdrawn": "Zurückgezogen; im lokalen Protokoll aufbewahrt"
+      },
+      "success": {
+        "enable": "Die wöchentliche Benchmark-Teilnahme ist aktiviert.",
+        "disable": "Die Teilnahme wurde beendet. Prüfen Sie den Status der Löschanfrage.",
+        "send": "Ausstehende Aggregate wurden verarbeitet. Prüfen Sie die einzelnen Ergebnisse im Protokoll."
+      },
+      "error": {
+        "load": "Die lokalen Benchmark-Einstellungen konnten nicht geladen werden. Bitte erneut versuchen.",
+        "update": "Die Aktion konnte nicht bestätigt werden. Aktualisieren Sie den lokalen Status und prüfen Sie Ihre Bearbeitungsberechtigung.",
+        "compare": "Der Benchmark konnte nicht abgerufen werden. Bitte später erneut versuchen.",
+        "send": "Die Übermittlung konnte nicht abgeschlossen werden. Prüfen Sie ihren Status im lokalen Protokoll."
+      },
+      "localShare": "Dieser Shop: Agentenanteil je Kanal",
+      "comparisonReason": {
+        "demo_dashboard_authentication_required": "Demonstrations-Benchmarks erfordern eine Partneranmeldung. Öffnen Sie das Forschungsdashboard für synthetische Kohorten.",
+        "offline": "Im Offline-Modus kann der Benchmark nicht abgerufen werden.",
+        "disabled": "Aktivieren Sie die Teilnahme, bevor Sie einen Vergleich abrufen.",
+        "withdrawal_pending": "Während der ausstehenden Löschanfrage ist kein Vergleich verfügbar."
+      },
+      "identityConflict": "Diese Testumgebung enthält eine bestehende echte Installationsidentität. Aktivierung, Meldungen, Vergleiche und serverseitige Löschung sind gesperrt. Verwenden Sie eine separate Demonstrationsidentität und nicht die Produktionsidentität einer geklonten Datenbank."
     }
   },
-  "sw-privileges": { "permissions": { "agentenblick": { "label": "Agentenblick" } } }
+  "sw-privileges": {
+    "permissions": {
+      "agentenblick": {
+        "label": "Agentenblick"
+      }
+    }
+  }
 }

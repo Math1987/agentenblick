@@ -17,6 +17,33 @@ export default class AgentenblickApiService extends ApiService {
         return this.get('ranges/pending');
     }
 
+    getBenchmarkStatus() {
+        return this.get('benchmark/status');
+    }
+
+    getBenchmarkPreview(params = {}) {
+        return this.get('benchmark/preview', params);
+    }
+
+    getBenchmarkHistory() {
+        return this.get('benchmark/history');
+    }
+
+    getBenchmarkComparison() {
+        return this.get('benchmark/comparison');
+    }
+
+    updateBenchmark(action, body = {}) {
+        if (!['enable', 'disable', 'send'].includes(action)) {
+            return Promise.reject(new Error('Invalid benchmark action'));
+        }
+        return this.httpClient.post(
+            `${this.getApiBasePath()}/benchmark/${action}`,
+            body,
+            { headers: this.getBasicHeaders() },
+        ).then(ApiService.handleResponse);
+    }
+
     get(path, params = {}) {
         return this.httpClient.get(`${this.getApiBasePath()}/${path}`, {
             headers: this.getBasicHeaders(),

@@ -68,6 +68,78 @@ in production mode the delayed requests completed in a median of 15.7 ms while
 termination still took two seconds. This is a flushing test, not a plugin
 performance result. The measurements are under `handoffs/evidence/`.
 
+## Optional traffic benchmark
+
+Participation is **off by default**. The Benchmark tab and
+`bin/console agentenblick:benchmark preview` show the exact JSON bytes that will
+be sent. This preview only writes a local frozen draft; it makes no request.
+Activation requires explicit consent version `1` in `de-DE` or `en-GB`.
+
+**English consent, version 1:** I agree to send weekly aggregated traffic shares
+to Aithos for the Shopware benchmark. The document contains random installation
+and channel identifiers, completed ISO week, country, Shopware/plugin versions,
+a broad traffic bucket, the Agentic Commerce extension flag, and rounded shares.
+It contains no domain, IP, URL, query string, user agent, cart, order, customer
+identifier or exact traffic count. Shares with fewer than ten sessions in their
+denominator are suppressed. Published comparisons require five distinct eligible
+installations per metric.
+I can preview each document and withdraw at any time. Withdrawal stops new
+submissions immediately and requests deletion of this installation's submissions.
+
+**Deutsche Einwilligung, Version 1:** Ich stimme zu, wöchentliche aggregierte
+Verkehrsanteile für den Shopware-Benchmark an Aithos zu senden. Das Dokument
+enthält zufällige Installations- und Kanal-IDs, eine abgeschlossene Kalenderwoche,
+Land, Shopware-/Plugin-Version, eine grobe Größenklasse, den Status der
+Agentic-Commerce-Erweiterung und gerundete Anteile. Domains, IP-Adressen, URLs,
+Query-Strings, User-Agents, Warenkörbe, Bestellungen, Kundendaten und genaue
+Besuchszahlen werden nicht gesendet. Anteile mit weniger als zehn Sitzungen im
+Nenner werden unterdrückt. Vergleiche erfordern mindestens fünf unterschiedliche
+berechtigte Installationen je Kennzahl.
+Ich kann jedes Dokument vorab ansehen und jederzeit widerrufen. Der Widerruf
+stoppt neue Übermittlungen sofort und veranlasst die Löschung der Beiträge.
+
+```sh
+bin/console agentenblick:benchmark status
+bin/console agentenblick:benchmark preview
+bin/console agentenblick:benchmark enable --accept-consent=1 --locale=en-GB
+bin/console agentenblick:benchmark send
+bin/console agentenblick:benchmark history
+bin/console agentenblick:benchmark disable
+```
+
+Activation registers a preallocated UUIDv4 and random client secret over TLS;
+retries preserve both. HMAC-SHA256 signs the exact persisted bytes with the
+UTF-8 secret. The secret is authenticated-encrypted using `kernel.secret`, never
+returned by an administration endpoint. Keep the kernel secret available until
+withdrawal succeeds. An offline or failed withdrawal retains only the local
+credentials needed for retry and leaves participation disabled. The daily task
+retries withdrawals even while disabled. Destructive uninstall is blocked while
+withdrawal is pending; keeping plugin data preserves the retry credentials.
+
+The daily task sends at most twenty pending documents from the last thirteen weeks.
+One document per channel and completed week is frozen before transport; exact
+bytes, hash and minimized result code remain in the local journal for thirteen
+months. Older unsent documents are marked `expired`; permanent schema/cohort
+rejections are marked `rejected` and cannot block the next channel. The service
+and plugin both limit a week to 32 channels before any document is prepared.
+The installation has one cohort per week: country of its oldest active
+storefront channel, overall weekly traffic bucket, minor Shopware version and
+active `SwagAgenticCommerce` flag. Channel aliases are random UUIDv4, unrelated
+to Shopware IDs. Agent distributions use their own ten-session threshold;
+rounded values sum to 100.0. No raw counts leave the shop. Funnel and failure
+fields remain `suppressed` in schema version 1.
+
+Offline mode (`AithosAgentenblick.config.offline=true`) blocks every benchmark
+request, including registration, comparison and withdrawal. Only the explicit
+demo setting `AithosAgentenblick.config.benchmarkDemo=true`, or the explicit
+`APP_ENV=test` environment, marks new installations as demonstration data.
+Set this before the first preview/registration; test catalogues do not enable it.
+An existing real identity is blocked in the test environment, including deletion,
+so a cloned database cannot mutate real contributions. Demo data never enter real comparisons;
+their dashboard requires Cognito sign-in. The fixed destination is
+`https://shopware.aithos.app`, redirects are disabled, each request is bounded to
+six seconds and each response to 64 KiB. No capture subscriber calls this client.
+
 ## Current implementation details
 
 The plugin retains the incoming request metadata before Shopware can inject a
@@ -144,10 +216,10 @@ inactivity, every recorded request must verify under the same key and identity.
 Mixed, incomplete or still-active sessions keep their previous proof. Deferred
 verification never changes session keys or merges previously counted sessions.
 
-No benchmark submission exists in this stage. The only implemented outgoing
-requests are public catalogue refreshes, catalogued key-directory fetches and
-reverse DNS. Offline mode (`AithosAgentenblick.config.offline`) prevents these
-network lookups and uses available local data. Directory access is restricted to
+Identity verification uses public catalogue refreshes, catalogued key-directory
+fetches and reverse DNS. Benchmark requests additionally require the explicit
+participation described above. Offline mode (`AithosAgentenblick.config.offline`)
+prevents all these requests and uses available local data. Directory access is restricted to
 catalogued origins, HTTPS, a two-second deadline and 64 KiB, with no redirects or
 private network targets outside the test environment. Cache entries are fresh
 for one hour and may be reused for up to 24 hours during an outage.
