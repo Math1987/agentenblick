@@ -70,8 +70,11 @@ final class ObservationStore
                     $ranks = ['none' => 0, 'suspected' => 1, 'declared_unverified' => 2, 'verified_rdns' => 3, 'verified_ip' => 4, 'verified_signature' => 5];
                     $evidence = ($ranks[$row['evidence']] ?? 0) > ($ranks[$session['evidence']] ?? 0) ? $row['evidence'] : $session['evidence'];
                     $firstSeen = min($session['first_seen'], $row['observed_at']);
-                    $connection->executeStatement('UPDATE agentenblick_session SET first_seen = LEAST(first_seen, ?), last_seen = GREATEST(last_seen, ?), requests = requests + 1, evidence = ? WHERE id = ?', [$row['observed_at'], $row['observed_at'], $evidence, $sessionId]);
                     $changes = [
+                        'first_seen' => $firstSeen,
+                        'last_seen' => max($session['last_seen'], $row['observed_at']),
+                        'requests' => (int) $session['requests'] + 1,
+                        'evidence' => $evidence,
                         'steps_mask' => (int) $session['steps_mask'] | ($stage?->bit() ?? 0),
                         'failures_mask' => (int) $session['failures_mask'] | $row['failure_mask'],
                         'known_mask' => (int) $session['known_mask'] | $row['known_mask'],
@@ -101,7 +104,12 @@ final class ObservationStore
                     if ($session['kind'] !== Kind::HumanOrUnknown->value || $session['heuristic_epoch'] !== '') {
                         AggregateCorrection::move($connection, 'sessions', $from, array_replace($from, ['day' => substr($firstSeen, 0, 10), 'evidence' => $evidence], $changes));
                     }
-                    $updated = $connection->fetchAssociative('SELECT * FROM agentenblick_session WHERE id = ?', [$sessionId]);
+                    // Dimension corrections can reconcile an existing closed
+                    // contribution. Read it back in that case; an open session
+                    // without a contribution still has exactly our locked values.
+                    $updated = $session['closed_at'] !== null || $session['contribution'] !== null
+                        ? $connection->fetchAssociative('SELECT * FROM agentenblick_session WHERE id = ?', [$sessionId])
+                        : array_replace($session, $changes);
                     if ($updated !== false) {
                         JourneyContribution::reconcile($connection, $updated);
                     }

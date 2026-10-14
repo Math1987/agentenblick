@@ -18,6 +18,7 @@ use Aithos\Agentenblick\Persistence\Purger;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Tools\DsnParser;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpFoundation\Request;
@@ -118,6 +119,54 @@ final class JourneyTest extends TestCase
         self::assertSame(0, $this->metricCount('sessions', 'verified_ip'));
         self::assertSame(1, $this->metricCount('sessions', 'verified_signature'));
         self::assertSame(1, $this->metricCount('failure.search_empty', 'verified_signature'));
+    }
+
+    /** @return iterable<string, array{int, string}> */
+    public static function closedSessionCorrections(): iterable
+    {
+        yield 'stronger proof, same day' => [60, 'verified_ip'];
+        yield 'earlier day, unchanged proof' => [1200, 'declared_unverified'];
+        yield 'earlier day and stronger proof' => [1200, 'verified_signature'];
+    }
+
+    #[DataProvider('closedSessionCorrections')]
+    public function testLateObservationReconcilesAnExistingClosedContributionOnlyOnce(int $earlierSeconds, string $proof): void
+    {
+        $at = (new \DateTimeImmutable('today', new \DateTimeZone('UTC')))->modify('-2 days +10 minutes')->getTimestamp();
+        $store = new ObservationStore($this->db());
+        $store->record($this->row($at, 'cart'));
+        $store->record($this->row($at + 60, 'search', ['failure_mask' => 1, 'known_mask' => 33]));
+        $closer = new SessionCloser($this->db());
+        self::assertSame(1, $closer->run()['closed']);
+        self::assertNotNull($this->db()->fetchOne('SELECT contribution FROM agentenblick_session'));
+        $closedAt = $this->db()->fetchOne('SELECT closed_at FROM agentenblick_session');
+        self::assertNotNull($closedAt);
+        $late = $this->row($at - $earlierSeconds, 'browse', ['evidence' => $proof]);
+        $targetDay = gmdate('Y-m-d', $at - $earlierSeconds);
+
+        // These are two actual observations with the same dimensions, not a
+        // duplicate request identifier. Only request counts may increase twice.
+        // A stale pre-correction contribution here would subtract the old bucket
+        // twice and throw missing_journey_contribution, rolling back the request.
+        for ($requests = 3; $requests <= 4; ++$requests) {
+            $store->record($late);
+            self::assertSame($requests, (int) $this->db()->fetchOne('SELECT COUNT(*) FROM agentenblick_request'));
+            self::assertSame($requests, (int) $this->db()->fetchOne('SELECT SUM(requests) FROM agentenblick_daily'));
+            self::assertSame($requests, (int) $this->db()->fetchOne('SELECT requests FROM agentenblick_session'));
+            self::assertSame(1, (int) $this->db()->fetchOne('SELECT COUNT(*) FROM agentenblick_session'));
+            self::assertSame(1, (int) $this->db()->fetchOne('SELECT SUM(sessions) FROM agentenblick_daily'));
+            self::assertSame(1, (int) $this->db()->fetchOne('SELECT sessions FROM agentenblick_daily WHERE day = ? AND evidence = ?', [$targetDay, $proof]));
+            self::assertSame($closedAt, $this->db()->fetchOne('SELECT closed_at FROM agentenblick_session'));
+            self::assertSame('search', $this->db()->fetchOne('SELECT last_stage FROM agentenblick_session'));
+            foreach (['sessions', 'step.cart', 'step.search', 'step.browse', 'failure.search_empty', 'failure.abandoned_cart'] as $metric) {
+                self::assertSame(1, $this->metricCount($metric), $metric . ' must contribute exactly once globally');
+                self::assertSame(1, (int) $this->db()->fetchOne('SELECT sessions FROM agentenblick_journey_daily WHERE day = ? AND evidence = ? AND metric = ?', [$targetDay, $proof, $metric]), $metric . ' must move to the corrected dimensions');
+            }
+            $contribution = json_decode((string) $this->db()->fetchOne('SELECT contribution FROM agentenblick_session'), true, 512, JSON_THROW_ON_ERROR);
+            self::assertSame($targetDay, $contribution['dimensions'][0]);
+            self::assertSame($proof, $contribution['dimensions'][5]);
+            self::assertSame(0, $closer->run()['closed']);
+        }
     }
 
     public function testHumanSignalsNeverReachDetailOrJourneyCounters(): void
