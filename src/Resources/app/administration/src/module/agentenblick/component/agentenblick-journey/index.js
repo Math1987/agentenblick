@@ -39,7 +39,7 @@ Shopware.Component.register('agentenblick-journey', {
         stages() { return stages; },
         pageCount() { return Math.max(1, Math.ceil(this.total / this.limit)); },
         proofGroups() {
-            return ['verified', 'declared', 'other'].map((group) => ({
+            return ['verified', 'declared', 'suspected', 'other'].map((group) => ({
                 key: group,
                 rows: (this.summary?.funnel || []).filter((row) => this.proofGroup(row.evidence) === group),
             })).filter((group) => group.rows.length);
@@ -47,6 +47,11 @@ Shopware.Component.register('agentenblick-journey', {
         failures() { return (this.summary?.failures || []).filter((row) => row.eligibleSessions > 0 || row.sessions > 0); },
         unknownFailures() { return (this.summary?.failures || []).filter((row) => !(row.eligibleSessions > 0) && !(row.sessions > 0)); },
         errorRoutes() { return this.summary?.errorRoutes || []; },
+        hasSuspected() {
+            return this.sessions.some((session) => this.isSuspected(session))
+                || (this.summary?.funnel || []).some((row) => this.isSuspected(row) && row.sessions > 0)
+                || [...this.failures, ...this.errorRoutes].some((row) => this.isSuspected(row));
+        },
     },
 
     watch: {
@@ -114,7 +119,30 @@ Shopware.Component.register('agentenblick-journey', {
         isAgent(session) { return session && agentKinds.includes(session.kind); },
         proofGroup(evidence) {
             if (['verified_signature', 'verified_ip', 'verified_rdns'].includes(evidence)) return 'verified';
+            if (evidence === 'suspected') return 'suspected';
             return evidence === 'declared_unverified' ? 'declared' : 'other';
+        },
+        proofClass(evidence) {
+            const group = this.proofGroup(evidence);
+            return `agentenblick-proof--${['verified', 'suspected'].includes(group) ? group : 'unverified'}`;
+        },
+        isSuspected(value) { return value?.evidence === 'suspected'; },
+        isObservationPartial(value) { return value?.observationPartial === true; },
+        agentName(value) {
+            return this.isSuspected(value) ? this.$t('agentenblick.heuristics.unidentifiedAutomation') : (value.agent || value.operator);
+        },
+        heuristicScore(value) {
+            return Number.isInteger(value?.score) && value.score >= 0 && value.score <= 100 ? `${value.score}/100` : '—';
+        },
+        heuristicVersion(value) {
+            return typeof value?.version === 'string' && /^[A-Za-z0-9._-]{1,32}$/.test(value.version) ? value.version : this.$t('agentenblick.journey.unknown');
+        },
+        heuristicThreshold(value) {
+            return Number.isInteger(value?.threshold) && value.threshold >= 30 && value.threshold <= 100 ? value.threshold : '—';
+        },
+        heuristicFlags(value) {
+            return Array.isArray(value?.flags) ? [...new Set(value.flags.filter((flag) => typeof flag === 'string'
+                && /^[a-z0-9_]{1,60}$/.test(flag) && this.$te(`agentenblick.heuristics.flag.${flag}`)))] : [];
         },
         label(group, value) {
             const key = `agentenblick.${group}.${value}`;

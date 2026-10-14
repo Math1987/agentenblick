@@ -2,6 +2,7 @@ import './acl';
 import './page/agentenblick-index';
 import './component/agentenblick-benchmark';
 import './component/agentenblick-journey';
+import './component/agentenblick-heuristics';
 import AgentenblickApiService from './service/agentenblick.api.service';
 import enGB from './snippet/en-GB.json';
 import deDE from './snippet/de-DE.json';

@@ -25,7 +25,9 @@ final class Payload
         foreach ($groups as $row) {
             $count = max(0, (int) ($row['sessions'] ?? 0));
             $total += $count;
-            if (($row['kind'] ?? '') === 'human_or_unknown') {
+            // Experimental suspicion is part of the total denominator only. Schema 2
+            // describes identified/declared traffic; never relabel suspicion as none.
+            if (($row['kind'] ?? '') === 'human_or_unknown' || ($row['evidence'] ?? '') === 'suspected') {
                 continue;
             }
             $agents += $count;

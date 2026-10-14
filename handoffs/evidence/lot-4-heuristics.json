@@ -1,0 +1,336 @@
+{
+  "startedAt": "2026-10-14T12:22:19.551821+00:00",
+  "experimental": true,
+  "realHumanReferenceAvailable": false,
+  "humanFalsePositiveCriterionValidated": false,
+  "profiles": [
+    {
+      "profile": "sdk-download",
+      "truth": "script",
+      "detected": true,
+      "observedSuspectedRequests": 8,
+      "maximumScore": 77,
+      "flags": 121,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 170,
+        "maximumGapMs": 669
+      }
+    },
+    {
+      "profile": "catalog-python",
+      "truth": "script",
+      "detected": true,
+      "observedSuspectedRequests": 8,
+      "maximumScore": 100,
+      "flags": 1657,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 146,
+        "maximumGapMs": 217
+      }
+    },
+    {
+      "profile": "python-standard",
+      "truth": "script",
+      "detected": true,
+      "observedSuspectedRequests": 8,
+      "maximumScore": 100,
+      "flags": 633,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 160,
+        "maximumGapMs": 332
+      }
+    },
+    {
+      "profile": "compiled-client",
+      "truth": "script",
+      "detected": true,
+      "observedSuspectedRequests": 8,
+      "maximumScore": 100,
+      "flags": 1657,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 149,
+        "maximumGapMs": 207
+      }
+    },
+    {
+      "profile": "fetch-client",
+      "truth": "script",
+      "detected": true,
+      "observedSuspectedRequests": 8,
+      "maximumScore": 100,
+      "flags": 633,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 143,
+        "maximumGapMs": 365
+      }
+    },
+    {
+      "profile": "axios-client",
+      "truth": "script",
+      "detected": true,
+      "observedSuspectedRequests": 8,
+      "maximumScore": 100,
+      "flags": 1657,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 158,
+        "maximumGapMs": 209
+      }
+    },
+    {
+      "profile": "undici-client",
+      "truth": "script",
+      "detected": true,
+      "observedSuspectedRequests": 8,
+      "maximumScore": 100,
+      "flags": 1657,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 144,
+        "maximumGapMs": 202
+      }
+    },
+    {
+      "profile": "node-default",
+      "truth": "script",
+      "detected": true,
+      "observedSuspectedRequests": 1,
+      "maximumScore": 82,
+      "flags": 1649,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 139,
+        "maximumGapMs": 229
+      }
+    },
+    {
+      "profile": "headless-navigation",
+      "truth": "script",
+      "detected": true,
+      "observedSuspectedRequests": 7,
+      "maximumScore": 100,
+      "flags": 1608,
+      "traffic": {
+        "statuses": {
+          "200": 12
+        },
+        "cookieOffers": 0,
+        "requests": 12,
+        "minimumGapMs": 131,
+        "maximumGapMs": 206
+      }
+    },
+    {
+      "profile": "playwright-tool",
+      "truth": "script",
+      "detected": true,
+      "observedSuspectedRequests": 8,
+      "maximumScore": 100,
+      "flags": 1657,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 140,
+        "maximumGapMs": 197
+      }
+    },
+    {
+      "profile": "puppeteer-tool",
+      "truth": "script",
+      "detected": true,
+      "observedSuspectedRequests": 8,
+      "maximumScore": 100,
+      "flags": 1657,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 148,
+        "maximumGapMs": 174
+      }
+    },
+    {
+      "profile": "generic-browser-fast",
+      "truth": "script",
+      "detected": false,
+      "observedSuspectedRequests": 0,
+      "maximumScore": 0,
+      "flags": 0,
+      "traffic": {
+        "statuses": {
+          "200": 14
+        },
+        "cookieOffers": 0,
+        "requests": 14,
+        "minimumGapMs": 128,
+        "maximumGapMs": 229
+      }
+    },
+    {
+      "profile": "generic-browser-polite",
+      "truth": "script",
+      "detected": false,
+      "observedSuspectedRequests": 0,
+      "maximumScore": 0,
+      "flags": 0,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 688,
+        "maximumGapMs": 2177
+      }
+    },
+    {
+      "profile": "chromium-reference",
+      "truth": "synthetic_browser_reference",
+      "detected": false,
+      "observedSuspectedRequests": 0,
+      "maximumScore": 0,
+      "flags": 0,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 538,
+        "maximumGapMs": 1734
+      }
+    },
+    {
+      "profile": "firefox-reference",
+      "truth": "synthetic_browser_reference",
+      "detected": false,
+      "observedSuspectedRequests": 0,
+      "maximumScore": 0,
+      "flags": 0,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 562,
+        "maximumGapMs": 1801
+      }
+    },
+    {
+      "profile": "safari-reference",
+      "truth": "synthetic_browser_reference",
+      "detected": false,
+      "observedSuspectedRequests": 0,
+      "maximumScore": 0,
+      "flags": 0,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 603,
+        "maximumGapMs": 1868
+      }
+    },
+    {
+      "profile": "privacy-browser-reference",
+      "truth": "synthetic_browser_reference",
+      "detected": false,
+      "observedSuspectedRequests": 0,
+      "maximumScore": 0,
+      "flags": 0,
+      "traffic": {
+        "statuses": {
+          "200": 8
+        },
+        "cookieOffers": 0,
+        "requests": 8,
+        "minimumGapMs": 604,
+        "maximumGapMs": 1840
+      }
+    }
+  ],
+  "cleanup": {
+    "configurationRestoredExperimentOff": true
+  },
+  "passed": true,
+  "scoreVersion": "1",
+  "threshold": 60,
+  "frozenScoreSha256": "ed6a73cb8c7cf52067def080660c26dcc6b6aa7994600bb2306c31c269206bf7",
+  "heldOutManifestSha256": "0c35fb0bd633ff9020fa194fc5a217ed2912dc237f4db87185a25d0c470e2bdd",
+  "frozenWeights": {
+    "fetch_metadata_missing": 5,
+    "client_hints_missing": 3,
+    "browser_headers_incoherent": 20,
+    "tool_user_agent": 45,
+    "wildcard_html_accept": 12,
+    "language_missing": 8,
+    "deep_without_referer": 7,
+    "api_without_session_cookie": 10,
+    "hosting_network": 5,
+    "high_cadence": 25,
+    "regular_cadence": 25,
+    "cookie_ignored": 25
+  },
+  "captureControl": {
+    "requests": 146,
+    "sessions": 17,
+    "exclusiveTrafficRequired": true
+  },
+  "matrix": {
+    "scriptProfiles": 13,
+    "truePositives": 11,
+    "falseNegatives": 2,
+    "scriptDetectionPct": 84.6,
+    "syntheticReferenceProfiles": 4,
+    "syntheticFalsePositives": 0,
+    "syntheticTrueNegatives": 4,
+    "syntheticFalsePositivePct": 0.0
+  },
+  "scriptTarget90PctReached": false,
+  "finishedAt": "2026-10-14T12:23:38.995938+00:00"
+}

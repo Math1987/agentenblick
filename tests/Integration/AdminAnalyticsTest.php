@@ -49,7 +49,7 @@ final class AdminAnalyticsTest extends TestCase
         $this->seed();
         $reader = $this->reader();
         $summary = $reader->summary(new ReportFilter(7, self::CHANNEL));
-        self::assertSame(['requests' => 16, 'sessions' => 8, 'agentRequests' => 6, 'agentSessions' => 3, 'agentRequestsPct' => 37.5, 'agentSessionsPct' => 37.5], $summary['totals']);
+        self::assertSame(['requests' => 16, 'sessions' => 8, 'agentRequests' => 6, 'agentSessions' => 3, 'suspectedRequests' => 0, 'suspectedSessions' => 0, 'agentRequestsPct' => 37.5, 'agentSessionsPct' => 37.5], $summary['totals']);
         self::assertCount(7, $summary['daily']);
         self::assertSame(16, array_sum(array_column($summary['daily'], 'requests')));
         self::assertSame(6, array_sum(array_column($summary['byKind'], 'requests')));
@@ -60,6 +60,25 @@ final class AdminAnalyticsTest extends TestCase
         self::assertSame($summary['totals']['sessions'], $cli['sessions']);
         self::assertSame($summary['totals']['agentSessions'], $cli['observed_agent_sessions']);
         self::assertSame(16, array_sum(array_column($cli['agents'], 'requests')));
+    }
+
+    public function testSuspicionStaysSeparateInTotalsTrendsAndCli(): void
+    {
+        $this->seed();
+        $this->db()->insert('agentenblick_daily', ['day' => gmdate('Y-m-d'), 'sales_channel_id' => self::CHANNEL, 'operator' => 'unknown', 'agent' => 'unknown', 'kind' => 'automation_unknown', 'evidence' => 'suspected', 'requests' => 4, 'sessions' => 2]);
+        $summary = $this->reader()->summary(new ReportFilter(7, self::CHANNEL));
+        self::assertSame(10, $summary['totals']['sessions']);
+        self::assertSame(3, $summary['totals']['agentSessions']);
+        self::assertSame(2, $summary['totals']['suspectedSessions']);
+        self::assertSame(30.0, $summary['totals']['agentSessionsPct']);
+        self::assertSame(4, array_sum(array_column($summary['daily'], 'suspectedRequests')));
+        self::assertSame(3, array_sum(array_column($summary['byKind'], 'sessions')));
+        self::assertSame(5, array_sum(array_column($summary['byEvidence'], 'sessions')));
+        $command = new CommandTester(new ReportCommand($this->reader(), new ProxyDiagnostics($this->db())));
+        self::assertSame(0, $command->execute(['--json' => true, '--sales-channel' => self::CHANNEL]));
+        $cli = json_decode($command->getDisplay(), true, 32, JSON_THROW_ON_ERROR);
+        self::assertSame(3, $cli['observed_agent_sessions']);
+        self::assertSame(2, $cli['suspected_automation_sessions']);
     }
 
     public function testAgentsCombineProofsAndOnlyReturnMinimizedAgentRoutes(): void

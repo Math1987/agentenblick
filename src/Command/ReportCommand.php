@@ -45,6 +45,8 @@ final class ReportCommand extends Command
         $report = [
             'since' => $since, 'timezone' => 'UTC', 'sessions' => $sessions,
             'observed_agent_sessions' => $nonHumanSessions,
+            'suspected_automation_sessions' => $totals['suspectedSessions'],
+            'suspected_automation_requests' => $totals['suspectedRequests'],
             'observed_agent_sessions_pct' => $sessions > 0 ? round(100 * $nonHumanSessions / $sessions, 1) : null,
             'scope' => 'PHP-visible main requests; identified crawler/agent traffic, not all AI usage',
             'agents' => $rows,
@@ -58,6 +60,7 @@ final class ReportCommand extends Command
             $io->title('Agentenblick — observed traffic');
             $io->text(sprintf('%d sessions; %d identified/declared agent sessions (%s%%)', $sessions, $nonHumanSessions, $report['observed_agent_sessions_pct'] ?? 'n/a'));
             $io->table(['Operator', 'Agent', 'Kind', 'Evidence', 'Requests', 'Sessions'], array_map('array_values', $rows));
+            $io->text(sprintf('%d suspected automation sessions (experimental; no AI identity established)', $totals['suspectedSessions']));
             $io->note($report['scope']);
             if ($report['proxy_diagnostics']['warning']) {
                 $io->warning($report['proxy_diagnostics']['message']);

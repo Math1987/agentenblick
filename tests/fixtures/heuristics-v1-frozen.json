@@ -1,0 +1,29 @@
+{
+  "version": "1",
+  "threshold": 60,
+  "scoreSourceSha256": "ed6a73cb8c7cf52067def080660c26dcc6b6aa7994600bb2306c31c269206bf7",
+  "weights": {
+    "fetch_metadata_missing": 5,
+    "client_hints_missing": 3,
+    "browser_headers_incoherent": 20,
+    "tool_user_agent": 45,
+    "wildcard_html_accept": 12,
+    "language_missing": 8,
+    "deep_without_referer": 7,
+    "api_without_session_cookie": 10,
+    "hosting_network": 5,
+    "high_cadence": 25,
+    "regular_cadence": 25,
+    "cookie_ignored": 25
+  },
+  "rules": {
+    "fastMinimumRequests": 6,
+    "fastMinimumIntervals": 5,
+    "fastRatioMinimum": 0.7,
+    "regularMinimumRequests": 8,
+    "regularMinimumConsecutiveIntervals": 7,
+    "cookieMinimumRequests": 4,
+    "cookieMinimumMissesAfterOffer": 3
+  },
+  "status": "frozen_before_held_out_profiles"
+}

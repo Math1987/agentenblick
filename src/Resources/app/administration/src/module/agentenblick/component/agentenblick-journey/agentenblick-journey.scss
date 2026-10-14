@@ -25,6 +25,10 @@
     &__unknown { margin-top: 20px; font-size: 12px; color: #526576; line-height: 1.7; }
     &__unknown summary { cursor: pointer; color: #147d75; }
     &__unknown ul { padding: 16px 0 0 20px; }
+    &__suspected-warning { margin-bottom: 24px; }
+    &__heuristics { padding: 14px 16px; margin: 16px 0; background: #f7f3fa; border-left: 3px solid #7952a8; font-size: 12px; line-height: 1.6; }
+    &__heuristics ul { padding-left: 20px; margin-top: 8px; }
+    &__heuristics p { margin-top: 6px; }
     @media (max-width: 700px) {
         &__proof-grid, &__facts { grid-template-columns: 1fr; }
     }

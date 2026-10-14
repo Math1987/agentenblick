@@ -6,6 +6,7 @@ namespace Aithos\Agentenblick\Domain;
 
 enum Evidence: string
 {
+    case Suspected = 'suspected';
     case Signature = 'verified_signature';
     case Ip = 'verified_ip';
     case Rdns = 'verified_rdns';

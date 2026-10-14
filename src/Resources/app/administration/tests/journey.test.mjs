@@ -130,3 +130,43 @@ test('DE and EN snippets have identical keys and preserve the no-success inferen
     assert.match(en.agentenblick.journey.failuresHint, /never means success/);
     assert.match(de.agentenblick.journey.failuresHint, /niemals Erfolg/);
 });
+
+test('suspected automation has its own group and can never be presented as verified identity', () => {
+    const { context } = component();
+    context.summary = { funnel: [
+        { evidence: 'verified_ip', sessions: 2 },
+        { evidence: 'declared_unverified', sessions: 3 },
+        { evidence: 'suspected', sessions: 5 },
+        { evidence: 'none', sessions: 1 },
+    ] };
+    assert.deepEqual(Array.from(context.proofGroups, (group) => group.key), ['verified', 'declared', 'suspected', 'other']);
+    assert.equal(context.proofGroups[0].rows.length, 1);
+    assert.equal(context.proofClass('suspected'), 'agentenblick-proof--suspected');
+    assert.equal(context.hasSuspected, true);
+    assert.equal(context.agentName({ evidence: 'suspected', operator: 'unknown', agent: 'unknown' }), 'agentenblick.heuristics.unidentifiedAutomation');
+});
+
+test('heuristic score and flags are bounded diagnostics, never defaulted to a probability', () => {
+    const { context } = component();
+    assert.equal(context.heuristicScore({ score: 72 }), '72/100');
+    for (const value of [null, {}, { score: null }, { score: -1 }, { score: 101 }, { score: 60.5 }]) assert.equal(context.heuristicScore(value), '—');
+    assert.equal(context.heuristicVersion({ version: '1' }), '1');
+    assert.equal(context.heuristicVersion({ version: '<script>' }), 'agentenblick.journey.unknown');
+    assert.equal(context.heuristicThreshold({ threshold: 60 }), 60);
+    assert.equal(context.heuristicThreshold({ threshold: 0 }), '—');
+    context.$te = (key) => key === 'agentenblick.heuristics.flag.tool_user_agent';
+    assert.deepEqual(Array.from(context.heuristicFlags({ flags: ['tool_user_agent', 'tool_user_agent', 'unknown_flag', '<html>'] })), ['tool_user_agent']);
+});
+
+test('partial observation stays explicit without discarding observed steps or known failures', async () => {
+    const { context } = component({ mode: 'journeys' });
+    const partial = { ...agent, evidence: 'suspected', observationPartial: true, steps: ['cart'], failures: ['cart_error'] };
+    context.agentenblickApiService.getJourneySession = async () => ({ session: partial, items: [] });
+    await context.openDetail(partial);
+    assert.equal(context.isObservationPartial(context.detail.session), true);
+    assert.deepEqual(context.detail.session.steps, ['cart']);
+    assert.deepEqual(context.detail.session.failures, ['cart_error']);
+    for (const value of [null, {}, { observationPartial: false }, { observationPartial: 'true' }]) assert.equal(context.isObservationPartial(value), false);
+    const en = JSON.parse(readFileSync(new URL('../src/module/agentenblick/snippet/en-GB.json', import.meta.url)));
+    assert.match(en.agentenblick.journey.observationPartial, /abandonment are not inferred/);
+});

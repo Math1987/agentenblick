@@ -33,7 +33,7 @@
     },
     "metrics": {
       "share": "Observed agent share",
-      "shareHint": "Share of all observed sessions, including declared identities.",
+      "shareHint": "Verified or declared agent sessions divided by all observed sessions. Suspected automation is excluded from the numerator.",
       "agentSessions": "Agent sessions",
       "agentSessionsHint": "Crawlers and agents, verified or declared.",
       "agentRequests": "Agent requests",
@@ -45,13 +45,14 @@
       "title": "Sessions over time",
       "all": "All sessions",
       "agents": "Agent sessions",
-      "accessible": "Daily total and agent sessions. Exact values are available in the table below.",
+      "accessible": "Daily total, verified or declared agent sessions and separately suspected automation. Exact values are available in the table below.",
       "values": "Show daily values",
-      "date": "Date (UTC)"
+      "date": "Date (UTC)",
+      "suspected": "Suspected automation"
     },
     "breakdown": {
       "kinds": "Types of agent",
-      "evidence": "Identity evidence",
+      "evidence": "Evidence and suspicion",
       "proofHint": "Requests retain their own evidence. Sessions use the strongest proof observed during collection; deferred verification applies stricter rules."
     },
     "table": {
@@ -65,7 +66,7 @@
       "routes": "Top routes",
       "showRoutes": "Show routes",
       "pagination": "Page {page} of {pages} · {total} agents",
-      "proofHint": "A declared identity is not verified and is not proof of impersonation. Mixed evidence is shown separately, with request counts.",
+      "proofHint": "A declared identity is not verified and is not proof of impersonation. Mixed evidence is shown separately, with request counts. Suspected automation is not proof of AI or operator identity.",
       "retentionHint": "Last seen and top routes use retained request details. A generic route means Shopware did not expose a resolved route, for example on a cache hit."
     },
     "kind": {
@@ -83,7 +84,8 @@
       "verified_rdns": "Reverse DNS verified",
       "declared_unverified": "Declared, unverified",
       "none": "No identity evidence",
-      "mixed": "Mixed evidence"
+      "mixed": "Mixed evidence",
+      "suspected": "Automation suspected"
     },
     "proxy": {
       "title": "Check your trusted proxy configuration",
@@ -206,24 +208,26 @@
       "renewConsent": "Accept version 2 and resume participation"
     },
     "journey": {
-      "description": "Local journeys of observed crawlers and agents. No human request or session detail is shown. All dates use UTC.",
+      "description": "Local journeys of classified crawlers, agents and separately suspected automation. Ordinary human or unidentified request details are not retained. All dates use UTC.",
       "unknown": "Unknown",
       "unknownRoute": "Unresolved route",
       "loadFailed": "The journeys could not be loaded for this selection. Please try again.",
       "detailFailed": "This journey is unavailable, outside the selected period/channel, or no longer retained.",
-      "funnelHint": "Each step counts closed agent sessions with that step actually observed. Skipped or unknown steps are not filled in. Reaching a page does not prove that an action succeeded.",
+      "funnelHint": "Each step counts closed classified sessions with that step actually observed, separated by evidence or suspicion. Skipped or unknown steps are not filled in. Reaching a page does not prove that an action succeeded.",
       "sessionCounts": "{closed} closed sessions · {open} open sessions",
       "groupSessions": "{count} sessions in this evidence group",
       "empty": "No agent journeys are available for this selection.",
       "proofGroup": {
         "verified": "Verified agents",
         "declared": "Declared agents",
-        "other": "Other evidence"
+        "other": "Other evidence",
+        "suspected": "Suspected automation"
       },
       "proofHint": {
         "verified": "Identity confirmed by signature, IP range or reverse DNS. Each proof remains separate.",
         "declared": "The agent announces an identity that has not been verified. This is not proof of impersonation.",
-        "other": "No confirmed operator identity. These sessions are excluded from verified-agent totals."
+        "other": "No confirmed operator identity. These sessions are excluded from verified-agent totals.",
+        "suspected": "Suspected automation is not proof of AI or operator identity. This timeline begins when the detection threshold was reached. Earlier human request details were not retained and are not reconstructed; earlier steps remain unknown."
       },
       "stage": {
         "discover": "Discovery",
@@ -243,7 +247,7 @@
       "failuresHint": "Shares use only sessions for which the relevant outcome is known. Unknown outcomes, including cache hits without the corresponding event, are excluded. “—” means no valid denominator; it never means success. A session can have several failures.",
       "noFailures": "No named failures are available. This does not establish that every action succeeded.",
       "listHint": "The last observed step can differ from the furthest observed step. Open sessions can still change. Closure runs every 15 minutes after more than 30 minutes of inactivity; a closed session is not necessarily a conversion.",
-      "listCaption": "Minimized agent sessions with last and furthest observed steps",
+      "listCaption": "Minimized classified sessions with last and furthest observed steps",
       "lastStage": "Last step",
       "maxStage": "Furthest step",
       "state": "Session state",
@@ -252,13 +256,14 @@
       "closed": "Closed",
       "open": "Open",
       "inspect": "View journey",
-      "pagination": "Page {page} of {pages} · {total} agent sessions",
+      "pagination": "Page {page} of {pages} · {total} classified sessions",
       "firstSeen": "First seen (UTC)",
       "reason": "Classification reason",
       "observedSteps": "Observed steps",
       "orderIds": "Linked Shopware order IDs",
       "orderId": "Linked Shopware order ID",
       "timelineHint": "Only minimized retained requests are listed. Missing steps and business outcomes remain unknown. Order IDs appear only when a Shopware order event was linked to this agent session.",
+      "observationPartial": "This session was only partly observed: detection began later or collection was interrupted. Observed steps and known failures are retained; cart and checkout abandonment are not inferred.",
       "noTimeline": "No request details remain for this session.",
       "close": "Close",
       "linkage": {
@@ -294,7 +299,9 @@
         "expired": "Signature is outside its validity window",
         "directory_unreachable": "Key directory unavailable",
         "directory_retry_expired": "Key-directory retry window expired",
-        "invalid_replay_context": "Preserved context cannot be reverified"
+        "invalid_replay_context": "Preserved context cannot be reverified",
+        "heuristic_threshold": "Behavioural score reached the experimental detection threshold",
+        "heuristic_session_context": "Request linked to a session already classified as suspected automation"
       },
       "unknownFailures": "{count} failure/evidence combinations have no sessions with a known outcome",
       "errorRoutes": "Routes with HTTP errors",
@@ -313,6 +320,49 @@
         "http": "HTTP response",
         "payment": "Payment evaluation"
       }
+    },
+    "heuristics": {
+      "title": "Undeclared automation detection",
+      "experimental": "Experimental · not calibrated",
+      "experimentalHint": "Detection and false-positive rates have not been validated on real human reference sessions. A suspected session may belong to a person or an ordinary automation tool.",
+      "privacy": "Disabled by default. Scoring runs locally and adds no tracking cookie. Earlier human request details are not reconstructed when a session reaches the threshold.",
+      "enabledState": "Experimental detection is enabled",
+      "disabledState": "Detection is disabled",
+      "version": "Rules version {version}",
+      "enable": "Enable experimental detection of undeclared automation",
+      "threshold": "Detection threshold (30–100)",
+      "thresholdHint": "Use a whole number from 30 to 100. A higher threshold requires a higher score. Changes apply to future observations; existing classifications are retained.",
+      "invalidThreshold": "Enter a whole number from 30 to 100.",
+      "editorRequired": "Editor permission is required to change detection settings.",
+      "save": "Save detection settings",
+      "saved": "Detection settings have been saved.",
+      "loadFailed": "Detection settings could not be loaded. No change has been made.",
+      "saveFailed": "The change could not be confirmed. Reload the settings before trying again.",
+      "observedTitle": "Suspected automation",
+      "observedCounts": "{sessions} sessions · {requests} requests",
+      "observedHint": "Shown separately from verified or declared agents. Excluded from the observed agent numerator and benchmark agent metrics; included in all-session totals.",
+      "notProof": "Suspected automation is not proof of AI or operator identity.",
+      "unidentifiedAutomation": "Unidentified automation",
+      "score": "Behavioural score",
+      "scoreHint": "The score combines weighted server-side signals. It is neither a probability nor an identity-verification result.",
+      "journeyWarning": "Suspected automation is shown separately. Detection is experimental and has not been calibrated on real human reference sessions. No AI identity is established.",
+      "timelineStartsAtDetection": "This timeline begins when the detection threshold was reached. Earlier human request details were not retained and are not reconstructed; earlier steps remain unknown.",
+      "detectedAt": "First detected (UTC)",
+      "flag": {
+        "fetch_metadata_missing": "Fetch Metadata headers absent",
+        "client_hints_missing": "Browser client hints absent",
+        "browser_headers_incoherent": "Browser headers inconsistent with the user-agent",
+        "tool_user_agent": "User-agent identifies an automation tool",
+        "wildcard_html_accept": "Generic Accept header on an HTML page",
+        "language_missing": "Accept-Language absent",
+        "deep_without_referer": "Deep page requested without a Referer",
+        "api_without_session_cookie": "API request without a storefront session cookie",
+        "hosting_network": "Client IP in the bundled AWS EC2 eu-west-3 range subset",
+        "high_cadence": "High request rate across several observations",
+        "regular_cadence": "Regular request intervals across several observations",
+        "cookie_ignored": "Expected session cookie not returned across observations"
+      },
+      "appliedThreshold": "Applied threshold"
     }
   },
   "sw-privileges": {

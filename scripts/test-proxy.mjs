@@ -18,10 +18,14 @@ http.createServer(async (incoming, outgoing) => {
     }
     return;
   }
+  const browserHost = 'agentenblick-browser.localhost:18080';
+  const incomingHost = incoming.headers.host;
+  // Upstream always hits Apache's default vhost, never the browser proxy vhost.
   const headers = { ...incoming.headers, host: '127.0.0.1:18080' };
   const simulated = headers['x-agentenblick-test-ip'];
   for (const key of ['forwarded', 'x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'cf-connecting-ip', 'x-agentenblick-test-ip']) delete headers[key];
   headers['x-forwarded-for'] = typeof simulated === 'string' && isIP(simulated) ? simulated : '198.51.100.30';
+  if (incomingHost === browserHost || incomingHost === '127.0.0.1:18080') headers['x-forwarded-host'] = incomingHost;
   const upstream = http.request({ host: '127.0.0.1', port: 80, method: incoming.method, path: incoming.url, headers }, response => {
     outgoing.writeHead(response.statusCode, response.headers);
     response.pipe(outgoing);

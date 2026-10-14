@@ -24,6 +24,7 @@ Component.register('agentenblick-index', {
             loadFailed: false,
             isExporting: false,
             isApproving: false,
+            heuristicSaving: false,
             requestSequence: 0,
         };
     },
@@ -81,6 +82,12 @@ Component.register('agentenblick-index', {
         agentSessionPoints() {
             return this.chartPoints('agentSessions');
         },
+        suspectedSessionPoints() {
+            return this.chartPoints('suspectedSessions');
+        },
+        hasSuspected() {
+            return Number(this.totals.suspectedSessions) > 0 || this.daily.some((day) => Number(day.suspectedSessions) > 0);
+        },
     },
 
     created() {
@@ -123,6 +130,7 @@ Component.register('agentenblick-index', {
             }
         },
         onDaysChange(value) {
+            if (this.heuristicSaving) return;
             const days = Number(value);
             if (![7, 30].includes(days) || days === this.days) {
                 return;
@@ -132,6 +140,7 @@ Component.register('agentenblick-index', {
             this.loadData();
         },
         onChannelChange(value) {
+            if (this.heuristicSaving) return;
             if ((value || '') === this.salesChannelId) {
                 return;
             }
@@ -148,7 +157,7 @@ Component.register('agentenblick-index', {
             this.loadData();
         },
         selectTab(tab, focus = false) {
-            if (!this.tabs.includes(tab)) return;
+            if (this.heuristicSaving || !this.tabs.includes(tab)) return;
             this.activeTab = tab;
             if (focus) {
                 this.$nextTick(() => {
@@ -161,6 +170,7 @@ Component.register('agentenblick-index', {
             this.selectTab(this.tabs[(this.tabs.indexOf(this.activeTab) + delta + this.tabs.length) % this.tabs.length], true);
         },
         refreshVisible() {
+            if (this.heuristicSaving) return;
             if (this.isJourneyTab) this.$refs.journey?.load();
             else this.loadData();
         },
@@ -201,8 +211,12 @@ Component.register('agentenblick-index', {
             return this.daily.map((day, index) => `${this.chartX(index)},${this.chartY(day[metric])}`).join(' ');
         },
         evidenceClass(value) {
+            if (value === 'suspected') return 'agentenblick-proof--suspected';
             return ['verified_signature', 'verified_ip', 'verified_rdns'].includes(value)
                 ? 'agentenblick-proof--verified' : 'agentenblick-proof--unverified';
+        },
+        agentName(agent) {
+            return agent.evidence === 'suspected' ? this.$t('agentenblick.heuristics.unidentifiedAutomation') : agent.agent;
         },
         async exportCsv() {
             if (this.isExporting || !this.canView) {

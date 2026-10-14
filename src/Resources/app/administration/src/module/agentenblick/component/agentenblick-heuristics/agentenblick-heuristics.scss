@@ -1,0 +1,10 @@
+.agentenblick-heuristics {
+    p { margin-top: 10px; line-height: 1.6; }
+    &__hint { color: var(--agentenblick-muted, #526576); font-size: 12px; margin-bottom: 16px; }
+    &__state { font-size: 13px; margin-bottom: 16px; }
+    &__threshold { display: grid; gap: 8px; max-width: 260px; margin-top: 16px; font-size: 13px; }
+    &__threshold input { border: 1px solid #a9b6c2; border-radius: 4px; padding: 10px 12px; font: inherit; width: 100%; }
+    &__threshold input:focus-visible { outline: 2px solid #147d75; outline-offset: 2px; }
+    &__threshold input[aria-invalid="true"] { border-color: #bd3535; }
+    &__error { color: #b42318; font-size: 12px; }
+}
