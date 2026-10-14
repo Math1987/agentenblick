@@ -1,0 +1,13 @@
+{
+  "name": "agentenblick/terminate-probe",
+  "description": "Disposable development-only kernel.terminate timing probe",
+  "type": "shopware-platform-plugin",
+  "version": "0.0.1",
+  "license": "MIT",
+  "require": {"php": ">=8.2", "shopware/core": "~6.7.0"},
+  "autoload": {"psr-4": {"Agentenblick\\TerminateProbe\\": "src/"}},
+  "extra": {
+    "shopware-plugin-class": "Agentenblick\\TerminateProbe\\AgentenblickTerminateProbe",
+    "label": {"en-GB": "Agentenblick terminate probe (test only)"}
+  }
+}

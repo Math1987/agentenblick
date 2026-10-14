@@ -1,0 +1,12 @@
+name: agentenblick
+services:
+  shop:
+    image: dockware/shopware:6.7.15.0
+    container_name: agentenblick-shop
+    ports:
+      - "127.0.0.1:18080:80"
+    environment:
+      PHP_VERSION: "8.2"
+      XDEBUG_ENABLED: "0"
+    volumes:
+      - ./dev/probe:/opt/agentenblick/probe:ro
