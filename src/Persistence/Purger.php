@@ -40,6 +40,9 @@ final class Purger
             'closure_failed' => $closureFailed,
         ];
         $this->connection->executeStatement('DELETE FROM agentenblick_journey_daily WHERE day < ?', [$now->modify('-' . $months . ' months')->format('Y-m-d')]);
+        $this->connection->executeStatement('DELETE FROM agentenblick_health_daily WHERE day < ?', [$now->modify('-' . $months . ' months')->format('Y-m-d')]);
+        $this->connection->executeStatement('DELETE FROM agentenblick_health_snapshot WHERE checked_at < ?', [$now->modify('-' . $months . ' months')->format('Y-m-d H:i:s')]);
+        $this->connection->executeStatement("DELETE FROM agentenblick_state WHERE name LIKE 'health_probe:%' AND updated_at <= ?", [$now->modify('-60 seconds')->format('Y-m-d H:i:s')]);
         $key = $this->keys->current($now->format('Y-m-d'));
         sodium_memzero($key);
         return $result;

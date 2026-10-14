@@ -5,39 +5,39 @@
     </template>
 
     <template #smart-bar-actions>
-        <mt-button v-if="activeTab !== 'benchmark'" :disabled="isLoading || heuristicSaving || !canView" @click="refreshVisible">
+        <agentenblick-button v-if="activeTab !== 'benchmark'" :disabled="isLoading || heuristicSaving || healthProbing || !canView" @click="refreshVisible">
             {{ $t('agentenblick.actions.refresh') }}
-        </mt-button>
-        <mt-button v-if="['overview', 'agents'].includes(activeTab)" variant="primary" :disabled="isLoading || !canView || isExporting" :is-loading="isExporting" @click="exportCsv">
+        </agentenblick-button>
+        <agentenblick-button v-if="['overview', 'agents'].includes(activeTab)" variant="primary" :disabled="isLoading || !canView || isExporting" :is-loading="isExporting" @click="exportCsv">
             {{ $t('agentenblick.actions.export') }}
-        </mt-button>
+        </agentenblick-button>
     </template>
 
     <template #content>
         <sw-card-view class="agentenblick-index__content">
             <p class="agentenblick-index__intro">{{ $t('agentenblick.general.description') }}</p>
 
-            <mt-banner v-if="!canView" variant="critical">
+            <agentenblick-banner v-if="!canView" variant="critical">
                 {{ $t('agentenblick.errors.permission') }}
-            </mt-banner>
+            </agentenblick-banner>
 
             <template v-else>
                 <div v-if="activeTab !== 'benchmark'" class="agentenblick-index__filters">
-                    <mt-select
+                    <agentenblick-select
                         name="agentenblick-period"
                         :model-value="days"
                         :label="$t('agentenblick.filters.period')"
                         :options="periodOptions"
-                        :disabled="isLoading || heuristicSaving"
+                        :disabled="isLoading || heuristicSaving || healthProbing"
                         hide-clearable-button
                         @update:model-value="onDaysChange"
                     />
-                    <mt-select
+                    <agentenblick-select
                         name="agentenblick-sales-channel"
                         :model-value="salesChannelId"
                         :label="$t('agentenblick.filters.channel')"
                         :options="channelOptions"
-                        :disabled="isLoading || heuristicSaving"
+                        :disabled="isLoading || heuristicSaving || healthProbing"
                         hide-clearable-button
                         @update:model-value="onChannelChange"
                     />
@@ -54,7 +54,7 @@
                         :aria-controls="`agentenblick-${tab}-panel`"
                         :aria-selected="activeTab === tab"
                         :tabindex="activeTab === tab ? 0 : -1"
-                        :disabled="heuristicSaving"
+                        :disabled="heuristicSaving || healthProbing"
                         @click="selectTab(tab)"
                         @keydown.right.prevent="moveTab(1)"
                         @keydown.left.prevent="moveTab(-1)"
@@ -67,6 +67,10 @@
                     <agentenblick-benchmark />
                 </section>
 
+                <section v-else-if="activeTab === 'health'" id="agentenblick-health-panel" role="tabpanel" aria-labelledby="agentenblick-health-tab">
+                    <agentenblick-health ref="health" :filters="filters" @busy="healthProbing = $event" />
+                </section>
+
                 <section v-else-if="isJourneyTab" :id="`agentenblick-${activeTab}-panel`" role="tabpanel" :aria-labelledby="`agentenblick-${activeTab}-tab`">
                     <agentenblick-journey ref="journey" :mode="activeTab" :filters="filters" />
                 </section>
@@ -76,17 +80,17 @@
                     <span class="agentenblick-index__sr-only">{{ $t('agentenblick.general.loading') }}</span>
                 </div>
 
-                <mt-banner v-else-if="loadFailed" variant="critical">
+                <agentenblick-banner v-else-if="loadFailed" variant="critical">
                     <p>{{ $t('agentenblick.errors.load') }}</p>
-                    <mt-button @click="loadData">{{ $t('agentenblick.actions.retry') }}</mt-button>
-                </mt-banner>
+                    <agentenblick-button @click="loadData">{{ $t('agentenblick.actions.retry') }}</agentenblick-button>
+                </agentenblick-banner>
 
                 <template v-else-if="summary">
-                    <mt-banner v-if="proxyWarning" class="agentenblick-index__warning" variant="attention">
+                    <agentenblick-banner v-if="proxyWarning" class="agentenblick-index__warning" variant="attention">
                         <strong>{{ $t('agentenblick.proxy.title') }}</strong>
                         <p>{{ $t('agentenblick.proxy.description') }}</p>
                         <p>{{ $t('agentenblick.proxy.remediation') }}</p>
-                    </mt-banner>
+                    </agentenblick-banner>
 
                     <section
                         v-show="activeTab === 'overview'"
@@ -95,31 +99,31 @@
                         aria-labelledby="agentenblick-overview-tab"
                     >
                         <div class="agentenblick-index__metrics">
-                            <mt-card position-identifier="agentenblick-share" :title="$t('agentenblick.metrics.share')">
+                            <agentenblick-card position-identifier="agentenblick-share" :title="$t('agentenblick.metrics.share')">
                                 <p class="agentenblick-index__metric agentenblick-index__metric--accent">{{ formatPercent(totals.agentSessionsPct) }}</p>
                                 <p class="agentenblick-index__hint">{{ $t('agentenblick.metrics.shareHint') }}</p>
-                            </mt-card>
-                            <mt-card position-identifier="agentenblick-agent-sessions" :title="$t('agentenblick.metrics.agentSessions')">
+                            </agentenblick-card>
+                            <agentenblick-card position-identifier="agentenblick-agent-sessions" :title="$t('agentenblick.metrics.agentSessions')">
                                 <p class="agentenblick-index__metric">{{ formatNumber(totals.agentSessions) }}</p>
                                 <p class="agentenblick-index__hint">{{ $t('agentenblick.metrics.agentSessionsHint') }}</p>
-                            </mt-card>
-                            <mt-card position-identifier="agentenblick-agent-requests" :title="$t('agentenblick.metrics.agentRequests')">
+                            </agentenblick-card>
+                            <agentenblick-card position-identifier="agentenblick-agent-requests" :title="$t('agentenblick.metrics.agentRequests')">
                                 <p class="agentenblick-index__metric">{{ formatNumber(totals.agentRequests) }}</p>
                                 <p class="agentenblick-index__hint">{{ $t('agentenblick.metrics.requestsHint', { total: formatNumber(totals.requests) }) }}</p>
-                            </mt-card>
-                            <mt-card position-identifier="agentenblick-all-sessions" :title="$t('agentenblick.metrics.allSessions')">
+                            </agentenblick-card>
+                            <agentenblick-card position-identifier="agentenblick-all-sessions" :title="$t('agentenblick.metrics.allSessions')">
                                 <p class="agentenblick-index__metric">{{ formatNumber(totals.sessions) }}</p>
                                 <p class="agentenblick-index__hint">{{ $t('agentenblick.metrics.allSessionsHint') }}</p>
-                            </mt-card>
+                            </agentenblick-card>
                         </div>
 
-                        <mt-card position-identifier="agentenblick-suspected" :title="$t('agentenblick.heuristics.observedTitle')">
+                        <agentenblick-card position-identifier="agentenblick-suspected" :title="$t('agentenblick.heuristics.observedTitle')">
                             <span class="agentenblick-proof agentenblick-proof--suspected">{{ $t('agentenblick.evidence.suspected') }}</span>
                             <p class="agentenblick-index__suspected-counts">{{ $t('agentenblick.heuristics.observedCounts', { sessions: formatNumber(totals.suspectedSessions), requests: formatNumber(totals.suspectedRequests) }) }}</p>
                             <p class="agentenblick-index__hint">{{ $t('agentenblick.heuristics.observedHint') }}</p>
-                        </mt-card>
+                        </agentenblick-card>
 
-                        <mt-card position-identifier="agentenblick-trend" :title="$t('agentenblick.trend.title')">
+                        <agentenblick-card position-identifier="agentenblick-trend" :title="$t('agentenblick.trend.title')">
                             <p v-if="!totals.requests" class="agentenblick-index__empty">{{ $t('agentenblick.general.empty') }}</p>
                             <template v-else>
                                 <div class="agentenblick-index__legend">
@@ -153,10 +157,10 @@
                                 </details>
                             </template>
                             <p class="agentenblick-index__hint">{{ $t('agentenblick.general.scope') }}</p>
-                        </mt-card>
+                        </agentenblick-card>
 
                         <div class="agentenblick-index__breakdowns">
-                            <mt-card position-identifier="agentenblick-kinds" :title="$t('agentenblick.breakdown.kinds')">
+                            <agentenblick-card position-identifier="agentenblick-kinds" :title="$t('agentenblick.breakdown.kinds')">
                                 <table class="agentenblick-index__table">
                                     <thead><tr><th scope="col">{{ $t('agentenblick.table.kind') }}</th><th scope="col">{{ $t('agentenblick.table.requests') }}</th><th scope="col">{{ $t('agentenblick.table.sessions') }}</th></tr></thead>
                                     <tbody>
@@ -164,8 +168,8 @@
                                         <tr v-if="!summary.byKind.length"><td colspan="3">{{ $t('agentenblick.general.noAgents') }}</td></tr>
                                     </tbody>
                                 </table>
-                            </mt-card>
-                            <mt-card position-identifier="agentenblick-evidence" :title="$t('agentenblick.breakdown.evidence')">
+                            </agentenblick-card>
+                            <agentenblick-card position-identifier="agentenblick-evidence" :title="$t('agentenblick.breakdown.evidence')">
                                 <table class="agentenblick-index__table">
                                     <thead><tr><th scope="col">{{ $t('agentenblick.table.evidence') }}</th><th scope="col">{{ $t('agentenblick.table.requests') }}</th><th scope="col">{{ $t('agentenblick.table.sessions') }}</th></tr></thead>
                                     <tbody>
@@ -174,7 +178,7 @@
                                     </tbody>
                                 </table>
                                 <p class="agentenblick-index__hint">{{ $t('agentenblick.breakdown.proofHint') }}</p>
-                            </mt-card>
+                            </agentenblick-card>
                         </div>
                         <agentenblick-heuristics @saving="heuristicSaving = $event" />
                     </section>
@@ -185,7 +189,7 @@
                         role="tabpanel"
                         aria-labelledby="agentenblick-agents-tab"
                     >
-                        <mt-card position-identifier="agentenblick-agents" :title="$t('agentenblick.tabs.agents')">
+                        <agentenblick-card position-identifier="agentenblick-agents" :title="$t('agentenblick.tabs.agents')">
                             <p class="agentenblick-index__hint">{{ $t('agentenblick.table.proofHint') }}</p>
                             <div class="agentenblick-index__table-wrap">
                                 <table class="agentenblick-index__table agentenblick-index__agents-table">
@@ -224,25 +228,25 @@
                             </div>
                             <div v-if="totalAgents" class="agentenblick-index__pagination">
                                 <span>{{ $t('agentenblick.table.pagination', { page, pages: pageCount, total: formatNumber(totalAgents) }) }}</span>
-                                <mt-button size="small" :disabled="page <= 1" @click="changePage(-1)">{{ $t('agentenblick.actions.previous') }}</mt-button>
-                                <mt-button size="small" :disabled="page >= pageCount" @click="changePage(1)">{{ $t('agentenblick.actions.next') }}</mt-button>
+                                <agentenblick-button size="small" :disabled="page <= 1" @click="changePage(-1)">{{ $t('agentenblick.actions.previous') }}</agentenblick-button>
+                                <agentenblick-button size="small" :disabled="page >= pageCount" @click="changePage(1)">{{ $t('agentenblick.actions.next') }}</agentenblick-button>
                             </div>
                             <p class="agentenblick-index__hint">{{ $t('agentenblick.table.retentionHint') }}</p>
-                        </mt-card>
+                        </agentenblick-card>
                     </section>
 
-                    <mt-card v-if="pendingRanges.length" position-identifier="agentenblick-pending-ranges" :title="$t('agentenblick.ranges.title')">
+                    <agentenblick-card v-if="pendingRanges.length" position-identifier="agentenblick-pending-ranges" :title="$t('agentenblick.ranges.title')">
                         <p class="agentenblick-index__hint">{{ $t('agentenblick.ranges.description') }}</p>
                         <div class="agentenblick-index__table-wrap">
                             <table class="agentenblick-index__table">
                                 <thead><tr><th scope="col">{{ $t('agentenblick.table.agent') }}</th><th scope="col">{{ $t('agentenblick.ranges.current') }}</th><th scope="col">{{ $t('agentenblick.ranges.proposed') }}</th><th scope="col">{{ $t('agentenblick.ranges.updated') }}</th><th scope="col"><span class="agentenblick-index__sr-only">{{ $t('agentenblick.ranges.review') }}</span></th></tr></thead>
                                 <tbody><tr v-for="range in pendingRanges" :key="range.agent">
                                     <th scope="row">{{ range.agent }}</th><td>{{ formatNumber(range.currentCount) }}</td><td>{{ formatNumber(range.pendingCount) }}</td><td>{{ formatDate(range.updatedAt, true) }}</td>
-                                    <td><mt-button v-if="canEdit" size="small" @click="selectedRange = range">{{ $t('agentenblick.ranges.review') }}</mt-button><span v-else class="agentenblick-index__hint">{{ $t('agentenblick.ranges.editorRequired') }}</span></td>
+                                    <td><agentenblick-button v-if="canEdit" size="small" @click="selectedRange = range">{{ $t('agentenblick.ranges.review') }}</agentenblick-button><span v-else class="agentenblick-index__hint">{{ $t('agentenblick.ranges.editorRequired') }}</span></td>
                                 </tr></tbody>
                             </table>
                         </div>
-                    </mt-card>
+                    </agentenblick-card>
                 </template>
             </template>
         </sw-card-view>
@@ -256,8 +260,8 @@
             </div>
             <p v-if="selectedRange.changesTruncated" class="agentenblick-index__hint">{{ $t('agentenblick.ranges.truncated') }}</p>
             <template #modal-footer>
-                <mt-button :disabled="isApproving" @click="closeRange">{{ $t('agentenblick.actions.cancel') }}</mt-button>
-                <mt-button variant="primary" :is-loading="isApproving" :disabled="isApproving" @click="approveRange">{{ $t('agentenblick.ranges.approve') }}</mt-button>
+                <agentenblick-button :disabled="isApproving" @click="closeRange">{{ $t('agentenblick.actions.cancel') }}</agentenblick-button>
+                <agentenblick-button variant="primary" :is-loading="isApproving" :disabled="isApproving" @click="approveRange">{{ $t('agentenblick.ranges.approve') }}</agentenblick-button>
             </template>
         </sw-modal>
     </template>

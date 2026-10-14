@@ -13,6 +13,17 @@ export default class AgentenblickApiService extends ApiService {
         return this.get('agents', params);
     }
 
+    getHealth(params) {
+        return this.get('health', params);
+    }
+
+    probeHealth(body) {
+        return this.httpClient.post(
+            `${this.getApiBasePath()}/health/probe`, body,
+            { headers: this.getBasicHeaders() },
+        ).then(ApiService.handleResponse);
+    }
+
     getPendingRanges() {
         return this.get('ranges/pending');
     }

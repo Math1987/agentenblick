@@ -1,0 +1,2 @@
+<mt-button v-if="meteorAvailable" v-bind="$attrs" :variant="variant" :size="size" :disabled="disabled || isLoading" :is-loading="isLoading" @click="clicked"><slot /></mt-button>
+<sw-button v-else v-bind="$attrs" :variant="variant || ''" :size="size || ''" :disabled="disabled || isLoading" :is-loading="isLoading" @click="clicked"><slot /></sw-button>

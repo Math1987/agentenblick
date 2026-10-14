@@ -3,26 +3,26 @@
         <sw-loader />
         <span class="agentenblick-index__sr-only">{{ $t('agentenblick.benchmark.loading') }}</span>
     </div>
-    <mt-banner v-else-if="loadFailed" variant="critical">
+    <agentenblick-banner v-else-if="loadFailed" variant="critical">
         <p>{{ $t('agentenblick.benchmark.error.load') }}</p>
-        <mt-button @click="load">{{ $t('agentenblick.actions.retry') }}</mt-button>
-    </mt-banner>
+        <agentenblick-button @click="load">{{ $t('agentenblick.actions.retry') }}</agentenblick-button>
+    </agentenblick-banner>
     <template v-else-if="status">
-        <mt-banner v-if="identityConflict" variant="critical">
+        <agentenblick-banner v-if="identityConflict" variant="critical">
             {{ $t('agentenblick.benchmark.identityConflict') }}
-        </mt-banner>
-        <mt-banner v-if="status.demo" variant="attention">
+        </agentenblick-banner>
+        <agentenblick-banner v-if="status.demo" variant="attention">
             {{ $t('agentenblick.benchmark.demo') }}
-        </mt-banner>
-        <mt-banner v-if="status.offline" variant="attention">
+        </agentenblick-banner>
+        <agentenblick-banner v-if="status.offline" variant="attention">
             {{ $t('agentenblick.benchmark.offline') }}
-        </mt-banner>
-        <mt-banner v-if="status.pendingWithdrawal" variant="attention">
+        </agentenblick-banner>
+        <agentenblick-banner v-if="status.pendingWithdrawal" variant="attention">
             {{ $t('agentenblick.benchmark.withdrawalPending') }}
-        </mt-banner>
-        <mt-banner v-if="needsConsentUpdate" variant="attention">{{ $t('agentenblick.benchmark.consentUpdate') }}</mt-banner>
+        </agentenblick-banner>
+        <agentenblick-banner v-if="needsConsentUpdate" variant="attention">{{ $t('agentenblick.benchmark.consentUpdate') }}</agentenblick-banner>
 
-        <mt-card position-identifier="agentenblick-benchmark-participation" :title="$t('agentenblick.benchmark.title')">
+        <agentenblick-card position-identifier="agentenblick-benchmark-participation" :title="$t('agentenblick.benchmark.title')">
             <div class="agentenblick-benchmark__heading">
                 <p>{{ $t('agentenblick.benchmark.description') }}</p>
                 <span class="agentenblick-benchmark__status">{{ stateLabel }}</span>
@@ -41,16 +41,16 @@
             </dl>
             <div v-if="(!status.enabled || needsConsentUpdate) && !status.pendingWithdrawal && canEdit" class="agentenblick-benchmark__consent">
                 <label><input v-model="consent" type="checkbox" :disabled="busy || status.offline || identityConflict" /> <span>{{ $t('agentenblick.benchmark.consent') }}</span></label>
-                <mt-button variant="primary" :disabled="!canEnable" :is-loading="busy" @click="update('enable')">{{ $t(needsConsentUpdate ? 'agentenblick.benchmark.renewConsent' : 'agentenblick.benchmark.enable') }}</mt-button>
+                <agentenblick-button variant="primary" :disabled="!canEnable" :is-loading="busy" @click="update('enable')">{{ $t(needsConsentUpdate ? 'agentenblick.benchmark.renewConsent' : 'agentenblick.benchmark.enable') }}</agentenblick-button>
             </div>
             <div v-if="status.enabled && canEdit" class="agentenblick-benchmark__actions">
-                <mt-button :disabled="!canTransmit" :is-loading="busy" @click="update('send')">{{ $t('agentenblick.benchmark.send') }}</mt-button>
-                <mt-button :disabled="busy" @click="confirmWithdrawal = true">{{ $t('agentenblick.benchmark.disable') }}</mt-button>
+                <agentenblick-button :disabled="!canTransmit" :is-loading="busy" @click="update('send')">{{ $t('agentenblick.benchmark.send') }}</agentenblick-button>
+                <agentenblick-button :disabled="busy" @click="confirmWithdrawal = true">{{ $t('agentenblick.benchmark.disable') }}</agentenblick-button>
             </div>
             <p v-if="!canEdit" class="agentenblick-index__hint">{{ $t('agentenblick.benchmark.editorRequired') }}</p>
-        </mt-card>
+        </agentenblick-card>
 
-        <mt-card position-identifier="agentenblick-benchmark-preview" :title="$t('agentenblick.benchmark.previewTitle')">
+        <agentenblick-card position-identifier="agentenblick-benchmark-preview" :title="$t('agentenblick.benchmark.previewTitle')">
             <p>{{ $t('agentenblick.benchmark.previewHint') }}</p>
             <p class="agentenblick-index__hint">{{ $t('agentenblick.benchmark.previewPrivacy') }}</p>
             <p v-if="preview && preview.period" class="agentenblick-benchmark__period">{{ $t('agentenblick.benchmark.period') }}: <strong>{{ preview.period }}</strong></p>
@@ -60,10 +60,10 @@
                 <p class="agentenblick-index__hint">SHA-256: <code>{{ item.sha256 }}</code></p>
                 <pre tabindex="0" :aria-label="$t('agentenblick.benchmark.exactJson')">{{ item.json }}</pre>
             </details>
-            <div class="agentenblick-benchmark__actions"><mt-button :disabled="busy" @click="load">{{ $t('agentenblick.benchmark.refreshLocal') }}</mt-button></div>
-        </mt-card>
+            <div class="agentenblick-benchmark__actions"><agentenblick-button :disabled="busy" @click="load">{{ $t('agentenblick.benchmark.refreshLocal') }}</agentenblick-button></div>
+        </agentenblick-card>
 
-        <mt-card position-identifier="agentenblick-benchmark-history" :title="$t('agentenblick.benchmark.historyTitle')">
+        <agentenblick-card position-identifier="agentenblick-benchmark-history" :title="$t('agentenblick.benchmark.historyTitle')">
             <p class="agentenblick-index__hint">{{ $t('agentenblick.benchmark.historyHint') }}</p>
             <p v-if="!history.length" class="agentenblick-index__hint">{{ $t('agentenblick.benchmark.noHistory') }}</p>
             <div v-else class="agentenblick-index__table-wrap">
@@ -75,29 +75,29 @@
                     </tr></tbody>
                 </table>
             </div>
-        </mt-card>
+        </agentenblick-card>
 
-        <mt-card position-identifier="agentenblick-benchmark-comparison" :title="$t('agentenblick.benchmark.comparisonTitle')">
+        <agentenblick-card position-identifier="agentenblick-benchmark-comparison" :title="$t('agentenblick.benchmark.comparisonTitle')">
             <p>{{ $t('agentenblick.benchmark.comparisonHint') }}</p>
             <p class="agentenblick-index__hint">{{ $t('agentenblick.benchmark.comparisonNetwork') }}</p>
-            <div class="agentenblick-benchmark__actions"><mt-button :disabled="!canCompare" :is-loading="comparing" @click="compare">{{ $t('agentenblick.benchmark.compare') }}</mt-button><a href="https://shopware.aithos.app" target="_blank" rel="noopener noreferrer">{{ $t('agentenblick.benchmark.openDashboard') }}</a></div>
+            <div class="agentenblick-benchmark__actions"><agentenblick-button :disabled="!canCompare" :is-loading="comparing" @click="compare">{{ $t('agentenblick.benchmark.compare') }}</agentenblick-button><a href="https://shopware.aithos.app" target="_blank" rel="noopener noreferrer">{{ $t('agentenblick.benchmark.openDashboard') }}</a></div>
             <template v-if="comparison">
-                <mt-banner v-if="comparison.report && comparison.report.demo" variant="attention">{{ $t('agentenblick.benchmark.demo') }}</mt-banner>
+                <agentenblick-banner v-if="comparison.report && comparison.report.demo" variant="attention">{{ $t('agentenblick.benchmark.demo') }}</agentenblick-banner>
                 <p v-if="!comparisonCells.length" class="agentenblick-index__hint">{{ comparisonMessage }}</p>
                 <div v-else class="agentenblick-index__table-wrap"><table class="agentenblick-index__table">
                     <thead><tr><th scope="col">{{ $t('agentenblick.benchmark.period') }}</th><th scope="col">{{ $t('agentenblick.benchmark.cohort') }}</th><th scope="col">{{ $t('agentenblick.benchmark.localShare') }}</th><th scope="col">{{ $t('agentenblick.benchmark.median') }}</th><th scope="col">{{ $t('agentenblick.benchmark.quartiles') }}</th><th scope="col">{{ $t('agentenblick.benchmark.installations') }}</th></tr></thead>
                     <tbody><tr v-for="cell in comparisonCells" :key="`${cell.period}:${cell.cohortId}`"><td>{{ cell.period }}</td><td><code>{{ cell.cohortId }}</code></td><td><div v-for="local in cell.local" :key="local.channelId">{{ percent(local.aiSessionsPct) }} <small><code>{{ local.channelId }}</code></small></div><span v-if="!cell.local.length">—</span></td><td>{{ percent(cell.metrics.aiSessionsPct.median) }}</td><td>{{ percent(cell.metrics.aiSessionsPct.p25) }}–{{ percent(cell.metrics.aiSessionsPct.p75) }}</td><td>{{ cell.metrics.aiSessionsPct.installations }}</td></tr></tbody>
                 </table></div>
             </template>
-        </mt-card>
+        </agentenblick-card>
     </template>
 
     <sw-modal v-if="confirmWithdrawal && canEdit" :title="$t('agentenblick.benchmark.withdrawTitle')" @modal-close="closeWithdrawal">
         <p>{{ $t('agentenblick.benchmark.withdrawText') }}</p>
         <p v-if="status && status.offline" class="agentenblick-index__hint">{{ $t('agentenblick.benchmark.withdrawOffline') }}</p>
         <template #modal-footer>
-            <mt-button :disabled="busy" @click="closeWithdrawal">{{ $t('agentenblick.actions.cancel') }}</mt-button>
-            <mt-button variant="primary" :disabled="busy" :is-loading="busy" @click="update('disable')">{{ $t('agentenblick.benchmark.confirmWithdrawal') }}</mt-button>
+            <agentenblick-button :disabled="busy" @click="closeWithdrawal">{{ $t('agentenblick.actions.cancel') }}</agentenblick-button>
+            <agentenblick-button variant="primary" :disabled="busy" :is-loading="busy" @click="update('disable')">{{ $t('agentenblick.benchmark.confirmWithdrawal') }}</agentenblick-button>
         </template>
     </sw-modal>
 </div>

@@ -1,0 +1,136 @@
+{
+  "check": "official_shopware_store_validation",
+  "checkedAt": "2026-10-14T13:11:08.520995+00:00",
+  "sourceCommit": "3daf227064331105f0c25a9854143da78e5ab291",
+  "candidate": "AithosAgentenblick-0.1.0.zip",
+  "candidateSha256": "b1ae33ef8ce049622d3a8033a11ff3782166c7b5ba64c8c8ed3c0d6167f6f95d",
+  "candidateIncludes": "source 3daf227 plus final metadata, optional Storefront suggestion, responsive UI and runtime-template corrections",
+  "command": "SHOPWARE_PROJECT_ROOT=/var/www/html shopware-cli extension validate <isolated-candidate.zip> --full --store-compliance --format=json --no-interaction --no-update-hint",
+  "shopwareCliVersion": "0.18.5",
+  "exitCode": 1,
+  "storeCompliant": false,
+  "counts": {
+    "error": 8,
+    "warning": 14
+  },
+  "categories": [
+    {
+      "identifier": "config.routes_xml.deprecated",
+      "severity": "warning",
+      "count": 1
+    },
+    {
+      "identifier": "config.services_xml.deprecated",
+      "severity": "warning",
+      "count": 1
+    },
+    {
+      "identifier": "eslint/@typescript-eslint/no-unused-vars",
+      "severity": "warning",
+      "count": 12
+    },
+    {
+      "identifier": "eslint/shopware-admin/no-snippet-import",
+      "severity": "error",
+      "count": 1
+    },
+    {
+      "identifier": "metadata.description.length.de-DE",
+      "severity": "error",
+      "count": 1
+    },
+    {
+      "identifier": "phpstan/shopware.forbidLocalDiskWrite",
+      "severity": "error",
+      "count": 4
+    },
+    {
+      "identifier": "phpstan/shopware.internalMethodCall",
+      "severity": "error",
+      "count": 2
+    }
+  ],
+  "errorLocations": [
+    {
+      "file": "composer.json",
+      "line": 1,
+      "identifier": "metadata.description.length.de-DE"
+    },
+    {
+      "file": "src/Resources/app/administration/src/module/agentenblick/index.js",
+      "line": 26,
+      "identifier": "eslint/shopware-admin/no-snippet-import"
+    },
+    {
+      "file": "src/Admin/CsvExporter.php",
+      "line": 12,
+      "identifier": "phpstan/shopware.forbidLocalDiskWrite"
+    },
+    {
+      "file": "src/AithosAgentenblick.php",
+      "line": 46,
+      "identifier": "phpstan/shopware.forbidLocalDiskWrite"
+    },
+    {
+      "file": "src/Heuristics/Settings.php",
+      "line": 32,
+      "identifier": "phpstan/shopware.internalMethodCall"
+    },
+    {
+      "file": "src/Capture/FailureCounter.php",
+      "line": 20,
+      "identifier": "phpstan/shopware.forbidLocalDiskWrite"
+    },
+    {
+      "file": "src/Capture/FailureCounter.php",
+      "line": 23,
+      "identifier": "phpstan/shopware.forbidLocalDiskWrite"
+    },
+    {
+      "file": "src/Health/ProbeTransport.php",
+      "line": 20,
+      "identifier": "phpstan/shopware.internalMethodCall"
+    }
+  ],
+  "notes": [
+    "The German description is 189 bytes under the official validator; the permitted range is 150 to 185. This is an archive metadata finding.",
+    "The local write rule flags php://temp CSV output, the local fail-open error counter and counter cleanup. These are not waived by this report.",
+    "Fresh SystemConfigService.getDomain reads are internal Shopware calls; explicit snippet registration remains flagged.",
+    "No missing Storefront symbols or deprecated CSS clip findings remain in this candidate.",
+    "Passing functional tests does not constitute Store approval; pending remote-withdrawal uninstall behavior is a separate documented Store limitation."
+  ],
+  "dependencyAudit": {
+    "command": "composer --no-plugins --no-scripts audit --locked --format=json --no-interaction",
+    "composerVersion": "2.10.3",
+    "phpVersion": "8.2.34",
+    "composerPharSha256": "7a2d379d5b8ffdaa028580ef26494c36d2feef4b178d3dd1473a4dbc5e17c8d6",
+    "pharChecksumVerifiedAgainstOfficialDownload": true,
+    "scope": "Dependency lock generated in the isolated validation copy; this is not the installed 6.6/6.7 bench lockfile.",
+    "versions": {
+      "shopware/core": "6.7.15.1",
+      "shopware/storefront": "6.7.15.1",
+      "symfony/http-client": "7.4.21",
+      "symfony/http-foundation": "7.4.21",
+      "phpseclib/phpseclib": "3.0.57",
+      "bakame/http-structured-fields": "2.0.0"
+    },
+    "advisories": [],
+    "abandoned": []
+  },
+  "isolation": {
+    "copiedArchive": true,
+    "runtimeOrDatabaseModified": false,
+    "sourcePackagesAutomaticallyUpgraded": false,
+    "minimumHostFreeBytes": 8765587456,
+    "stopThresholdBytes": 3221225472
+  },
+  "finalPackageMetadataRecheck": {
+    "candidateSha256": "d59cf205402071b3003b1d4b1b5dc88ee8a929ab71ba6c97eb47f88d3054f144",
+    "checkedAt": "2026-10-14T14:08:10.156422+00:00",
+    "full": false,
+    "errors": 0,
+    "warnings": 2,
+    "germanDescriptionLengthResolved": true,
+    "doesNotSupersedeFullCodeFindings": true
+  }
+}

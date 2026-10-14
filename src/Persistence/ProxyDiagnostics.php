@@ -15,9 +15,9 @@ final class ProxyDiagnostics
     public function record(bool $cdn): void
     {
         $hour = gmdate('Y-m-d-H');
-        foreach (['proxy_total:' . $hour, $cdn ? 'proxy_cdn:' . $hour : 'proxy_noncdn:' . $hour] as $name) {
-            $this->connection->executeStatement('INSERT INTO agentenblick_state (name, value, updated_at) VALUES (?, \'1\', ?) ON DUPLICATE KEY UPDATE value = CAST(value AS UNSIGNED) + 1, updated_at = VALUES(updated_at)', [$name, gmdate('Y-m-d H:i:s')]);
-        }
+        $at = gmdate('Y-m-d H:i:s');
+        // One statement commits both counters together, including on a failure.
+        $this->connection->executeStatement('INSERT INTO agentenblick_state (name, value, updated_at) VALUES (?, \'1\', ?), (?, \'1\', ?) ON DUPLICATE KEY UPDATE value = CAST(value AS UNSIGNED) + 1, updated_at = VALUES(updated_at)', ['proxy_total:' . $hour, $at, ($cdn ? 'proxy_cdn:' : 'proxy_noncdn:') . $hour, $at]);
     }
 
     /** @return array<string, mixed> */

@@ -6,6 +6,8 @@ namespace Aithos\Agentenblick\Tests\Unit;
 
 use Aithos\Agentenblick\Persistence\DailyKey;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Connections\PrimaryReadReplicaConnection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class DailyKeyTest extends TestCase
@@ -54,6 +56,73 @@ final class DailyKeyTest extends TestCase
         self::assertSame($key, $keys->current($today->format('Y-m-d')));
         self::assertSame(0, $updates);
         self::assertSame($newerDay . ' 00:00:00', $row['updated_at']);
+    }
+
+    public function testCurrentKeyReadsThePrimaryWithoutTakingAWriteLock(): void
+    {
+        $key = str_repeat('d', 32);
+        $primary = false;
+        $connection = $this->createMock(PrimaryReadReplicaConnection::class);
+        $connection->expects(self::once())->method('ensureConnectedToPrimary')->willReturnCallback(static function () use (&$primary): bool {
+            $primary = true;
+            return true;
+        });
+        $connection->expects(self::once())->method('fetchAssociative')->willReturnCallback(static function () use (&$primary, $key): array {
+            self::assertTrue($primary, 'A replica may still expose a superseded key.');
+            return ['value' => base64_encode($key), 'updated_at' => gmdate('Y-m-d') . ' 00:00:00'];
+        });
+        $connection->expects(self::never())->method('transactional');
+        $connection->expects(self::never())->method('executeStatement');
+
+        self::assertSame($key, (new DailyKey($connection))->current(gmdate('Y-m-d')));
+    }
+
+    public function testAnotherWorkerRotationIsReadAgainInsideTheLockedPath(): void
+    {
+        $today = new \DateTimeImmutable('today', new \DateTimeZone('UTC'));
+        $current = str_repeat('e', 32);
+        $connection = $this->createMock(Connection::class);
+        $connection->expects(self::exactly(2))->method('fetchAssociative')->willReturn(
+            ['value' => base64_encode(str_repeat('f', 32)), 'updated_at' => $today->modify('-1 day')->format('Y-m-d H:i:s')],
+            ['value' => base64_encode($current), 'updated_at' => $today->format('Y-m-d H:i:s')],
+        );
+        $connection->expects(self::once())->method('transactional')->willReturnCallback(static fn (callable $callback): mixed => $callback($connection));
+        $connection->expects(self::once())->method('executeStatement')->willReturn(0);
+
+        self::assertSame($current, (new DailyKey($connection))->current($today->format('Y-m-d')));
+    }
+
+    public function testOuterTransactionRetainsALockingReadInsteadOfUsingItsSnapshot(): void
+    {
+        $key = str_repeat('h', 32);
+        $connection = $this->createMock(Connection::class);
+        $connection->method('isTransactionActive')->willReturn(true);
+        $connection->expects(self::once())->method('transactional')->willReturnCallback(static fn (callable $callback): mixed => $callback($connection));
+        $connection->expects(self::once())->method('fetchAssociative')->willReturn(['value' => base64_encode($key), 'updated_at' => gmdate('Y-m-d') . ' 00:00:00']);
+        $connection->expects(self::once())->method('executeStatement')->willReturn(0);
+
+        self::assertSame($key, (new DailyKey($connection))->current(gmdate('Y-m-d')));
+    }
+
+    #[DataProvider('invalidKeys')]
+    public function testInvalidCurrentKeyFailsClosedWithoutReplacingIt(string $encoded): void
+    {
+        $connection = $this->createMock(Connection::class);
+        $connection->method('fetchAssociative')->willReturn(['value' => $encoded, 'updated_at' => gmdate('Y-m-d') . ' 00:00:00']);
+        $connection->expects(self::never())->method('transactional');
+        $connection->expects(self::never())->method('executeStatement');
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('invalid_hmac_key');
+
+        (new DailyKey($connection))->current(gmdate('Y-m-d'));
+    }
+
+    /** @return iterable<string, array{string}> */
+    public static function invalidKeys(): iterable
+    {
+        yield 'invalid base64' => ['!not-base64!'];
+        yield 'too short' => [base64_encode(str_repeat('g', 31))];
+        yield 'too long' => [base64_encode(str_repeat('g', 33))];
     }
 
     /** @param array{value: string, updated_at: string} $row */

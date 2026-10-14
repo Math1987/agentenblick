@@ -10,6 +10,8 @@ use Aithos\Agentenblick\Domain\Kind;
 use Aithos\Agentenblick\Heuristics\Candidate;
 use Aithos\Agentenblick\Heuristics\HeuristicSignals;
 use Aithos\Agentenblick\Heuristics\Settings;
+use Aithos\Agentenblick\Health\Observation;
+use Aithos\Agentenblick\Health\ProbeTokens;
 use Aithos\Agentenblick\Journey\Signals;
 use Aithos\Agentenblick\Persistence\DailyKey;
 use Aithos\Agentenblick\Persistence\ObservationStore;
@@ -31,6 +33,7 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
     private ?\DateTimeImmutable $at = null;
     private int $status = 0;
     private bool $sessionCookieOffered = false;
+    private bool $selfProbe = false;
 
     public function __construct(
         private readonly DailyKey $dailyKey,
@@ -42,6 +45,8 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
         private readonly SalesChannelResolver $salesChannels,
         private readonly Settings $heuristics,
         private readonly HeuristicSignals $heuristicSignals,
+        private readonly ProbeTokens $probeTokens,
+        private readonly Observation $health,
     ) {
     }
 
@@ -57,7 +62,7 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
         }
         // The outer kernel already captured the original incoming headers. Shopware
         // may subsequently inject a context token; it must not become visitor evidence.
-        if ($this->request === null && !$event->getRequest()->attributes->has('_sw_esi')) {
+        if ($this->request === null && !$this->selfProbe && !$event->getRequest()->attributes->has('_sw_esi')) {
             $this->begin($event->getRequest());
         }
     }
@@ -66,6 +71,10 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
     {
         $this->reset();
         try {
+            if ($request->headers->has(ProbeTokens::HEADER) && $this->probeTokens->consume($request)) {
+                $this->selfProbe = true;
+                return;
+            }
             if ((new ObservationScope())->accepts($request)) {
                 Signals::initialize($request);
                 $this->request = clone $request;
@@ -94,7 +103,7 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
         }
         $this->status = $status;
         $this->sessionCookieOffered = $sessionCookieOffered;
-        foreach (['_route', 'sw-sales-channel-id'] as $attribute) {
+        foreach (['_route', 'sw-sales-channel-id', 'sw-domain-id'] as $attribute) {
             if ($request->attributes->has($attribute)) {
                 $this->request->attributes->set($attribute, $request->attributes->get($attribute));
             }
@@ -126,12 +135,18 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
         if ($request === null || $at === null || $status === 0) {
             return;
         }
+        // terminate runs after the response was sent; only successful llms detail
+        // retains this lower bound for subsequent activity.
+        $request->attributes->set('_agentenblick_completed_at', (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->format('Y-m-d H:i:s.v'));
         try {
             $catalogue = $this->catalogues->load();
             $this->salesChannels->resolve($request);
             $key = $this->dailyKey->current($at->format('Y-m-d'));
             try {
                 $classification = $this->classifier->classify($request, $catalogue, hash_hmac('sha256', "ip\0" . ($request->getClientIp() ?? ''), $key), $at->getTimestamp());
+                if ($classification->isNonHuman()) {
+                    $this->health->prepare($request);
+                }
                 $signatureContext = (new SafeSignatureContext())->capture($request, $catalogue, $classification);
                 $row = (new Minimizer())->minimize($request, $classification, $key, $at, $status, $signatureContext);
                 $candidate = null;
@@ -142,11 +157,15 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
                         $facts['cookiePresent'],
                         $sessionCookieOffered,
                         fn (): array => $this->heuristics->context(),
-                        fn (): array => (new Minimizer())->minimize($request, new Classification('unknown', 'unknown', Kind::AutomationUnknown, Evidence::Suspected, 'heuristic_threshold'), $key, $at, $status),
+                        function () use ($request, $key, $at, $status): array {
+                            $this->health->prepare($request);
+                            return (new Minimizer())->minimize($request, new Classification('unknown', 'unknown', Kind::AutomationUnknown, Evidence::Suspected, 'heuristic_threshold'), $key, $at, $status);
+                        },
                     );
                 }
-                $this->store->record($row, $candidate);
+                $committed = $this->store->record($row, $candidate);
                 unset($candidate);
+                $this->health->record($request, $committed);
             } finally {
                 sodium_memzero($key);
             }
@@ -162,6 +181,7 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
         $this->at = null;
         $this->status = 0;
         $this->sessionCookieOffered = false;
+        $this->selfProbe = false;
     }
 
     public static function offersSessionCookie(Response $response): bool

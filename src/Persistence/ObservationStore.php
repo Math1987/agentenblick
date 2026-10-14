@@ -19,8 +19,10 @@ final class ObservationStore
     {
     }
 
-    /** @param array<string, mixed> $row */
-    public function record(array $row, ?Candidate $candidate = null): void
+    /** @param array<string, mixed> $row
+     * @return array<string, mixed> The committed minimized observation, never raw input.
+     */
+    public function record(array $row, ?Candidate $candidate = null): array
     {
         if ($this->connection instanceof PrimaryReadReplicaConnection) {
             $this->connection->ensureConnectedToPrimary();
@@ -30,7 +32,7 @@ final class ObservationStore
             throw new \RuntimeException('session_lock_busy');
         }
         try {
-            $this->connection->transactional(function (Connection $connection) use ($row, $candidate): void {
+            return $this->connection->transactional(function (Connection $connection) use ($row, $candidate): array {
                 $observedAt = new \DateTimeImmutable($row['observed_at'], new \DateTimeZone('UTC'));
                 $cutoff = $observedAt->modify('-30 minutes')->format('Y-m-d H:i:s.v');
                 $upper = $observedAt->modify('+30 minutes')->format('Y-m-d H:i:s.v');
@@ -50,7 +52,7 @@ final class ObservationStore
                 $row['failure_mask'] = $human ? 0 : ((int) ($row['failure_mask'] ?? 0) & 4095);
                 $row['known_mask'] = $human ? 0 : ((int) ($row['known_mask'] ?? 0) & 127);
                 $row['order_id'] = !$human && is_string($row['order_id'] ?? null) && strlen($row['order_id']) === 16 ? $row['order_id'] : null;
-                $row += ['heuristic_score' => 0, 'heuristic_flags' => 0, 'heuristic_version' => '', 'heuristic_threshold' => 0, 'heuristic_epoch' => ''];
+                $row += ['discovery_resource' => '', 'heuristic_score' => 0, 'heuristic_flags' => 0, 'heuristic_version' => '', 'heuristic_threshold' => 0, 'heuristic_epoch' => ''];
                 if ($new) {
                     $connection->insert('agentenblick_session', [
                         'id' => $sessionId, 'session_key' => $row['session_key'], 'key_day' => $row['day'],
@@ -68,8 +70,11 @@ final class ObservationStore
                     $ranks = ['none' => 0, 'suspected' => 1, 'declared_unverified' => 2, 'verified_rdns' => 3, 'verified_ip' => 4, 'verified_signature' => 5];
                     $evidence = ($ranks[$row['evidence']] ?? 0) > ($ranks[$session['evidence']] ?? 0) ? $row['evidence'] : $session['evidence'];
                     $firstSeen = min($session['first_seen'], $row['observed_at']);
-                    $connection->executeStatement('UPDATE agentenblick_session SET first_seen = LEAST(first_seen, ?), last_seen = GREATEST(last_seen, ?), requests = requests + 1, evidence = ? WHERE id = ?', [$row['observed_at'], $row['observed_at'], $evidence, $sessionId]);
                     $changes = [
+                        'first_seen' => $firstSeen,
+                        'last_seen' => max($session['last_seen'], $row['observed_at']),
+                        'requests' => (int) $session['requests'] + 1,
+                        'evidence' => $evidence,
                         'steps_mask' => (int) $session['steps_mask'] | ($stage?->bit() ?? 0),
                         'failures_mask' => (int) $session['failures_mask'] | $row['failure_mask'],
                         'known_mask' => (int) $session['known_mask'] | $row['known_mask'],
@@ -99,7 +104,12 @@ final class ObservationStore
                     if ($session['kind'] !== Kind::HumanOrUnknown->value || $session['heuristic_epoch'] !== '') {
                         AggregateCorrection::move($connection, 'sessions', $from, array_replace($from, ['day' => substr($firstSeen, 0, 10), 'evidence' => $evidence], $changes));
                     }
-                    $updated = $connection->fetchAssociative('SELECT * FROM agentenblick_session WHERE id = ?', [$sessionId]);
+                    // Dimension corrections can reconcile an existing closed
+                    // contribution. Read it back in that case; an open session
+                    // without a contribution still has exactly our locked values.
+                    $updated = $session['closed_at'] !== null || $session['contribution'] !== null
+                        ? $connection->fetchAssociative('SELECT * FROM agentenblick_session WHERE id = ?', [$sessionId])
+                        : array_replace($session, $changes);
                     if ($updated !== false) {
                         JourneyContribution::reconcile($connection, $updated);
                     }
@@ -115,6 +125,7 @@ final class ObservationStore
                     'INSERT INTO agentenblick_daily (day, sales_channel_id, operator, agent, kind, evidence, browser_family, requests, sessions) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?) ON DUPLICATE KEY UPDATE requests = requests + 1, sessions = sessions + VALUES(sessions)',
                     [$row['day'], $row['sales_channel_id'], $row['operator'], $row['agent'], $row['kind'], $row['evidence'], $row['browser_family'] ?? '', $new ? 1 : 0],
                 );
+                return $row;
             });
         } finally {
             $this->connection->fetchOne('SELECT RELEASE_LOCK(?)', [$lock]);

@@ -1,0 +1,96 @@
+<div class="agentenblick-health">
+    <agentenblick-banner v-if="!canView" variant="critical">{{ $t('agentenblick.errors.permission') }}</agentenblick-banner>
+    <agentenblick-card v-if="canView" position-identifier="agentenblick-health-control" :title="$t('agentenblick.health.title')">
+        <p>{{ $t('agentenblick.health.description') }}</p>
+        <agentenblick-banner v-if="offline" variant="attention">{{ $t('agentenblick.health.offline') }}</agentenblick-banner>
+        <agentenblick-banner v-if="loadFailed" variant="critical">{{ $t('agentenblick.health.loadFailed') }}</agentenblick-banner>
+        <agentenblick-banner v-if="probeFailed" variant="critical">{{ $t('agentenblick.health.probeFailed') }}</agentenblick-banner>
+        <div v-if="loading" role="status">{{ $t('agentenblick.health.loading') }}</div>
+        <template v-if="health && canView">
+            <div class="agentenblick-health__controls">
+                <label for="agentenblick-health-domain">{{ $t('agentenblick.health.domain') }}</label>
+                <select id="agentenblick-health-domain" :value="selectedDomainId" :disabled="loading || probing || !domains.length" @change="changeDomain($event.target.value)">
+                    <option v-for="domain in domains" :key="domain.id" :value="domain.id">{{ domain.url }}{{ domain.eligible === true ? '' : ' — ' + $t('agentenblick.health.ineligible') }}</option>
+                </select>
+                <agentenblick-button :disabled="loading || probing || !canView" @click="load">{{ $t('agentenblick.health.refreshStored') }}</agentenblick-button>
+            </div>
+            <p v-if="selectedDomain && selectedDomain.eligible !== true" class="agentenblick-health__hint">{{ $t('agentenblick.health.ineligibleDomain') }} {{ label('health.reason', selectedDomain.reasonCode) }}</p>
+            <p v-if="!domains.length" class="agentenblick-health__hint">{{ $t('agentenblick.health.noDomain') }}</p>
+            <p class="agentenblick-health__hint">{{ $t('agentenblick.health.lastChecked') }}: {{ date(snapshot?.checkedAt) }}</p>
+            <div class="agentenblick-health__probe">
+                <p>{{ $t('agentenblick.health.networkNotice') }}</p>
+                <label class="agentenblick-health__checkbox"><input v-model="autoTest" type="checkbox" :disabled="!canProbe"> {{ $t('agentenblick.health.autoTest') }}</label>
+                <p class="agentenblick-health__hint">{{ $t('agentenblick.health.serverIpNotice') }}</p>
+                <agentenblick-button variant="primary" :disabled="!canProbe" :is-loading="probing" @click="probe">{{ $t('agentenblick.health.probe') }}</agentenblick-button>
+                <p v-if="!canEdit" class="agentenblick-health__hint">{{ $t('agentenblick.health.editorRequired') }}</p>
+                <p v-if="probing" role="status">{{ $t('agentenblick.health.probing') }}</p>
+            </div>
+        </template>
+    </agentenblick-card>
+
+    <template v-if="health && canView">
+        <agentenblick-card position-identifier="agentenblick-health-resources" :title="$t('agentenblick.health.resources')">
+            <agentenblick-banner v-if="snapshot?.stale" variant="attention">{{ $t('agentenblick.health.staleSnapshot') }}</agentenblick-banner>
+            <p v-if="!snapshot">{{ $t('agentenblick.health.noSnapshot') }}</p>
+            <p class="agentenblick-health__hint">{{ $t('agentenblick.health.resourceHint') }}</p>
+            <div v-if="resources.length" class="agentenblick-health__table-scroll">
+                <table><caption class="agentenblick-health__sr-only">{{ $t('agentenblick.health.resources') }}</caption>
+                    <thead><tr><th>{{ $t('agentenblick.health.resource') }}</th><th>{{ $t('agentenblick.health.stateLabel') }}</th><th>HTTP</th><th>{{ $t('agentenblick.health.detail') }}</th></tr></thead>
+                    <tbody><tr v-for="resource in resources" :key="resource.key">
+                        <td>{{ label('health.resourceName', resource.key) }}<code>{{ resource.url }}</code></td>
+                        <td><span class="agentenblick-health__state" :class="stateClass(resource)">{{ label('health.state', state(resource)) }}</span></td>
+                        <td>{{ probeMethod(resource.probeMethod) }} {{ statusCode(resource.statusCode) }}</td>
+                        <td>{{ resource.reasonCode ? label('health.reason', resource.reasonCode) : '—' }}</td>
+                    </tr></tbody>
+                </table>
+            </div>
+        </agentenblick-card>
+
+        <agentenblick-card position-identifier="agentenblick-health-robots" :title="$t('agentenblick.health.robotsTitle')">
+            <p class="agentenblick-health__hint">{{ $t('agentenblick.health.robotsHint') }}</p>
+            <details v-if="publicRules" class="agentenblick-health__policy">
+                <summary>{{ $t('agentenblick.health.publicRules') }}</summary>
+                <pre>{{ publicRules }}</pre>
+            </details>
+            <p v-if="snapshot?.robots?.reasonCode">{{ label('health.reason', snapshot.robots.reasonCode) }}</p>
+            <p v-if="!rules.length">{{ $t('agentenblick.health.robotsUnknown') }}</p>
+            <div v-else class="agentenblick-health__table-scroll"><table>
+                <thead><tr><th>{{ $t('agentenblick.table.agent') }}</th><th>{{ $t('agentenblick.health.path') }}</th><th>{{ $t('agentenblick.health.decisionLabel') }}</th><th>{{ $t('agentenblick.health.rule') }}</th></tr></thead>
+                <tbody><tr v-for="(rule, index) in rules" :key="`${rule.agent}-${index}`">
+                    <td>{{ rule.agent }}<p v-if="rule.robotsOnly" class="agentenblick-health__hint">{{ $t('agentenblick.health.robotsOnly') }}</p></td><td><code>{{ rule.path }}</code></td><td>{{ label('health.decision', decision(rule)) }}</td>
+                    <td><code v-if="rule.matchedRule">{{ rule.matchedRule }}</code><span v-else>{{ rule.reasonCode ? label('health.reason', rule.reasonCode) : '—' }}</span></td>
+                </tr></tbody>
+            </table></div>
+        </agentenblick-card>
+
+        <agentenblick-card position-identifier="agentenblick-health-findings" :title="$t('agentenblick.health.findingsTitle')">
+            <p class="agentenblick-health__hint">{{ $t('agentenblick.health.findingsHint') }}</p>
+            <p v-if="health.findingsTruncated" class="agentenblick-health__hint">{{ $t('agentenblick.health.findingsTruncated') }}</p>
+            <p v-if="!findings.length">{{ $t('agentenblick.health.noFindings') }}</p>
+            <agentenblick-banner v-for="(finding, index) in findings" :key="`${finding.code}-${index}`" :variant="findingVariant(finding.severity)">
+                <strong>{{ label('health.finding', finding.code) }}</strong>
+                <p>{{ label('health.action', finding.code) }}</p>
+                <p v-if="finding.agent">{{ $t('agentenblick.table.agent') }}: {{ finding.agent }} · <span class="agentenblick-proof" :class="{ 'agentenblick-proof--verified': isVerified(finding.evidence), 'agentenblick-proof--suspected': finding.evidence === 'suspected' }">{{ label('evidence', finding.evidence) }}</span></p>
+                <p v-if="finding.route"><code>{{ finding.route }}</code> · HTTP {{ statusCode(finding.statusCode) }} · {{ $t('agentenblick.table.requests') }}: {{ count(finding.requests) }}</p>
+                <p v-if="finding.rule"><span>{{ $t('agentenblick.health.rule') }}: </span><code>{{ finding.rule }}</code></p>
+                <p v-if="finding.snapshotAt">{{ $t('agentenblick.health.ruleSnapshot') }}: {{ date(finding.snapshotAt) }}</p>
+            </agentenblick-banner>
+        </agentenblick-card>
+
+        <agentenblick-card position-identifier="agentenblick-health-llms" :title="$t('agentenblick.health.afterLlmsTitle')">
+            <p class="agentenblick-health__hint">{{ $t('agentenblick.health.afterLlmsHint') }}</p>
+            <div class="agentenblick-health__metrics"><p>{{ $t('agentenblick.health.readLlms') }}: <strong>{{ count(afterLlms?.sessionsReadLlms) }}</strong></p><p>{{ $t('agentenblick.health.laterRequests') }}: <strong>{{ count(afterLlms?.sessionsWithLaterRequests) }}</strong></p></div>
+            <div v-if="laterSteps.length" class="agentenblick-health__table-scroll"><table>
+                <thead><tr><th>{{ $t('agentenblick.journey.observedSteps') }}</th><th>{{ $t('agentenblick.table.sessions') }}</th></tr></thead>
+                <tbody><tr v-for="step in laterSteps" :key="step.stage"><td>{{ label('journey.stage', step.stage) }}</td><td>{{ count(step.sessions) }}</td></tr></tbody>
+            </table></div>
+        </agentenblick-card>
+
+        <agentenblick-card v-if="autoTests.length" position-identifier="agentenblick-health-autotest" :title="$t('agentenblick.health.autoTestTitle')">
+            <p>{{ $t('agentenblick.health.serverIpNotice') }}</p>
+            <div class="agentenblick-health__table-scroll"><table><thead><tr><th>User-Agent</th><th>HTTP</th><th>{{ $t('agentenblick.health.detail') }}</th></tr></thead>
+                <tbody><tr v-for="test in autoTests" :key="test.agent"><td>{{ test.agent }}</td><td>{{ statusCode(test.statusCode) }}</td><td>{{ test.reasonCode ? label('health.reason', test.reasonCode) : '—' }}</td></tr></tbody>
+            </table></div>
+        </agentenblick-card>
+    </template>
+</div>

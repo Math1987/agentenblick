@@ -1,0 +1,251 @@
+{
+  "startedAt": 1791982571.419584,
+  "passed": true,
+  "transportProof": "Real loopback HTTP via a test-only exact-origin mapper; unchanged PublicNetworkClient with public fixture DNS/IP. Public Internet DNS/TLS are not validated.",
+  "cleanup": {
+    "ownedChannelAndDomainRemoved": true,
+    "ownObservationsRemoved": true,
+    "configurationRestored": true,
+    "hostsAndVhostRemoved": true,
+    "existingRequestTotalsUnchanged": true
+  },
+  "probeObserved": {
+    "httpCalls": [
+      {
+        "method": "GET",
+        "path": "/robots.txt",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/llms.txt",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/llms-full.txt",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/agents.md",
+        "status": 404
+      },
+      {
+        "method": "GET",
+        "path": "/AGENTS.md",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/.well-known/ucp",
+        "status": 500
+      },
+      {
+        "method": "GET",
+        "path": "/.well-known/agent-card.json",
+        "status": 200
+      },
+      {
+        "method": "OPTIONS",
+        "path": "/store-api/_mcp",
+        "status": 200
+      },
+      {
+        "method": "GET",
+        "path": "/",
+        "status": 403
+      },
+      {
+        "method": "GET",
+        "path": "/",
+        "status": 429
+      },
+      {
+        "method": "GET",
+        "path": "/",
+        "status": 200
+      }
+    ],
+    "resources": [
+      {
+        "key": "robots",
+        "statusCode": 200,
+        "state": "available",
+        "reasonCode": "http_status",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "llms",
+        "statusCode": 200,
+        "state": "available",
+        "reasonCode": "http_status",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "llms_full",
+        "statusCode": 200,
+        "state": "available",
+        "reasonCode": "http_status",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "agents_md",
+        "statusCode": 404,
+        "state": "missing",
+        "reasonCode": "http_status",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "agents_md_upper",
+        "statusCode": 200,
+        "state": "available",
+        "reasonCode": "http_status",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "ucp",
+        "statusCode": 500,
+        "state": "error",
+        "reasonCode": "http_status",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "agent_card",
+        "statusCode": 200,
+        "state": "available",
+        "reasonCode": "http_status",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "mcp",
+        "statusCode": 200,
+        "state": "available",
+        "reasonCode": "http_status",
+        "probeMethod": "OPTIONS"
+      }
+    ]
+  },
+  "probe": {
+    "httpRequests": 11,
+    "resources": [
+      {
+        "key": "robots",
+        "statusCode": 200,
+        "state": "available",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "llms",
+        "statusCode": 200,
+        "state": "available",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "llms_full",
+        "statusCode": 200,
+        "state": "available",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "agents_md",
+        "statusCode": 404,
+        "state": "missing",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "agents_md_upper",
+        "statusCode": 200,
+        "state": "available",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "ucp",
+        "statusCode": 500,
+        "state": "error",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "agent_card",
+        "statusCode": 200,
+        "state": "available",
+        "probeMethod": "GET"
+      },
+      {
+        "key": "mcp",
+        "statusCode": 200,
+        "state": "available",
+        "probeMethod": "OPTIONS"
+      }
+    ],
+    "autoTestStatuses": [
+      403,
+      429,
+      200
+    ],
+    "analyticsRequests": 0,
+    "analyticsSessions": 0,
+    "mcpProtocolValidated": false
+  },
+  "visitors": {
+    "requests": 7,
+    "sessions": 1,
+    "findings": {
+      "allowed_but_blocked": 2,
+      "disallowed_but_observed": 1,
+      "mcp_error": 1,
+      "ucp_error": 1
+    },
+    "afterLlms": {
+      "sessionsReadLlms": 1,
+      "sessionsWithLaterRequests": 1,
+      "steps": [
+        {
+          "stage": "discover",
+          "sessions": 0
+        },
+        {
+          "stage": "browse",
+          "sessions": 0
+        },
+        {
+          "stage": "search",
+          "sessions": 1
+        },
+        {
+          "stage": "product",
+          "sessions": 0
+        },
+        {
+          "stage": "cart",
+          "sessions": 0
+        },
+        {
+          "stage": "checkout",
+          "sessions": 0
+        },
+        {
+          "stage": "order",
+          "sessions": 0
+        }
+      ],
+      "definition": "Observed requests after a successful llms.txt or llms-full.txt response; reading and causation are not inferred."
+    }
+  },
+  "oneUseExclusion": {
+    "validExcluded": 1,
+    "replayCaptured": 1,
+    "fixedHeaderCaptured": 1
+  },
+  "minimization": {
+    "columnsScanned": 44,
+    "forbiddenMarkerMatches": 0
+  },
+  "offline": {
+    "explicitProbeStatus": 503,
+    "savedApiStatus": 200,
+    "savedCli": true,
+    "additionalFixtureHttpRequests": 0
+  },
+  "finishedAt": 1791982595.022357
+}

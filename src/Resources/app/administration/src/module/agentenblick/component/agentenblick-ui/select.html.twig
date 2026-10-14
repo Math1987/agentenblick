@@ -1,0 +1,2 @@
+<mt-select v-if="meteorAvailable" v-bind="$attrs" :model-value="modelValue" :options="options" :label="label" :name="name" :disabled="disabled" :hide-clearable-button="hideClearableButton" @update:model-value="updateValue" />
+<sw-single-select v-else v-bind="$attrs" :value="modelValue" :options="options" :label="label" :name="name" :disabled="disabled" :show-clearable-button="!hideClearableButton" @update:value="updateValue" />

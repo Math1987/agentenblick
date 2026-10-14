@@ -49,7 +49,7 @@ final class PersistenceTest extends TestCase
         $this->oldCatalogue = $_SERVER['AGENTENBLICK_TEST_CATALOG'] ?? null;
         $params = (new DsnParser(['mysql' => 'pdo_mysql']))->parse('mysql://root:root@127.0.0.1/shopware');
         $this->connection = DriverManager::getConnection($params);
-        foreach (['request', 'session', 'daily', 'journey_daily', 'state', 'key_cache', 'ip_ranges'] as $name) {
+        foreach (['health_snapshot', 'health_daily', 'request', 'session', 'daily', 'journey_daily', 'state', 'key_cache', 'ip_ranges'] as $name) {
             $table = 'agentenblick_' . $name;
             $definition = $this->connection->fetchAssociative('SHOW CREATE TABLE ' . $table);
             self::assertNotFalse($definition);

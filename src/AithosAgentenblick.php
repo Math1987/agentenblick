@@ -33,11 +33,20 @@ final class AithosAgentenblick extends Plugin
         if (!$connection instanceof Connection) {
             throw new \LogicException('Database connection unavailable during uninstall.');
         }
-        foreach (['request', 'session', 'daily', 'journey_daily', 'ip_ranges', 'key_cache', 'state', 'benchmark_draft'] as $table) {
+        foreach (['health_snapshot', 'health_daily', 'request', 'session', 'daily', 'journey_daily', 'ip_ranges', 'key_cache', 'state', 'benchmark_draft'] as $table) {
             $connection->executeStatement('DROP TABLE IF EXISTS agentenblick_' . $table);
         }
         // Core only removes keys declared in config.xml; internal encrypted state
         // must also disappear when the user explicitly requests data deletion.
         $connection->executeStatement("DELETE FROM system_config WHERE configuration_key LIKE 'AithosAgentenblick.%'");
+        $project = $this->container->getParameter('kernel.project_dir');
+        if (is_string($project)) {
+            foreach (['/var/log/agentenblick/errors.json', '/var/agentenblick/errors.json'] as $suffix) {
+                $file = $project . $suffix;
+                if (is_file($file) && !unlink($file)) {
+                    throw new \RuntimeException('Unable to remove Agentenblick local failure counters.');
+                }
+            }
+        }
     }
 }

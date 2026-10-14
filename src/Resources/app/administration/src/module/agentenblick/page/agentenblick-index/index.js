@@ -25,13 +25,14 @@ Component.register('agentenblick-index', {
             isExporting: false,
             isApproving: false,
             heuristicSaving: false,
+            healthProbing: false,
             requestSequence: 0,
         };
     },
 
     computed: {
         tabs() {
-            return ['overview', 'agents', 'funnel', 'journeys', 'failures', 'benchmark'];
+            return ['overview', 'agents', 'funnel', 'journeys', 'failures', 'health', 'benchmark'];
         },
         isJourneyTab() {
             return ['funnel', 'journeys', 'failures'].includes(this.activeTab);
@@ -130,7 +131,7 @@ Component.register('agentenblick-index', {
             }
         },
         onDaysChange(value) {
-            if (this.heuristicSaving) return;
+            if (this.heuristicSaving || this.healthProbing) return;
             const days = Number(value);
             if (![7, 30].includes(days) || days === this.days) {
                 return;
@@ -140,7 +141,7 @@ Component.register('agentenblick-index', {
             this.loadData();
         },
         onChannelChange(value) {
-            if (this.heuristicSaving) return;
+            if (this.heuristicSaving || this.healthProbing) return;
             if ((value || '') === this.salesChannelId) {
                 return;
             }
@@ -157,7 +158,7 @@ Component.register('agentenblick-index', {
             this.loadData();
         },
         selectTab(tab, focus = false) {
-            if (this.heuristicSaving || !this.tabs.includes(tab)) return;
+            if (this.heuristicSaving || this.healthProbing || !this.tabs.includes(tab)) return;
             this.activeTab = tab;
             if (focus) {
                 this.$nextTick(() => {
@@ -170,8 +171,9 @@ Component.register('agentenblick-index', {
             this.selectTab(this.tabs[(this.tabs.indexOf(this.activeTab) + delta + this.tabs.length) % this.tabs.length], true);
         },
         refreshVisible() {
-            if (this.heuristicSaving) return;
-            if (this.isJourneyTab) this.$refs.journey?.load();
+            if (this.heuristicSaving || this.healthProbing) return;
+            if (this.activeTab === 'health') this.$refs.health?.load();
+            else if (this.isJourneyTab) this.$refs.journey?.load();
             else this.loadData();
         },
         formatNumber(value) {

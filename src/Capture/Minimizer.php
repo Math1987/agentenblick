@@ -7,6 +7,7 @@ namespace Aithos\Agentenblick\Capture;
 use Aithos\Agentenblick\Domain\Classification;
 use Aithos\Agentenblick\Domain\Evidence;
 use Aithos\Agentenblick\Journey\Signals;
+use Aithos\Agentenblick\Health\Observation;
 use Symfony\Component\HttpFoundation\Request;
 
 final class Minimizer
@@ -43,6 +44,11 @@ final class Minimizer
         }
         $channel = $request->attributes->get('sw-sales-channel-id', 'unassigned');
         $channel = is_string($channel) && preg_match('/^[a-f0-9]{32}$/', $channel) ? $channel : 'unassigned';
+        $domain = $request->attributes->get('sw-domain-id');
+        $domain = $classification->isNonHuman() && is_string($domain) && preg_match('/^[a-f0-9]{32}$/D', $domain) ? hex2bin($domain) : null;
+        $resource = $classification->isNonHuman() ? Observation::resource($request) : '';
+        $completed = $request->attributes->get('_agentenblick_completed_at');
+        $completed = in_array($resource, ['llms', 'llms_full'], true) && $status >= 200 && $status < 300 && is_string($completed) ? $completed : null;
         $sessionKey = $hmac('session', $identity . "\0" . $channel);
         $row = [
             'observed_at' => $at->format('Y-m-d H:i:s.v'), 'day' => $at->format('Y-m-d'),
@@ -54,6 +60,8 @@ final class Minimizer
             'method' => substr($request->getMethod(), 0, 10), 'ip_hmac' => $ipHash,
             'user_agent' => $classification->isNonHuman() ? $userAgent : '',
             'browser_family' => $classification->isNonHuman() ? '' : BrowserFamily::fromUserAgent($userAgent),
+            'domain_id' => $domain,
+            'discovery_resource' => $resource, 'discovery_completed_at' => $completed,
             'network_prefix' => null, 'signature_input' => null,
             'signature_value' => null, 'signature_agent' => null, 'key_id' => $classification->keyId,
             'pending_context' => null, 'verify_after' => null, 'verify_attempts' => 0,

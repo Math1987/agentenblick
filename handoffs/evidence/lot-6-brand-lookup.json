@@ -1,0 +1,34 @@
+{
+  "checkedOn": "2026-10-14",
+  "term": "Agentenblick",
+  "readOnly": true,
+  "dpma": {
+    "source": "DPMAregister",
+    "url": "https://register.dpma.de/DPMAregister/marke/basis",
+    "method": "Public basic-search form submitted over HTTPS, without an account",
+    "field": "Marke",
+    "submittedValue": "Agentenblick",
+    "queryReportedByRegister": "(marke=\"Agentenblick\")",
+    "selectedDatabases": [
+      "nationale Marken",
+      "Unionsmarken",
+      "internationale Marken"
+    ],
+    "httpStatus": 200,
+    "result": "no_results_returned",
+    "message": "Die Datenbankabfrage lieferte keine Treffer.",
+    "persistentResultUrlAvailable": false
+  },
+  "euipo": {
+    "source": "EUIPO eSearch plus",
+    "url": "https://euipo.europa.eu/eSearch/",
+    "result": "inconclusive",
+    "limitation": "The available web tool exposed the JavaScript application's surrounding page, without an executable search or a result list. No independent EUIPO zero-result finding is claimed."
+  },
+  "limitations": {
+    "officialGuidanceUrl": "https://www.dpma.de/marken/markenrecherche/",
+    "dpmaUnionAndInternationalData": "DPMA states that it does not guarantee the accuracy or completeness of Union and international trademark data and refers users to EUIPO and WIPO for complete searches and current legal status.",
+    "scope": "This records the observed result for the exact submitted term on the consultation date. It is not a similarity search or a legal availability determination.",
+    "legalAvailabilityEstablished": false
+  }
+}

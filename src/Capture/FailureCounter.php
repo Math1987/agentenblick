@@ -16,7 +16,7 @@ final class FailureCounter
     {
         // Never log exception messages, SQL, request input, tokens or stack arguments.
         try {
-            $directory = $this->projectDir . '/var/agentenblick';
+            $directory = $this->projectDir . '/var/log/agentenblick';
             if (!is_dir($directory) && !@mkdir($directory, 0700, true) && !is_dir($directory)) {
                 return;
             }

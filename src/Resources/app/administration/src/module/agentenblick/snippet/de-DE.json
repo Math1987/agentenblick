@@ -23,7 +23,8 @@
       "benchmark": "Benchmark",
       "funnel": "Trichter",
       "journeys": "Verläufe",
-      "failures": "Fehler"
+      "failures": "Fehler",
+      "health": "Zugriff"
     },
     "filters": {
       "period": "Zeitraum",
@@ -363,6 +364,108 @@
         "cookie_ignored": "Erwartetes Sitzungscookie über mehrere Beobachtungen nicht zurückgesendet"
       },
       "appliedThreshold": "Angewandter Schwellenwert"
+    },
+    "health": {
+      "title": "KI-Zugriff prüfen",
+      "description": "Gespeicherte Prüfungen öffentlicher Endpunkte mit lokal beobachteten Anfragen vergleichen. Beim Öffnen oder Aktualisieren dieser Ansicht wird die öffentliche Shop-Website nicht kontaktiert.",
+      "offline": "Der Offline-Modus ist aktiv. Gespeicherte Ergebnisse bleiben verfügbar; öffentliche Prüfungen sind deaktiviert.",
+      "loadFailed": "Gespeicherte Prüfergebnisse konnten nicht geladen werden. Weiterhin angezeigte Ergebnisse stammen vom letzten erfolgreichen Laden.",
+      "probeFailed": "Die öffentliche Prüfung wurde nicht abgeschlossen. Frühere Ergebnisse bestätigen nicht den aktuellen Zustand des Shops.",
+      "loading": "Gespeicherte Prüfergebnisse werden geladen…",
+      "domain": "Konfigurierte öffentliche Domain",
+      "refreshStored": "Gespeicherte Ergebnisse aktualisieren",
+      "noDomain": "Für diese Auswahl ist keine geeignete öffentliche HTTPS-Domain konfiguriert.",
+      "lastChecked": "Letzte öffentliche Prüfung (UTC)",
+      "networkNotice": "Diese Schaltfläche sendet begrenzte Anfragen von diesem Server an die ausgewählte öffentliche Domain. Sie können das CDN oder die Firewall durchlaufen. Endpunkte und Shop-Konfiguration werden nicht geändert.",
+      "autoTest": "Startseite zusätzlich als GPTBot, ClaudeBot und ChatGPT-User prüfen",
+      "serverIpNotice": "Die Anfragen stammen von der IP-Adresse dieses Servers, nicht von den IP-Adressen der Betreiber. Geprüft werden Antworten auf den angegebenen User-Agent; der Zugriff eines verifizierten Betreibers wird damit nicht nachgewiesen.",
+      "probe": "Öffentliche Endpunkte prüfen",
+      "probing": "Öffentliche Endpunkte werden geprüft…",
+      "editorRequired": "Öffentliche Prüfungen erfordern Bearbeitungsrechte.",
+      "resources": "Antworten öffentlicher Endpunkte",
+      "resource": "Endpunkt",
+      "stateLabel": "Beobachteter Zustand",
+      "detail": "Einzelheiten",
+      "unknown": "Unbekannt",
+      "noSnapshot": "Noch keine öffentliche Prüfung gespeichert. Die Verfügbarkeit der Endpunkte bleibt unbekannt.",
+      "resourceHint": "Der HTTP-Status gilt für diese Prüfung zum angegebenen Zeitpunkt. Ein fehlender optionaler Endpunkt ist kein Shop-Ausfall. Eine MCP-OPTIONS-Antwort bestätigt keinen vollständigen MCP-Austausch.",
+      "resourceName": {
+        "robots": "robots.txt",
+        "llms": "llms.txt",
+        "llms_full": "llms-full.txt",
+        "agents_md": "agents.md",
+        "agents_md_upper": "AGENTS.md",
+        "ucp": "UCP-Discovery",
+        "agent_card": "Agentenkarte",
+        "mcp": "MCP-Endpunkt"
+      },
+      "state": {
+        "available": "Antwort erhalten",
+        "missing": "Nicht gefunden",
+        "blocked": "Zugriff verweigert",
+        "error": "Fehlerantwort",
+        "unknown": "Unbekannt"
+      },
+      "robotsTitle": "robots.txt-Regeln",
+      "robotsHint": "Jede Entscheidung gilt nur für den angezeigten Pfad und die gespeicherte robots.txt-Version, nicht pauschal für alle URLs. robots.txt beschreibt Regeln und erzwingt keine Zugriffskontrolle.",
+      "robotsUnknown": "Keine auswertbare Regelentscheidung gespeichert. Fehlende Daten belegen weder Erlaubnis noch Verbot.",
+      "path": "Geprüfter Pfad",
+      "decisionLabel": "Regelentscheidung",
+      "decision": {
+        "allow": "Für diesen Pfad erlaubt",
+        "disallow": "Für diesen Pfad untersagt",
+        "unknown": "Unbekannt"
+      },
+      "rule": "Zugehörige Regel",
+      "ruleSnapshot": "Neuester passender Regelstand (UTC)",
+      "findingsTitle": "Regeln und beobachtetes Verhalten",
+      "findingsHint": "Befunde betreffen beobachtete PHP-Anfragen, die anhand einer gespeicherten Regelversion bewertet wurden. Frühere Anfragen ohne diesen Kontext bleiben unbekannt. Die Nachweisstufe unterscheidet eine verifizierte Identität von einer Selbstauskunft oder einem Verdacht.",
+      "noFindings": "Für diese Auswahl ist kein Widerspruch erfasst. Daraus folgen weder uneingeschränkter Zugriff noch vollständige Beobachtung.",
+      "finding": {
+        "ucp_error": "Ein UCP-Endpunkt antwortete mit einem Fehler",
+        "mcp_error": "Ein MCP-Endpunkt antwortete mit einem Fehler",
+        "allowed_but_blocked": "Ein erlaubter Agent erhielt HTTP 403 oder 429",
+        "disallowed_but_observed": "Trotz passender Disallow-Regel wurden Anfragen beobachtet"
+      },
+      "action": {
+        "ucp_error": "UCP-Konfiguration und Serverprotokolle für die erfasste Route und den Status prüfen.",
+        "mcp_error": "MCP-Konfiguration und Authentifizierungsanforderungen prüfen. Eine HTTP-Prüfung allein bestätigt keine Protokollkompatibilität.",
+        "allowed_but_blocked": "Zugehörige CDN- oder Firewall-Regel und Ratenbegrenzung prüfen. Vor einer Betreiber-Ausnahme die Nachweisstufe kontrollieren.",
+        "disallowed_but_observed": "Regel und Nachweis der Anfrage prüfen. robots.txt verhindert keine Anfragen; Zugriffsbeschränkungen benötigen eine Server- oder Firewall-Regel."
+      },
+      "reason": {
+        "http_status": "Erfasste HTTP-Antwort",
+        "network_unreachable": "Keine Netzwerkantwort",
+        "response_too_large": "Antwort überschreitet das Prüflimit",
+        "redirect_limit": "Weiterleitungslimit erreicht",
+        "invalid_redirect": "Ungültiges Weiterleitungsziel",
+        "public_https_required": "Eine öffentliche HTTPS-Adresse ist erforderlich",
+        "budget_exhausted": "Prüfbudget aufgebraucht",
+        "redirect_not_followed": "Weiterleitung nicht verfolgt; Regeln bleiben unbekannt",
+        "unexpected_content_type": "Unerwarteter Inhaltstyp; Dokumentformat nicht bestätigt",
+        "robots_rule_match": "Passende robots.txt-Regel",
+        "robots_missing_allow": "Keine robots.txt erhalten (HTTP 4xx); RFC 9309 erlaubt Zugriff",
+        "robots_unreachable_disallow": "robots.txt nicht erreichbar; RFC 9309 behandelt Zugriff als untersagt",
+        "robots_snapshot_stale": "Gespeicherte Regeln sind für diese Anfrage zu alt",
+        "robots_unavailable": "robots.txt konnte nicht ausgewertet werden",
+        "robots_unsupported_document": "Dokumentformat nicht auswertbar",
+        "robots_policy_limit": "Regeln überschreiten das Auswertungslimit",
+        "robots_match_limit": "Limit für den Regelabgleich erreicht",
+        "offline": "Offline-Modus; keine Anfrage gesendet",
+        "robots_default_allow": "Keine passende Einschränkung für diesen Pfad",
+        "robots_implicit_allow": "Implizite Erlaubnis gemäß robots.txt-Regeln"
+      },
+      "afterLlmsTitle": "Nach einer erfolgreichen llms.txt / llms-full.txt-Anfrage",
+      "afterLlmsHint": "Gezählt werden klassifizierte Sitzungen mit erfolgreicher llms.txt / llms-full.txt-Anfrage und später gespeicherten Anfragen derselben Sitzung. Dies belegt weder das Lesen des Inhalts noch dessen Einfluss auf spätere Aktionen. Fehlende Schritte bleiben unbekannt; die Sitzungszuordnung kann wahrscheinlich statt exakt sein.",
+      "readLlms": "Sitzungen mit erfolgreicher llms.txt / llms-full.txt-Anfrage",
+      "laterRequests": "Sitzungen mit später beobachteten Anfragen",
+      "autoTestTitle": "Optionaler User-Agent-Test",
+      "ineligible": "Nicht öffentlich prüfbar",
+      "ineligibleDomain": "Diese konfigurierte Domain kann nicht über das öffentliche Netzwerk geprüft werden.",
+      "robotsOnly": "Nur Regel-Token; keine beobachtete Agentenidentität",
+      "staleSnapshot": "Diese gespeicherte Prüfung ist nicht mehr aktuell. Sie belegt weder die heutigen Regeln noch die aktuelle Verfügbarkeit der Endpunkte.",
+      "findingsTruncated": "Die 100 häufigsten Befunde werden angezeigt. Zeitraum oder Verkaufskanal eingrenzen, um eine kleinere Auswahl zu prüfen.",
+      "publicRules": "Öffentliche robots.txt-Regeln je Gruppe"
     }
   },
   "sw-privileges": {

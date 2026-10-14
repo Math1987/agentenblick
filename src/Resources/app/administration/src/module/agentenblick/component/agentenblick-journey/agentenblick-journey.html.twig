@@ -1,19 +1,19 @@
 <div class="agentenblick-journey">
     <p class="agentenblick-journey__intro">{{ $t('agentenblick.journey.description') }}</p>
-    <mt-banner v-if="!canView" variant="critical">{{ $t('agentenblick.errors.permission') }}</mt-banner>
+    <agentenblick-banner v-if="!canView" variant="critical">{{ $t('agentenblick.errors.permission') }}</agentenblick-banner>
     <div v-else-if="loading" class="agentenblick-index__loading" role="status">
         <sw-loader /><span class="agentenblick-index__sr-only">{{ $t('agentenblick.general.loading') }}</span>
     </div>
-    <mt-banner v-else-if="failed" variant="critical">
+    <agentenblick-banner v-else-if="failed" variant="critical">
         <p>{{ $t('agentenblick.journey.loadFailed') }}</p>
-        <mt-button @click="load">{{ $t('agentenblick.actions.retry') }}</mt-button>
-    </mt-banner>
+        <agentenblick-button @click="load">{{ $t('agentenblick.actions.retry') }}</agentenblick-button>
+    </agentenblick-banner>
     <template v-else-if="canView">
-        <mt-banner v-if="hasSuspected" class="agentenblick-journey__suspected-warning" variant="attention">{{ $t('agentenblick.heuristics.journeyWarning') }}</mt-banner>
+        <agentenblick-banner v-if="hasSuspected" class="agentenblick-journey__suspected-warning" variant="attention">{{ $t('agentenblick.heuristics.journeyWarning') }}</agentenblick-banner>
         <template v-if="mode === 'funnel' && summary">
             <p class="agentenblick-journey__hint">{{ $t('agentenblick.journey.funnelHint') }}</p>
             <p class="agentenblick-journey__counts">{{ $t('agentenblick.journey.sessionCounts', { closed: count(summary.closedSessions), open: count(summary.openSessions) }) }}</p>
-            <mt-card v-for="group in proofGroups" :key="group.key" :position-identifier="`agentenblick-funnel-${group.key}`" :title="label('journey.proofGroup', group.key)">
+            <agentenblick-card v-for="group in proofGroups" :key="group.key" :position-identifier="`agentenblick-funnel-${group.key}`" :title="label('journey.proofGroup', group.key)">
                 <p class="agentenblick-journey__hint">{{ label('journey.proofHint', group.key) }}</p>
                 <div class="agentenblick-journey__proof-grid">
                     <section v-for="row in group.rows" :key="row.evidence">
@@ -28,11 +28,11 @@
                         </ol>
                     </section>
                 </div>
-            </mt-card>
+            </agentenblick-card>
             <p v-if="!proofGroups.length" class="agentenblick-index__empty">{{ $t('agentenblick.journey.empty') }}</p>
         </template>
 
-        <mt-card v-if="mode === 'failures' && summary" position-identifier="agentenblick-failures" :title="$t('agentenblick.tabs.failures')">
+        <agentenblick-card v-if="mode === 'failures' && summary" position-identifier="agentenblick-failures" :title="$t('agentenblick.tabs.failures')">
             <p class="agentenblick-journey__hint">{{ $t('agentenblick.journey.failuresHint') }}</p>
             <div class="agentenblick-index__table-wrap">
                 <table class="agentenblick-index__table">
@@ -52,9 +52,9 @@
                 <summary>{{ $t('agentenblick.journey.unknownFailures', { count: count(unknownFailures.length) }) }}</summary>
                 <ul><li v-for="row in unknownFailures" :key="`${row.code}:${row.evidence}`">{{ label('journey.failureCode', row.code) }} · {{ label('evidence', row.evidence) }}: —</li></ul>
             </details>
-        </mt-card>
+        </agentenblick-card>
 
-        <mt-card v-if="mode === 'failures' && summary" position-identifier="agentenblick-error-routes" :title="$t('agentenblick.journey.errorRoutes')">
+        <agentenblick-card v-if="mode === 'failures' && summary" position-identifier="agentenblick-error-routes" :title="$t('agentenblick.journey.errorRoutes')">
             <p class="agentenblick-journey__hint">{{ $t('agentenblick.journey.errorRoutesHint') }}</p>
             <div class="agentenblick-index__table-wrap"><table class="agentenblick-index__table">
                 <thead><tr><th scope="col">{{ $t('agentenblick.journey.route') }}</th><th scope="col">{{ $t('agentenblick.journey.step') }}</th><th scope="col">HTTP</th><th scope="col">{{ $t('agentenblick.table.evidence') }}</th><th scope="col">{{ $t('agentenblick.table.requests') }}</th></tr></thead>
@@ -62,9 +62,9 @@
                     <tr v-if="!errorRoutes.length"><td colspan="5">{{ $t('agentenblick.journey.noErrorRoutes') }}</td></tr>
                 </tbody>
             </table></div>
-        </mt-card>
+        </agentenblick-card>
 
-        <mt-card v-if="mode === 'journeys'" position-identifier="agentenblick-journeys" :title="$t('agentenblick.tabs.journeys')">
+        <agentenblick-card v-if="mode === 'journeys'" position-identifier="agentenblick-journeys" :title="$t('agentenblick.tabs.journeys')">
             <p class="agentenblick-journey__hint">{{ $t('agentenblick.journey.listHint') }}</p>
             <div class="agentenblick-index__table-wrap">
                 <table class="agentenblick-index__table agentenblick-journey__sessions">
@@ -77,7 +77,7 @@
                             <td>{{ stage(session.lastStage) }}</td><td>{{ stage(session.maxStage) }}</td>
                             <td><ul v-if="failureCodes(session.failures).length" class="agentenblick-journey__list"><li v-for="code in failureCodes(session.failures)" :key="code">{{ label('journey.failureCode', code) }}</li></ul><span v-else>{{ $t('agentenblick.journey.noneObserved') }}</span></td>
                             <td>{{ $t(session.closedAt ? 'agentenblick.journey.closed' : 'agentenblick.journey.open') }}</td>
-                            <td><mt-button size="small" @click="openDetail(session)">{{ $t('agentenblick.journey.inspect') }}</mt-button></td>
+                            <td><agentenblick-button size="small" @click="openDetail(session)">{{ $t('agentenblick.journey.inspect') }}</agentenblick-button></td>
                         </tr>
                         <tr v-if="!sessions.length"><td colspan="7" class="agentenblick-index__empty">{{ $t('agentenblick.journey.empty') }}</td></tr>
                     </tbody>
@@ -85,24 +85,24 @@
             </div>
             <div v-if="total" class="agentenblick-index__pagination">
                 <span>{{ $t('agentenblick.journey.pagination', { page, pages: pageCount, total: count(total) }) }}</span>
-                <mt-button size="small" :disabled="page <= 1 || loading" @click="changePage(-1)">{{ $t('agentenblick.actions.previous') }}</mt-button>
-                <mt-button size="small" :disabled="page >= pageCount || loading" @click="changePage(1)">{{ $t('agentenblick.actions.next') }}</mt-button>
+                <agentenblick-button size="small" :disabled="page <= 1 || loading" @click="changePage(-1)">{{ $t('agentenblick.actions.previous') }}</agentenblick-button>
+                <agentenblick-button size="small" :disabled="page >= pageCount || loading" @click="changePage(1)">{{ $t('agentenblick.actions.next') }}</agentenblick-button>
             </div>
-        </mt-card>
+        </agentenblick-card>
     </template>
 
     <sw-modal v-if="selectedId && canView" class="agentenblick-journey__modal" variant="large" :title="$t('agentenblick.journey.timeline')" @modal-close="closeDetail">
         <div v-if="detailLoading" class="agentenblick-index__loading" role="status"><sw-loader /><span class="agentenblick-index__sr-only">{{ $t('agentenblick.general.loading') }}</span></div>
-        <mt-banner v-else-if="detailFailed" variant="critical">{{ $t('agentenblick.journey.detailFailed') }}</mt-banner>
+        <agentenblick-banner v-else-if="detailFailed" variant="critical">{{ $t('agentenblick.journey.detailFailed') }}</agentenblick-banner>
         <template v-else-if="detail">
             <h3>{{ agentName(detail.session) }}</h3>
             <p class="agentenblick-journey__hint"><span class="agentenblick-proof" :class="proofClass(detail.session.evidence)">{{ label('evidence', detail.session.evidence) }}</span> · {{ label('journey.linkage', detail.session.linkage) }}</p>
             <p class="agentenblick-journey__hint">{{ label('journey.linkageHint', detail.session.linkage) }}</p>
-            <mt-banner v-if="isSuspected(detail.session)" variant="attention">
+            <agentenblick-banner v-if="isSuspected(detail.session)" variant="attention">
                 <strong>{{ $t('agentenblick.heuristics.notProof') }}</strong>
                 <p>{{ $t('agentenblick.heuristics.timelineStartsAtDetection') }}</p>
                 <p v-if="detail.session.detectedAt">{{ $t('agentenblick.heuristics.detectedAt') }}: {{ date(detail.session.detectedAt) }}</p>
-            </mt-banner>
+            </agentenblick-banner>
             <section v-if="isSuspected(detail.session)" class="agentenblick-journey__heuristics">
                 <h4>{{ $t('agentenblick.heuristics.score') }}: {{ heuristicScore(detail.session.heuristics) }}</h4>
                 <p>{{ $t('agentenblick.heuristics.appliedThreshold') }}: {{ heuristicThreshold(detail.session.heuristics) }}</p>
@@ -120,8 +120,8 @@
             <p v-if="stepNames(detail.session.steps).length" class="agentenblick-journey__hint">{{ $t('agentenblick.journey.observedSteps') }}: {{ stepNames(detail.session.steps).join(' · ') }}</p>
             <p v-if="detail.session.orderIds?.length" class="agentenblick-journey__hint">{{ $t('agentenblick.journey.orderIds') }}: <code v-for="id in detail.session.orderIds" :key="id" class="agentenblick-journey__order">{{ id }}</code></p>
             <p class="agentenblick-journey__hint">{{ $t('agentenblick.journey.timelineHint') }}</p>
-            <mt-banner v-if="isObservationPartial(detail.session)" variant="attention">{{ $t('agentenblick.journey.observationPartial') }}</mt-banner>
-            <mt-banner v-if="detail.truncated" variant="attention">{{ $t('agentenblick.journey.truncated') }}</mt-banner>
+            <agentenblick-banner v-if="isObservationPartial(detail.session)" variant="attention">{{ $t('agentenblick.journey.observationPartial') }}</agentenblick-banner>
+            <agentenblick-banner v-if="detail.truncated" variant="attention">{{ $t('agentenblick.journey.truncated') }}</agentenblick-banner>
             <ol class="agentenblick-journey__timeline">
                 <li v-for="(item, index) in detail.items" :key="`${item.at}:${index}`">
                     <div class="agentenblick-journey__event-head"><time>{{ date(item.at) }}</time><strong>{{ stage(item.stage) }}</strong><span>{{ item.method || '—' }} · {{ item.status || '—' }}</span></div>
@@ -141,6 +141,6 @@
             </ol>
             <p v-if="!detail.items?.length" class="agentenblick-index__empty">{{ $t('agentenblick.journey.noTimeline') }}</p>
         </template>
-        <template #modal-footer><mt-button @click="closeDetail">{{ $t('agentenblick.journey.close') }}</mt-button></template>
+        <template #modal-footer><agentenblick-button @click="closeDetail">{{ $t('agentenblick.journey.close') }}</agentenblick-button></template>
     </sw-modal>
 </div>

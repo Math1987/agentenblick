@@ -53,9 +53,10 @@ final class JourneyCaptureTest extends TestCase
 
     protected function tearDown(): void
     {
-        if (is_file($this->directory . '/var/agentenblick/errors.json')) {
-            unlink($this->directory . '/var/agentenblick/errors.json');
-            rmdir($this->directory . '/var/agentenblick');
+        if (is_file($this->directory . '/var/log/agentenblick/errors.json')) {
+            unlink($this->directory . '/var/log/agentenblick/errors.json');
+            rmdir($this->directory . '/var/log/agentenblick');
+            rmdir($this->directory . '/var/log');
             rmdir($this->directory . '/var');
             rmdir($this->directory);
         }
