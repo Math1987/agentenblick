@@ -1,0 +1,75 @@
+{
+  "check": "real_shopware_kernel_terminate_early_response",
+  "baseline_client_median_ms": 28.020333000000008,
+  "delayed_client_median_ms": 15.720791999999761,
+  "added_client_median_ms": -12.299541000000247,
+  "passed": true,
+  "samples": [
+    {
+      "id": "1cc73a273362cade",
+      "delay_ms": 0,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791958335.637319,
+      "http_status": 200,
+      "client_ms": 28.020333000000008,
+      "terminate_ms": 1.3818740844726562
+    },
+    {
+      "id": "2519400e7491807f",
+      "delay_ms": 2000,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791958335.663639,
+      "http_status": 200,
+      "client_ms": 21.594167,
+      "terminate_ms": 2002.8131008148193
+    },
+    {
+      "id": "12e5b188e4d2bc4d",
+      "delay_ms": 0,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791958337.897617,
+      "http_status": 200,
+      "client_ms": 25.63716699999974,
+      "terminate_ms": 0.6778240203857422
+    },
+    {
+      "id": "b2e4a257863c4341",
+      "delay_ms": 2000,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791958337.915072,
+      "http_status": 200,
+      "client_ms": 15.720791999999761,
+      "terminate_ms": 2000.9880065917969
+    },
+    {
+      "id": "f16801e6c3cd3d77",
+      "delay_ms": 0,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791958340.157728,
+      "http_status": 200,
+      "client_ms": 36.38287500000015,
+      "terminate_ms": 0.8668899536132812
+    },
+    {
+      "id": "750d91b2e2ba65bc",
+      "delay_ms": 2000,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791958340.175408,
+      "http_status": 200,
+      "client_ms": 15.161291000000077,
+      "terminate_ms": 2002.8331279754639
+    }
+  ]
+}

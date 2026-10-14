@@ -1,0 +1,75 @@
+{
+  "check": "real_shopware_kernel_terminate_early_response",
+  "baseline_client_median_ms": 186.22012500000017,
+  "delayed_client_median_ms": 2178.0535,
+  "added_client_median_ms": 1991.8333749999997,
+  "passed": false,
+  "samples": [
+    {
+      "id": "2cb2c1e6b9eb5d14",
+      "delay_ms": 0,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791958269.616174,
+      "http_status": 200,
+      "client_ms": 84.31770900000002,
+      "terminate_ms": 0.3008842468261719
+    },
+    {
+      "id": "32e0f86840b9c511",
+      "delay_ms": 2000,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791958269.700741,
+      "http_status": 200,
+      "client_ms": 2120.810167,
+      "terminate_ms": 2001.7499923706055
+    },
+    {
+      "id": "decab57417e66f8f",
+      "delay_ms": 0,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791958274.116948,
+      "http_status": 200,
+      "client_ms": 305.1078749999991,
+      "terminate_ms": 1.4500617980957031
+    },
+    {
+      "id": "817678e7257a7aa3",
+      "delay_ms": 2000,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791958274.357739,
+      "http_status": 200,
+      "client_ms": 2178.0535,
+      "terminate_ms": 2001.4970302581787
+    },
+    {
+      "id": "6b8d5ec833fc9cb8",
+      "delay_ms": 0,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791958278.771834,
+      "http_status": 200,
+      "client_ms": 186.22012500000017,
+      "terminate_ms": 0.9751319885253906
+    },
+    {
+      "id": "6fee2eb05bdfce5b",
+      "delay_ms": 2000,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791958278.916284,
+      "http_status": 200,
+      "client_ms": 2194.519708,
+      "terminate_ms": 2001.0828971862793
+    }
+  ]
+}

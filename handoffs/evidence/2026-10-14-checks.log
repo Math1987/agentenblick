@@ -1,0 +1,108 @@
+PHP 8.2.34 (cli) (built: Sep 24 2026 14:34:53) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.2.34, Copyright (c) Zend Technologies
+    with Zend OPcache v8.2.34, Copyright (c), by Zend Technologies
+No syntax errors detected in src/Verification/ReverseDns.php
+No syntax errors detected in src/Verification/Classifier.php
+No syntax errors detected in src/Verification/KeyDirectory.php
+No syntax errors detected in src/Verification/SafeFetcher.php
+No syntax errors detected in src/Verification/Catalogue.php
+No syntax errors detected in src/Verification/RangeRefresher.php
+No syntax errors detected in src/Verification/PendingSignatures.php
+No syntax errors detected in src/Verification/WebBotAuth.php
+No syntax errors detected in src/Verification/Jwk.php
+No syntax errors detected in src/Verification/CatalogueProvider.php
+No syntax errors detected in src/Verification/SafeSignatureContext.php
+No syntax errors detected in src/Verification/HttpSignature.php
+No syntax errors detected in src/Migration/Migration1791936000InitialSchema.php
+No syntax errors detected in src/Migration/Migration1791936002BrowserFamily.php
+No syntax errors detected in src/Migration/Migration1791936003SessionProofReview.php
+No syntax errors detected in src/Migration/Migration1791936001PendingSignatures.php
+No syntax errors detected in src/Persistence/Purger.php
+No syntax errors detected in src/Persistence/DailyKey.php
+No syntax errors detected in src/Persistence/AggregateCorrection.php
+No syntax errors detected in src/Persistence/ProxyDiagnostics.php
+No syntax errors detected in src/Persistence/ObservationStore.php
+No syntax errors detected in src/Domain/Evidence.php
+No syntax errors detected in src/Domain/Kind.php
+No syntax errors detected in src/Domain/Classification.php
+No syntax errors detected in src/AithosAgentenblick.php
+No syntax errors detected in src/Command/ReverifyCommand.php
+No syntax errors detected in src/Command/VerifyRequestCommand.php
+No syntax errors detected in src/Command/SelfTestCommand.php
+No syntax errors detected in src/Command/ReportCommand.php
+No syntax errors detected in src/Command/PurgeCommand.php
+No syntax errors detected in src/Command/RefreshRangesCommand.php
+No syntax errors detected in src/Capture/ObservationScope.php
+No syntax errors detected in src/Capture/ObservedKernel.php
+No syntax errors detected in src/Capture/ObservationSubscriber.php
+No syntax errors detected in src/Capture/SalesChannelResolver.php
+No syntax errors detected in src/Capture/BrowserFamily.php
+No syntax errors detected in src/Capture/Minimizer.php
+No syntax errors detected in src/Capture/FailureCounter.php
+No syntax errors detected in src/ScheduledTask/RefreshRangesTask.php
+No syntax errors detected in src/ScheduledTask/RefreshRangesTaskHandler.php
+No syntax errors detected in src/ScheduledTask/ReverifyTaskHandler.php
+No syntax errors detected in src/ScheduledTask/PurgeTask.php
+No syntax errors detected in src/ScheduledTask/ReverifyTask.php
+No syntax errors detected in src/ScheduledTask/PurgeTaskHandler.php
+No syntax errors detected in src/Resources/rdns-worker.php
+No syntax errors detected in tests/Integration/PersistenceTest.php
+No syntax errors detected in tests/Integration/ConcurrencyTest.php
+No syntax errors detected in tests/Integration/concurrent-record.php
+No syntax errors detected in tests/bootstrap.php
+No syntax errors detected in tests/Unit/SignatureBoundaryTest.php
+No syntax errors detected in tests/Unit/WebBotAuthTest.php
+No syntax errors detected in tests/Unit/IpAndProxyTest.php
+No syntax errors detected in tests/Unit/SalesChannelResolverTest.php
+No syntax errors detected in tests/Unit/KnownKeySignatureTest.php
+No syntax errors detected in tests/Unit/DailyKeyTest.php
+No syntax errors detected in tests/Unit/SafeSignatureContextTest.php
+No syntax errors detected in tests/Unit/MinimizationTest.php
+No syntax errors detected in tests/Unit/ClassifierCandidateTest.php
+No syntax errors detected in tests/Unit/BrowserFamilyTest.php
+No syntax errors detected in dev/probe/src/AgentenblickTerminateProbe.php
+No syntax errors detected in dev/probe/src/Subscriber/TerminateProbeSubscriber.php
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.34
+Configuration: /var/www/html/custom/plugins/AithosAgentenblick/phpunit.xml
+
+.............................................................     61 / 61 (100%)
+
+Time: 00:00.057, Memory: 20.00 MB
+
+OK (61 tests, 179 assertions)
+
+ [OK] No errors
+
+PHP CS Fixer 3.95.27 Adalbertus by Fabien Potencier, Dariusz Ruminski and contributors.
+PHP runtime: 8.2.34
+Loaded config default from ".php-cs-fixer.dist.php".
+Running analysis on 7 cores with 10 files per process.
+  0/62 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+  7/62 [▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░]  11%
+ 38/62 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░]  61%
+ 44/62 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░]  70%
+ 62/62 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+
+Found 0 of 62 files that can be fixed in 0.680 seconds, 128.00 MB memory used
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.34
+Configuration: /var/www/html/custom/plugins/AithosAgentenblick/phpunit.xml
+
+........                                                            8 / 8 (100%)
+
+Time: 00:00.180, Memory: 18.00 MB
+
+OK (8 tests, 192 assertions)
+Catalogue, test catalogue and live report: JSON Schema valid; forbidden report field rejected.
+{
+    "operator": "example-test",
+    "agent": "ExampleTestAgent",
+    "kind": "browsing_agent",
+    "evidence": "verified_ip",
+    "reason": "ip_in_official_range"
+}

@@ -1,0 +1,2832 @@
+{
+  "check": "initial_warmed_storefront_client_overhead",
+  "started_at": "2026-10-14T07:33:26.463691+00:00",
+  "container": "agentenblick-shop",
+  "url": "http://127.0.0.1:18080/",
+  "method": {
+    "stage_order": [
+      "off-1",
+      "on-1",
+      "off-2",
+      "on-2"
+    ],
+    "cache_clear_each_stage": true,
+    "warmups_per_stage": 10,
+    "measured_requests_per_stage": 50,
+    "client_concurrency": 1,
+    "user_agent": "GPTBot/1.0",
+    "measurement": "Client elapsed time through complete response-body read; new connection for each request.",
+    "p95": "Nearest rank, ceil(0.95 * n).",
+    "limitations": [
+      "Initial local warmed-page comparison, not a capacity or sustained-load test.",
+      "Client completion does not measure all work performed after the response is flushed.",
+      "Ten warmups target cached traffic; cache diagnostics are retained when the server supplies them.",
+      "Local scheduling, Docker and database activity can affect small latency differences.",
+      "No latency pass threshold is inferred from this measurement."
+    ]
+  },
+  "stages": [
+    {
+      "name": "off-1",
+      "plugin_active": false,
+      "warmups": [
+        {
+          "client_ms": 737.9250840000004,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "1",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 207.8479170000005,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 133.20799999999977,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 132.18499999999977,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 120.64845799999979,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 119.89345799999995,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "1",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 142.4467499999995,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 193.56312500000072,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 116.59333299999908,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 103.2622080000003,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        }
+      ],
+      "samples": [
+        {
+          "client_ms": 171.81616600000103,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 203.05987499999924,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 128.31554199999928,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 121.62758400000051,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 100.91104099999981,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.88991600000007,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 87.35554199999918,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 94.7862500000003,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 88.39654199999991,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.11091700000051,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.39737500000066,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 88.59158399999956,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 88.42833299999953,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "1",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.8760839999988,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.95375000000038,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 89.41658300000022,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 99.40870799999857,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 91.03783299999968,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 91.48500000000048,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.73541700000098,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 83.8985000000001,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.68262500000046,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.12774999999984,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.29724999999944,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 93.09824999999883,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 118.29429099999977,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.73808299999975,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.47916599999894,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.08579200000044,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 95.01258300000082,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 88.54825000000055,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.95829099999952,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.3376249999993,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 92.03937499999881,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 92.90395899999915,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "1",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.2291250000009,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.60400000000001,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.79533400000017,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.20779099999898,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 83.66670900000095,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.79595800000084,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.05304199999964,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 83.80649999999967,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 89.80054199999898,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.14070799999962,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.80462499999919,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 103.47950000000061,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 93.3294999999994,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 88.29108299999966,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.26012499999835,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        }
+      ],
+      "metrics": {
+        "requests": 50,
+        "median_ms": 88.34381249999979,
+        "p95_ms": 128.31554199999928,
+        "min_ms": 83.66670900000095,
+        "max_ms": 203.05987499999924,
+        "http_status_counts": {
+          "200": 50
+        },
+        "body_sha256_counts": {
+          "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e": 50
+        }
+      }
+    },
+    {
+      "name": "on-1",
+      "plugin_active": true,
+      "warmups": [
+        {
+          "client_ms": 493.30050000000017,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "1",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 192.14295899999811,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 131.62033300000076,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 293.76475000000113,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 127.00325000000134,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 121.85812499999926,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 172.82420799999798,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 121.00175000000135,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 117.3762079999996,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 106.03804200000155,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        }
+      ],
+      "samples": [
+        {
+          "client_ms": 109.67395899999843,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 102.30791699999742,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 100.4655829999983,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 98.74287499999923,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "1",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 114.28162500000028,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 347.41229200000134,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 535.2457080000015,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 94.71866599999856,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.09258400000064,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 87.81616699999972,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 92.31854099999737,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 89.60029200000008,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 87.63104200000171,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.40970800000025,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.72120799999772,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.63258400000129,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.11154099999985,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.17512499999924,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 91.15083300000038,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.65654100000108,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.46337499999746,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 87.3642910000001,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 95.86341699999679,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.54191699999947,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 87.34179100000006,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.40708299999855,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 87.89799999999914,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.91929199999882,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.86387499999992,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.47554200000008,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.70995799999892,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 92.97091600000229,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 93.06750000000008,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.99866700000092,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.9691660000017,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.77254200000084,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 107.90374999999841,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 91.17933299999947,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 89.04758299999926,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.93929200000139,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 89.25366600000118,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.6859159999992,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 92.88587500000034,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.5590829999997,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 87.77650000000037,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.1890829999995,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 87.48187500000171,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 88.1719160000003,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 116.8823329999995,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 100.6390419999974,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        }
+      ],
+      "metrics": {
+        "requests": 50,
+        "median_ms": 89.15062450000022,
+        "p95_ms": 116.8823329999995,
+        "min_ms": 84.40708299999855,
+        "max_ms": 535.2457080000015,
+        "http_status_counts": {
+          "200": 50
+        },
+        "body_sha256_counts": {
+          "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e": 50
+        }
+      }
+    },
+    {
+      "name": "off-2",
+      "plugin_active": false,
+      "warmups": [
+        {
+          "client_ms": 537.7443749999991,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 144.1812089999992,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 201.5900419999994,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 135.4978750000022,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 99.6313339999979,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 101.50208399999983,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 102.97366700000055,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 98.83791700000089,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 97.45441600000149,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 96.89254199999908,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        }
+      ],
+      "samples": [
+        {
+          "client_ms": 95.69054199999982,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 97.53645800000044,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 97.65116699999865,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "1",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 119.10725000000255,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 124.37458400000168,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 97.42783299999758,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 104.1179169999964,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 139.87741599999737,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 91.26291700000166,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.29637499999865,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.7252079999995,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 125.48329199999841,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 107.35604200000637,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 97.23675000000043,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 98.89670800000516,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 114.96604199999894,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 92.9252500000004,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 87.46179199999915,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.28125000000131,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.84137499999878,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.5772079999989,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 89.56183299999765,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 99.2942499999998,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 104.49983299999843,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.61045899999675,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 89.78450000000038,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.45270900000446,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.62312500000047,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 83.76975000000186,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 98.55237500000413,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.40183300000137,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 88.39270800000065,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.26454199999733,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.61804200000245,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.2434170000057,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 83.97491600000251,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.86150000000004,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 93.88529199999596,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.78458300000136,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 109.50420799999705,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 89.18091700000019,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 88.78670800000066,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 94.16608299999751,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 112.28545800000234,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 91.72333300000446,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 93.31091700000371,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.16450000000242,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 87.1501660000007,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 96.30308300000223,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 88.70562499999579,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        }
+      ],
+      "metrics": {
+        "requests": 50,
+        "median_ms": 91.02375000000151,
+        "p95_ms": 124.37458400000168,
+        "min_ms": 83.76975000000186,
+        "max_ms": 139.87741599999737,
+        "http_status_counts": {
+          "200": 50
+        },
+        "body_sha256_counts": {
+          "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e": 50
+        }
+      }
+    },
+    {
+      "name": "on-2",
+      "plugin_active": true,
+      "warmups": [
+        {
+          "client_ms": 453.4075420000008,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "1",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 185.80387500000484,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 130.93362500000438,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 142.7626669999995,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 127.26520900000082,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 128.38008399999978,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 124.4203749999997,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 121.4999999999975,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 150.90083399999799,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.65729200000305,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        }
+      ],
+      "samples": [
+        {
+          "client_ms": 96.48166700000615,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 92.59004199999765,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 100.75166699999727,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 96.71575000000132,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 89.12270900000152,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 93.12179200000514,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 95.67145899999474,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 105.70670899999612,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "1",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 97.31995900000356,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 87.00116700000393,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 91.25016699999833,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 98.50620899999996,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.50445800000028,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 84.9262499999952,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 120.81558300000239,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 91.30570800000015,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.40029200000276,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.04245800000376,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 91.45549999999503,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.34674999999936,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 232.61254199999826,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 92.24470799999551,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 128.85720799999945,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 97.70229099999739,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.11475000000502,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.34479199999845,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 94.53758300000459,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 88.51108300000021,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 92.64691700000327,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 97.11016600000022,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.92758399999667,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.12700000000251,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 111.76599999999581,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 92.09179100000142,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 90.47587500000276,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 96.44787500000263,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 92.07849999999951,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 89.90966599999695,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 120.1929590000006,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 129.85787500000612,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 101.71837500000436,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 89.62429199999633,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.47470900000087,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 110.49004100000559,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 99.97058300000106,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 93.41041700000119,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 86.36795799999675,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 95.90970900000428,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 89.38158299999799,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        },
+        {
+          "client_ms": 85.34737499999778,
+          "http_status": 200,
+          "body_bytes": 76558,
+          "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "cache_headers": {
+            "age": "0",
+            "cache-control": "no-cache, private",
+            "x-symfony-cache": "GET /: miss, store; GET /_esi/global/header: miss, store; GET /_esi/global/footer: miss, store"
+          }
+        }
+      ],
+      "metrics": {
+        "requests": 50,
+        "median_ms": 92.41737499999658,
+        "p95_ms": 128.85720799999945,
+        "min_ms": 84.9262499999952,
+        "max_ms": 232.61254199999826,
+        "http_status_counts": {
+          "200": 50
+        },
+        "body_sha256_counts": {
+          "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e": 50
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "plugin_reactivated_in_finally": true,
+  "versions": {
+    "image": "dockware/shopware:6.7.15.0",
+    "image_id": "sha256:1c3f867fb1e990f69e33252158c998bae7cde9be5ed61efed85cd38cca4eb17e",
+    "running": true,
+    "php_cli": "8.2.34",
+    "plugin": "0.1.0",
+    "shopware": "Shopware 6.7.15.0 (env: test, debug: false)",
+    "docker_cli": "Docker version 27.3.1, build ce12230",
+    "python": "3.9.6",
+    "source_commit": "d349b40cdbf586b2d5dd75a3faeb358628b2036a"
+  },
+  "baseline": {
+    "requests": 100,
+    "median_ms": 89.67316649999901,
+    "p95_ms": 124.37458400000168,
+    "min_ms": 83.66670900000095,
+    "max_ms": 203.05987499999924,
+    "http_status_counts": {
+      "200": 100
+    },
+    "body_sha256_counts": {
+      "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e": 100
+    }
+  },
+  "active": {
+    "requests": 100,
+    "median_ms": 90.95897949999987,
+    "p95_ms": 120.81558300000239,
+    "min_ms": 84.40708299999855,
+    "max_ms": 535.2457080000015,
+    "http_status_counts": {
+      "200": 100
+    },
+    "body_sha256_counts": {
+      "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e": 100
+    }
+  },
+  "active_minus_baseline": {
+    "median_ms": 1.2858130000008572,
+    "median_percent": 1.4338882524025376,
+    "p95_ms": -3.5590009999992844,
+    "p95_percent": -2.861517912694478
+  },
+  "paired_deltas": [
+    {
+      "baseline_stage": "off-1",
+      "active_stage": "on-1",
+      "median_ms": 0.8068120000004342,
+      "median_percent": 0.9132637331000781,
+      "p95_ms": -11.433208999999778,
+      "p95_percent": -8.910229284617632
+    },
+    {
+      "baseline_stage": "off-2",
+      "active_stage": "on-2",
+      "median_ms": 1.393624999995069,
+      "median_percent": 1.5310564550406358,
+      "p95_ms": 4.48262399999777,
+      "p95_percent": 3.604131853818071
+    }
+  ],
+  "response_comparison": {
+    "all_measured_statuses_200": true,
+    "identical_status_body_digest_and_size": true,
+    "different_responses_observed": false,
+    "unique_status_body_combinations": [
+      {
+        "http_status": 200,
+        "body_sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "body_bytes": 76558
+      }
+    ],
+    "interpretation": "Response differences are reported separately; a difference alone does not establish that the plugin changed the response."
+  },
+  "finished_at": "2026-10-14T07:34:17.141703+00:00",
+  "measurement_complete": true
+}

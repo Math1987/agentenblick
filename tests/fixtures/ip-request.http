@@ -1,0 +1,4 @@
+GET / HTTP/1.1
+Host: shop.test
+User-Agent: ExampleTestAgent/1.0
+

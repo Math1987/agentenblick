@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <defaults autowire="true" autoconfigure="true" public="false"/>
+        <service id="Aithos\Agentenblick\Persistence\DailyKey"/>
+        <service id="Aithos\Agentenblick\Persistence\ObservationStore"/>
+        <service id="Aithos\Agentenblick\Persistence\ProxyDiagnostics"/>
+        <service id="Aithos\Agentenblick\Persistence\Purger"/>
+        <service id="Aithos\Agentenblick\Verification\ReverseDns"/>
+        <service id="Aithos\Agentenblick\Verification\RangeRefresher"/>
+        <service id="Aithos\Agentenblick\Verification\Classifier"/>
+        <service id="Aithos\Agentenblick\Verification\PendingSignatures"/>
+        <service id="Aithos\Agentenblick\Verification\KeyDirectory">
+            <argument key="$environment">%kernel.environment%</argument>
+        </service>
+        <service id="Aithos\Agentenblick\Capture\FailureCounter">
+            <argument key="$projectDir">%kernel.project_dir%</argument>
+        </service>
+        <service id="Aithos\Agentenblick\Verification\CatalogueProvider">
+            <argument key="$environment">%kernel.environment%</argument>
+        </service>
+        <service id="Aithos\Agentenblick\Capture\ObservationSubscriber"/>
+        <service id="Aithos\Agentenblick\Capture\SalesChannelResolver"/>
+        <service id="Aithos\Agentenblick\Command\ReportCommand"/>
+        <service id="Aithos\Agentenblick\Command\PurgeCommand"/>
+        <service id="Aithos\Agentenblick\Command\RefreshRangesCommand"/>
+        <service id="Aithos\Agentenblick\Command\VerifyRequestCommand"/>
+        <service id="Aithos\Agentenblick\Command\ReverifyCommand"/>
+        <service id="Aithos\Agentenblick\Command\SelfTestCommand">
+            <argument key="$debug">%kernel.debug%</argument>
+            <argument key="$projectDir">%kernel.project_dir%</argument>
+        </service>
+        <service id="Aithos\Agentenblick\ScheduledTask\RefreshRangesTask"><tag name="shopware.scheduled.task"/></service>
+        <service id="Aithos\Agentenblick\ScheduledTask\PurgeTask"><tag name="shopware.scheduled.task"/></service>
+        <service id="Aithos\Agentenblick\ScheduledTask\ReverifyTask"><tag name="shopware.scheduled.task"/></service>
+        <service id="Aithos\Agentenblick\ScheduledTask\ReverifyTaskHandler">
+            <argument key="$scheduledTaskRepository" type="service" id="scheduled_task.repository"/>
+        </service>
+        <service id="Aithos\Agentenblick\ScheduledTask\RefreshRangesTaskHandler">
+            <argument key="$scheduledTaskRepository" type="service" id="scheduled_task.repository"/>
+        </service>
+        <service id="Aithos\Agentenblick\ScheduledTask\PurgeTaskHandler">
+            <argument key="$scheduledTaskRepository" type="service" id="scheduled_task.repository"/>
+        </service>
+        <service id="Aithos\Agentenblick\Capture\ObservedKernel" decorates="http_kernel" decoration-priority="-100">
+            <argument key="$inner" type="service" id="Aithos\Agentenblick\Capture\ObservedKernel.inner"/>
+        </service>
+    </services>
+</container>
