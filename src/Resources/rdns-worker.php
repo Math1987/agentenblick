@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 // Short-lived CLI subprocess. The caller imposes a one-second wall-clock timeout.
 // The IP travels only over stdin, never through argv, files or log messages.

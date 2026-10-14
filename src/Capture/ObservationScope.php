@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Capture;
 
@@ -28,6 +30,6 @@ final class ObservationScope
                 return rtrim($prefix, '/') . '/{unresolved}';
             }
         }
-        return '/{unresolved}';
+        return $path === '/' ? 'frontend.home.page' : '/{unresolved}';
     }
 }

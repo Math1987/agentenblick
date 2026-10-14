@@ -11,6 +11,7 @@
         <service id="Aithos\Agentenblick\Verification\ReverseDns"/>
         <service id="Aithos\Agentenblick\Verification\RangeRefresher"/>
         <service id="Aithos\Agentenblick\Verification\Classifier"/>
+        <service id="Aithos\Agentenblick\Verification\PendingSignatures"/>
         <service id="Aithos\Agentenblick\Verification\KeyDirectory">
             <argument key="$environment">%kernel.environment%</argument>
         </service>
@@ -21,16 +22,22 @@
             <argument key="$environment">%kernel.environment%</argument>
         </service>
         <service id="Aithos\Agentenblick\Capture\ObservationSubscriber"/>
+        <service id="Aithos\Agentenblick\Capture\SalesChannelResolver"/>
         <service id="Aithos\Agentenblick\Command\ReportCommand"/>
         <service id="Aithos\Agentenblick\Command\PurgeCommand"/>
         <service id="Aithos\Agentenblick\Command\RefreshRangesCommand"/>
         <service id="Aithos\Agentenblick\Command\VerifyRequestCommand"/>
+        <service id="Aithos\Agentenblick\Command\ReverifyCommand"/>
         <service id="Aithos\Agentenblick\Command\SelfTestCommand">
             <argument key="$debug">%kernel.debug%</argument>
             <argument key="$projectDir">%kernel.project_dir%</argument>
         </service>
         <service id="Aithos\Agentenblick\ScheduledTask\RefreshRangesTask"><tag name="shopware.scheduled.task"/></service>
         <service id="Aithos\Agentenblick\ScheduledTask\PurgeTask"><tag name="shopware.scheduled.task"/></service>
+        <service id="Aithos\Agentenblick\ScheduledTask\ReverifyTask"><tag name="shopware.scheduled.task"/></service>
+        <service id="Aithos\Agentenblick\ScheduledTask\ReverifyTaskHandler">
+            <argument key="$scheduledTaskRepository" type="service" id="scheduled_task.repository"/>
+        </service>
         <service id="Aithos\Agentenblick\ScheduledTask\RefreshRangesTaskHandler">
             <argument key="$scheduledTaskRepository" type="service" id="scheduled_task.repository"/>
         </service>

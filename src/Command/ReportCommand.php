@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Command;
 
@@ -57,6 +59,7 @@ final class ReportCommand extends Command
             'observed_agent_sessions_pct' => $sessions > 0 ? round(100 * $nonHumanSessions / $sessions, 1) : null,
             'scope' => 'PHP-visible main requests; identified crawler/agent traffic, not all AI usage',
             'agents' => $rows,
+            'human_browsers' => array_map(static fn (array $browser): array => ['browser_family' => $browser['browser_family'], 'requests' => (int) $browser['requests'], 'sessions' => (int) $browser['sessions']], $this->connection->fetchAllAssociative("SELECT browser_family, SUM(requests) AS requests, SUM(sessions) AS sessions FROM agentenblick_daily WHERE " . $where . " AND kind = 'human_or_unknown' GROUP BY browser_family", $parameters)),
             'proxy_diagnostics' => $this->proxyDiagnostics->report(),
         ];
         if ($input->getOption('json')) {

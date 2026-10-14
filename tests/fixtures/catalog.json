@@ -398,7 +398,7 @@
       "robotsToken": "Googlebot",
       "kind": "search_crawler",
       "verification": "ip",
-      "rangesUrl": "https://developers.google.com/static/search/apis/ipranges/googlebot.json",
+      "rangesUrl": "https://developers.google.com/static/crawling/ipranges/common-crawlers.json",
       "ranges": [
         "192.178.4.0/27",
         "192.178.4.128/27",
@@ -732,7 +732,7 @@
       "robotsToken": "GoogleOther",
       "kind": "training_crawler",
       "verification": "ip",
-      "rangesUrl": "https://developers.google.com/static/search/apis/ipranges/googlebot.json",
+      "rangesUrl": "https://developers.google.com/static/crawling/ipranges/common-crawlers.json",
       "ranges": [
         "192.178.4.0/27",
         "192.178.4.128/27",
@@ -1073,7 +1073,7 @@
       "robotsToken": "PerplexityBot",
       "kind": "search_crawler",
       "verification": "ip",
-      "rangesUrl": "https://www.perplexity.com/perplexitybot.json",
+      "rangesUrl": "https://www.perplexity.ai/perplexitybot.json",
       "ranges": [
         "107.20.236.150/32",
         "18.210.92.235/32",
@@ -1084,7 +1084,7 @@
         "3.224.62.45/32",
         "3.231.139.107/32"
       ],
-      "source": "https://docs.perplexity.ai/guides/bots",
+      "source": "https://docs.perplexity.ai/docs/resources/perplexity-crawlers",
       "rangesRetrievedAt": "2026-10-14T06:33:14.662336+00:00"
     },
     {
@@ -1094,14 +1094,14 @@
       "robotsToken": "Perplexity-User",
       "kind": "user_fetch",
       "verification": "ip",
-      "rangesUrl": "https://www.perplexity.com/perplexity-user.json",
+      "rangesUrl": "https://www.perplexity.ai/perplexity-user.json",
       "ranges": [
         "18.97.21.0/30",
         "18.97.43.80/29",
         "34.193.163.52/32",
         "44.208.221.197/32"
       ],
-      "source": "https://docs.perplexity.ai/guides/bots",
+      "source": "https://docs.perplexity.ai/docs/resources/perplexity-crawlers",
       "rangesRetrievedAt": "2026-10-14T06:33:15.049076+00:00"
     },
     {

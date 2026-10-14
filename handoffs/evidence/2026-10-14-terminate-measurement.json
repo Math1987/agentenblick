@@ -1,0 +1,75 @@
+{
+  "check": "real_shopware_kernel_terminate_early_response",
+  "baseline_client_median_ms": 66.61358299999998,
+  "delayed_client_median_ms": 17.576667000000157,
+  "added_client_median_ms": -49.03691599999982,
+  "passed": true,
+  "samples": [
+    {
+      "id": "580f02304492314d",
+      "delay_ms": 0,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791963436.975129,
+      "http_status": 200,
+      "client_ms": 66.61358299999998,
+      "terminate_ms": 1.1138916015625
+    },
+    {
+      "id": "0ffaa243599d3b51",
+      "delay_ms": 2000,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791963437.02372,
+      "http_status": 200,
+      "client_ms": 48.31750000000001,
+      "terminate_ms": 2001.1260509490967
+    },
+    {
+      "id": "2c8a95fa3ab9685f",
+      "delay_ms": 0,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791963439.375179,
+      "http_status": 200,
+      "client_ms": 149.2318749999999,
+      "terminate_ms": 0.843048095703125
+    },
+    {
+      "id": "87eb4bdc4ce36a01",
+      "delay_ms": 2000,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791963439.386737,
+      "http_status": 200,
+      "client_ms": 11.312999999999906,
+      "terminate_ms": 2001.2547969818115
+    },
+    {
+      "id": "619c3e239d50eba0",
+      "delay_ms": 0,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791963441.616927,
+      "http_status": 200,
+      "client_ms": 30.686750000000096,
+      "terminate_ms": 0.2601146697998047
+    },
+    {
+      "id": "4c7917f5dde48150",
+      "delay_ms": 2000,
+      "sapi": "fpm-fcgi",
+      "php": "8.2.34",
+      "fastcgi_finish_request": true,
+      "before_response": 1791963441.637083,
+      "http_status": 200,
+      "client_ms": 17.576667000000157,
+      "terminate_ms": 2001.3999938964844
+    }
+  ]
+}

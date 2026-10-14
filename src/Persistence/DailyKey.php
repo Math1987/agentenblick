@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Persistence;
 
@@ -12,6 +14,9 @@ final class DailyKey
 
     public function current(string $day): string
     {
+        // Late termination must neither recreate yesterday's key nor replace today's
+        // key with an older one. Pseudonymisation happens on the current UTC day.
+        $day = max($day, gmdate('Y-m-d'));
         return $this->connection->transactional(function (Connection $connection) use ($day): string {
             $connection->executeStatement(
                 "INSERT IGNORE INTO agentenblick_state (name, value, updated_at) VALUES ('daily_hmac_key', ?, ?)",
@@ -21,7 +26,7 @@ final class DailyKey
             if ($row === false) {
                 throw new \RuntimeException('hmac_key_unavailable');
             }
-            if (substr($row['updated_at'], 0, 10) !== $day) {
+            if (substr($row['updated_at'], 0, 10) < $day) {
                 $row['value'] = base64_encode(random_bytes(32));
                 $connection->executeStatement("UPDATE agentenblick_state SET value = ?, updated_at = ? WHERE name = 'daily_hmac_key'", [$row['value'], $day . ' 00:00:00']);
             }

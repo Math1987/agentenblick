@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Capture;
 
@@ -7,6 +9,7 @@ use Aithos\Agentenblick\Persistence\ObservationStore;
 use Aithos\Agentenblick\Persistence\ProxyDiagnostics;
 use Aithos\Agentenblick\Verification\CatalogueProvider;
 use Aithos\Agentenblick\Verification\Classifier;
+use Aithos\Agentenblick\Verification\SafeSignatureContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -27,6 +30,7 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
         private readonly FailureCounter $failures,
         private readonly CatalogueProvider $catalogues,
         private readonly ProxyDiagnostics $proxyDiagnostics,
+        private readonly SalesChannelResolver $salesChannels,
     ) {
     }
 
@@ -94,9 +98,11 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
         }
         try {
             $catalogue = $this->catalogues->load();
+            $this->salesChannels->resolve($request);
             $key = $this->dailyKey->current($at->format('Y-m-d'));
-            $classification = $this->classifier->classify($request, $catalogue, hash_hmac('sha256', "ip\0" . ($request->getClientIp() ?? ''), $key));
-            $row = (new Minimizer())->minimize($request, $classification, $key, $at, $status);
+            $classification = $this->classifier->classify($request, $catalogue, hash_hmac('sha256', "ip\0" . ($request->getClientIp() ?? ''), $key), $at->getTimestamp());
+            $signatureContext = (new SafeSignatureContext())->capture($request, $catalogue, $classification);
+            $row = (new Minimizer())->minimize($request, $classification, $key, $at, $status, $signatureContext);
             sodium_memzero($key);
             $this->store->record($row);
             $this->proxyDiagnostics->record($catalogue->isCdn($request->getClientIp()));

@@ -1,0 +1,19 @@
+
+Agentenblick — observed traffic
+===============================
+
+ 9 sessions; 8 identified/declared agent sessions (88.9%)
+ -------------- ---------------------- ------------------ --------------------- ---------- ----------
+  Operator       Agent                  Kind               Evidence              Requests   Sessions
+ -------------- ---------------------- ------------------ --------------------- ---------- ----------
+  example-test   ExampleTestAgent       browsing_agent     declared_unverified   2          2
+  example-test   LocalSignedTestAgent   browsing_agent     declared_unverified   2          1
+  example-test   LocalSignedTestAgent   browsing_agent     verified_signature    2          1
+  openai         GPTBot                 training_crawler   declared_unverified   2          2
+  anthropic      Claude-User            user_fetch         declared_unverified   1          1
+  example-test   ExampleTestAgent       browsing_agent     verified_ip           1          1
+  unknown        unknown                human_or_unknown   none                  1          1
+ -------------- ---------------------- ------------------ --------------------- ---------- ----------
+
+ ! [NOTE] PHP-visible main requests; identified crawler/agent traffic, not all
+ !        AI usage

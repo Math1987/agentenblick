@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "filter": "(udp port 53 or tcp port 53) or (tcp and (dst port 80 or dst port 443) and not net 127.0.0.0/8 and not host ::1)",
+  "positive_control_packets": 24,
+  "offline_packets": 0,
+  "local_directory_calls": 0,
+  "activity": {
+    "http_requests": 12,
+    "ranges": "{\n    \"status\": \"offline; no outbound requests\"\n}",
+    "reverify": "{\n    \"checked\": 0,\n    \"verified\": 0,\n    \"deferred\": 0,\n    \"rejected\": 0,\n    \"expired\": 0,\n    \"sessions_promoted\": 0\n}"
+  }
+}

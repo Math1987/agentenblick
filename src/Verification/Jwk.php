@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Verification;
 
@@ -62,6 +64,9 @@ final class Jwk
                 return false;
             }
             $rsa = RSA::loadPublicKeyFormat('JWK', json_encode($key, JSON_THROW_ON_ERROR));
+            if (!$rsa instanceof RSA\PublicKey) {
+                return false;
+            }
             return $rsa->withPadding(RSA::SIGNATURE_PSS)->withHash('sha512')->withMGFHash('sha512')->withSaltLength(64)->verify($base, $signature);
         }
         return false;

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 // Integration bench provides Shopware and its locked Symfony/DBAL dependencies.
 $loader = require getenv('SHOPWARE_AUTOLOAD') ?: '/var/www/html/vendor/autoload.php';

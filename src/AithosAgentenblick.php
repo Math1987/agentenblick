@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Aithos\Agentenblick;
 
@@ -19,7 +21,10 @@ final class AithosAgentenblick extends Plugin
         if ($uninstallContext->keepUserData()) {
             return;
         }
-        $connection = $this->container->get(Connection::class);
+        $connection = $this->container?->get(Connection::class);
+        if (!$connection instanceof Connection) {
+            throw new \LogicException('Database connection unavailable during uninstall.');
+        }
         foreach (['request', 'session', 'daily', 'ip_ranges', 'key_cache', 'state'] as $table) {
             $connection->executeStatement('DROP TABLE IF EXISTS agentenblick_' . $table);
         }

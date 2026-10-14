@@ -1,14 +1,18 @@
 // Local test harness only. Never package or expose this controllable proxy in production.
 import http from 'node:http';
 import { isIP } from 'node:net';
-import { readFile } from 'node:fs/promises';
+import { readFile, appendFile, access } from 'node:fs/promises';
 
 const directory = '/tmp/agentenblick-test-jwks.json';
 http.createServer(async (incoming, outgoing) => {
   if (incoming.url === '/.well-known/http-message-signatures-directory') {
     try {
+      await appendFile('/tmp/agentenblick-directory-calls.log', 'GET\n');
+      const down = await access('/tmp/agentenblick-directory-down').then(() => true, () => false);
+      if (down) { outgoing.writeHead(503).end(); return; }
+      const body = await readFile(directory);
       outgoing.writeHead(200, { 'content-type': 'application/json' });
-      outgoing.end(await readFile(directory));
+      outgoing.end(body);
     } catch {
       outgoing.writeHead(503).end();
     }

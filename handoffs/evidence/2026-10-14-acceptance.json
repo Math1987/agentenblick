@@ -1,0 +1,286 @@
+{
+  "identity_traffic": {
+    "runtime": "v24.21.0",
+    "requests": 11,
+    "results": [
+      {
+        "profile": "human",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 617.6639170000001
+      },
+      {
+        "profile": "false-gptbot",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 119.23395900000003
+      },
+      {
+        "profile": "declared-claude",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 130.91162499999996
+      },
+      {
+        "profile": "ip-verified",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 109.49995799999988
+      },
+      {
+        "profile": "ip-outside",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 105.5028339999999
+      },
+      {
+        "profile": "forged-untrusted",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 105.7002500000001
+      },
+      {
+        "profile": "signed-dictionary",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 107.50295800000004
+      },
+      {
+        "profile": "signed-legacy",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 125.13179100000002
+      },
+      {
+        "profile": "signature-altered",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 175.0959170000001
+      },
+      {
+        "profile": "signature-expired",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 135.37270799999988
+      },
+      {
+        "profile": "privacy-marker",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 174.9614590000001
+      }
+    ]
+  },
+  "report": {
+    "since": "2026-10-08",
+    "timezone": "UTC",
+    "sessions": 9,
+    "observed_agent_sessions": 8,
+    "observed_agent_sessions_pct": 88.9,
+    "scope": "PHP-visible main requests; identified crawler/agent traffic, not all AI usage",
+    "agents": [
+      {
+        "operator": "example-test",
+        "agent": "ExampleTestAgent",
+        "kind": "browsing_agent",
+        "evidence": "declared_unverified",
+        "requests": 2,
+        "sessions": 2
+      },
+      {
+        "operator": "example-test",
+        "agent": "LocalSignedTestAgent",
+        "kind": "browsing_agent",
+        "evidence": "declared_unverified",
+        "requests": 2,
+        "sessions": 1
+      },
+      {
+        "operator": "example-test",
+        "agent": "LocalSignedTestAgent",
+        "kind": "browsing_agent",
+        "evidence": "verified_signature",
+        "requests": 2,
+        "sessions": 1
+      },
+      {
+        "operator": "openai",
+        "agent": "GPTBot",
+        "kind": "training_crawler",
+        "evidence": "declared_unverified",
+        "requests": 2,
+        "sessions": 2
+      },
+      {
+        "operator": "anthropic",
+        "agent": "Claude-User",
+        "kind": "user_fetch",
+        "evidence": "declared_unverified",
+        "requests": 1,
+        "sessions": 1
+      },
+      {
+        "operator": "example-test",
+        "agent": "ExampleTestAgent",
+        "kind": "browsing_agent",
+        "evidence": "verified_ip",
+        "requests": 1,
+        "sessions": 1
+      },
+      {
+        "operator": "unknown",
+        "agent": "unknown",
+        "kind": "human_or_unknown",
+        "evidence": "none",
+        "requests": 1,
+        "sessions": 1
+      }
+    ],
+    "human_browsers": [
+      {
+        "browser_family": "chrome",
+        "requests": 1,
+        "sessions": 1
+      }
+    ],
+    "proxy_diagnostics": {
+      "window": "2026-10-14-07 UTC",
+      "requests": 11,
+      "cdn_resolved_client_ips": 1,
+      "warning": false,
+      "message": null,
+      "remediation": "Configure only your actual proxy addresses in TRUSTED_PROXIES and Symfony trusted_headers; make the proxy overwrite forwarded headers, then verify Request::getClientIp(). Never trust visitor-supplied X-Forwarded-For or CF-Connecting-IP directly. The warning resets with the next hourly window."
+    }
+  },
+  "concurrency": {
+    "requests": 30,
+    "sessions": 1,
+    "workers": 8,
+    "response": {
+      "status": 200,
+      "bytes": 76558,
+      "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e"
+    }
+  },
+  "directory_outage": {
+    "runtime": "v24.21.0",
+    "requests": 2,
+    "results": [
+      {
+        "profile": "pending-safe",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 127.263792
+      },
+      {
+        "profile": "pending-private-query",
+        "status": 200,
+        "bytes": 76558,
+        "bodySha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "clientMs": 114.50091599999996
+      }
+    ]
+  },
+  "reverification": {
+    "checked": 1,
+    "verified": 1,
+    "deferred": 0,
+    "rejected": 0,
+    "expired": 0,
+    "sessions_promoted": 0,
+    "idempotent": true
+  },
+  "minimization": {
+    "scanned_text_columns": 36,
+    "sensitive_matches": 0
+  },
+  "fail_open": {
+    "baseline": {
+      "status": 200,
+      "bytes": 76558,
+      "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e"
+    },
+    "database_unavailable": {
+      "status": 200,
+      "bytes": 76558,
+      "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e"
+    },
+    "catalogue_corrupt": {
+      "status": 200,
+      "bytes": 76558,
+      "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e"
+    }
+  },
+  "proxy_diagnostic": {
+    "cdn_majority_warned": true,
+    "clean_window_cleared": true
+  },
+  "selftest": {
+    "php": "8.2.34",
+    "sodium": true,
+    "openssl": true,
+    "debug": false,
+    "offline": false,
+    "catalogue_agents": 27,
+    "tables": {
+      "request": 65,
+      "session": 13,
+      "daily": 7,
+      "ip_ranges": 6,
+      "key_cache": 1,
+      "state": 4
+    },
+    "tasks": [
+      {
+        "name": "agentenblick.refresh_ranges",
+        "status": "scheduled",
+        "run_interval": "21600"
+      },
+      {
+        "name": "agentenblick.purge",
+        "status": "scheduled",
+        "run_interval": "86400"
+      },
+      {
+        "name": "agentenblick.reverify",
+        "status": "scheduled",
+        "run_interval": "300"
+      }
+    ],
+    "missing_tasks": [],
+    "proxy_diagnostics": {
+      "window": "2026-10-14-07 UTC",
+      "requests": 11,
+      "cdn_resolved_client_ips": 1,
+      "warning": false,
+      "message": null,
+      "remediation": "Configure only your actual proxy addresses in TRUSTED_PROXIES and Symfony trusted_headers; make the proxy overwrite forwarded headers, then verify Request::getClientIp(). Never trust visitor-supplied X-Forwarded-For or CF-Connecting-IP directly. The warning resets with the next hourly window."
+    },
+    "official_extension": null,
+    "collection_errors": {
+      "Doctrine\\DBAL\\Exception\\TableNotFoundException": {
+        "count": 2,
+        "last_logged": 1791963652
+      },
+      "JsonException": {
+        "count": 2,
+        "last_logged": 1791963653
+      }
+    },
+    "warning": "CLI cannot prove web response flushing; verify PHP-FPM and measure the actual HTTP server.",
+    "ok": true
+  },
+  "ok": true
+}

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Verification;
 
@@ -15,12 +17,18 @@ final class Classifier
     {
     }
 
-    public function classify(Request $request, Catalogue $catalogue, string $ipHmac = ''): Classification
+    public function classify(Request $request, Catalogue $catalogue, string $ipHmac = '', ?int $observedAt = null): Classification
     {
-        if ($request->headers->has('Signature-Input') || $request->headers->has('Signature')) {
-            return (new WebBotAuth())->verify($request, $catalogue, fn (string $origin): array => $this->directories->get($origin, $catalogue), time());
+        if (self::hasWebBotAuthCandidate($request)) {
+            return (new WebBotAuth())->verify(
+                $request,
+                $catalogue,
+                fn (string $origin): array => $this->directories->get($origin, $catalogue, !$request->headers->has('Signature-Agent')),
+                $observedAt ?? time(),
+                fn (string $keyId): ?string => $this->directories->knownOrigin($keyId, $catalogue),
+            );
         }
-        $agent = $catalogue->match(substr($request->headers->get('User-Agent', ''), 0, 1024));
+        $agent = $catalogue->match(substr($request->headers->get('User-Agent') ?? '', 0, 1024));
         if ($agent === null) {
             return new Classification();
         }
@@ -36,9 +44,25 @@ final class Classifier
             return new Classification($agent['operator'], $agent['id'], Kind::from($agent['kind']), Evidence::Rdns, 'forward_confirmed_reverse_dns');
         }
         return new Classification(
-            $agent['operator'], $agent['id'], Kind::from($agent['kind']),
+            $agent['operator'],
+            $agent['id'],
+            Kind::from($agent['kind']),
             $verified ? Evidence::Ip : Evidence::Declared,
             $verified ? 'ip_in_official_range' : 'identity_not_verified',
         );
+    }
+
+    public static function hasWebBotAuthCandidate(Request $request): bool
+    {
+        try {
+            foreach ((new HttpSignature())->parse($request->headers->get('Signature-Input') ?? '', $request->headers->get('Signature') ?? '') as $candidate) {
+                if ($candidate['input']->parameterByKey('tag') === 'web-bot-auth') {
+                    return true;
+                }
+            }
+        } catch (\Throwable) {
+            // An ordinary or malformed HTTP signature is not evidence of an AI agent.
+        }
+        return false;
     }
 }

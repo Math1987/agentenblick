@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentenblick:report:1",
+  "title": "agentenblick:report --json, version 1",
+  "description": "Calendar-day aggregates in UTC for PHP-visible main requests. An observed session uses a daily HMAC identity and a 30-minute inactivity window. Agent share includes verified and declared agents; it is not the percentage of all AI usage. No raw visitor IP, token, request body, query string or individual human request belongs in this report.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["since", "timezone", "sessions", "observed_agent_sessions", "observed_agent_sessions_pct", "scope", "agents", "human_browsers", "proxy_diagnostics"],
+  "properties": {
+    "since": {"type": "string", "format": "date"},
+    "timezone": {"const": "UTC"},
+    "sessions": {"$ref": "#/$defs/counter"},
+    "observed_agent_sessions": {"$ref": "#/$defs/counter"},
+    "observed_agent_sessions_pct": {"type": ["number", "null"], "minimum": 0, "maximum": 100, "description": "100 × observed_agent_sessions / sessions, rounded to one decimal; null when sessions is zero."},
+    "scope": {"type": "string", "minLength": 1},
+    "agents": {"type": "array", "items": {"$ref": "#/$defs/agentAggregate"}},
+    "human_browsers": {"type": "array", "items": {"$ref": "#/$defs/browserAggregate"}},
+    "proxy_diagnostics": {"$ref": "#/$defs/proxyDiagnostics"}
+  },
+  "allOf": [
+    {"if": {"properties": {"sessions": {"const": 0}}}, "then": {"properties": {"observed_agent_sessions": {"const": 0}, "observed_agent_sessions_pct": {"type": "null"}}}, "else": {"properties": {"observed_agent_sessions_pct": {"type": "number"}}}}
+  ],
+  "$defs": {
+    "counter": {"type": "integer", "minimum": 0},
+    "kind": {"enum": ["training_crawler", "search_crawler", "user_fetch", "browsing_agent", "automation_unknown", "human_or_unknown"]},
+    "evidence": {"enum": ["verified_signature", "verified_ip", "verified_rdns", "declared_unverified", "none"], "description": "Signature, published IP range and forward-confirmed reverse DNS are distinct proofs. A declaration alone is unverified; none includes human or otherwise unidentified traffic."},
+    "agentAggregate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["operator", "agent", "kind", "evidence", "requests", "sessions"],
+      "properties": {
+        "operator": {"type": "string", "minLength": 1, "maxLength": 64},
+        "agent": {"type": "string", "minLength": 1, "maxLength": 100},
+        "kind": {"$ref": "#/$defs/kind"},
+        "evidence": {"$ref": "#/$defs/evidence"},
+        "requests": {"$ref": "#/$defs/counter"},
+        "sessions": {"$ref": "#/$defs/counter"}
+      }
+    },
+    "browserAggregate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["browser_family", "requests", "sessions"],
+      "properties": {
+        "browser_family": {"enum": ["chrome", "edge", "firefox", "safari", "opera", "samsung_internet", "other", ""], "description": "Closed coarse family list; an empty value means historical counters recorded before browser-family aggregation."},
+        "requests": {"$ref": "#/$defs/counter"},
+        "sessions": {"$ref": "#/$defs/counter"}
+      }
+    },
+    "proxyDiagnostics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["window", "requests", "cdn_resolved_client_ips", "warning", "message", "remediation"],
+      "properties": {
+        "window": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2} UTC$", "description": "Current UTC hour. This diagnostic window is independent of the report's calendar-day period."},
+        "requests": {"$ref": "#/$defs/counter"},
+        "cdn_resolved_client_ips": {"$ref": "#/$defs/counter"},
+        "warning": {"type": "boolean", "description": "True when at least 10 observations exist and over half of Symfony's resolved client IPs are in known CDN ranges."},
+        "message": {"type": ["string", "null"]},
+        "remediation": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {"if": {"properties": {"warning": {"const": true}}}, "then": {"properties": {"message": {"type": "string", "minLength": 1}}}, "else": {"properties": {"message": {"type": "null"}}}}
+      ]
+    }
+  }
+}

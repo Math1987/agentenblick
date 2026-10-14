@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Domain;
 
@@ -11,6 +13,7 @@ final readonly class Classification
         public Evidence $evidence = Evidence::None,
         public string $reason = 'no_evidence',
         public ?string $keyId = null,
+        public ?string $signatureLabel = null,
     ) {
     }
 

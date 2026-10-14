@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Verification;
 
@@ -59,7 +61,7 @@ final class HttpSignature
                 if (!$message->headers->has($name)) {
                     throw new \UnexpectedValueException('missing_signed_header');
                 }
-                $value = implode(', ', array_map(static fn (string $value): string => trim($value, " \t"), $message->headers->all($name)));
+                $value = implode(', ', array_map(static fn (?string $value): string => trim($value ?? '', " \t"), $message->headers->all($name)));
                 $key = $component->parameterByKey('key');
                 if ($key !== null) {
                     if (!is_string($key)) {

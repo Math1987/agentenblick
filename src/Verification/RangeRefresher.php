@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Verification;
 
@@ -42,7 +44,10 @@ final class RangeRefresher
         return $result;
     }
 
-    /** @param list<string> $old @param list<string> $new */
+    /**
+     * @param list<string> $old
+     * @param list<string> $new
+     */
     public static function needsConfirmation(array $old, array $new): bool
     {
         return $old !== [] && (count(array_diff($old, $new)) + count(array_diff($new, $old))) / count($old) > 0.30;

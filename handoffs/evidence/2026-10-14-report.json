@@ -1,0 +1,81 @@
+{
+    "since": "2026-10-14",
+    "timezone": "UTC",
+    "sessions": 9,
+    "observed_agent_sessions": 8,
+    "observed_agent_sessions_pct": 88.9,
+    "scope": "PHP-visible main requests; identified crawler\/agent traffic, not all AI usage",
+    "agents": [
+        {
+            "operator": "example-test",
+            "agent": "ExampleTestAgent",
+            "kind": "browsing_agent",
+            "evidence": "declared_unverified",
+            "requests": 2,
+            "sessions": 2
+        },
+        {
+            "operator": "example-test",
+            "agent": "LocalSignedTestAgent",
+            "kind": "browsing_agent",
+            "evidence": "declared_unverified",
+            "requests": 2,
+            "sessions": 1
+        },
+        {
+            "operator": "example-test",
+            "agent": "LocalSignedTestAgent",
+            "kind": "browsing_agent",
+            "evidence": "verified_signature",
+            "requests": 2,
+            "sessions": 1
+        },
+        {
+            "operator": "openai",
+            "agent": "GPTBot",
+            "kind": "training_crawler",
+            "evidence": "declared_unverified",
+            "requests": 2,
+            "sessions": 2
+        },
+        {
+            "operator": "anthropic",
+            "agent": "Claude-User",
+            "kind": "user_fetch",
+            "evidence": "declared_unverified",
+            "requests": 1,
+            "sessions": 1
+        },
+        {
+            "operator": "example-test",
+            "agent": "ExampleTestAgent",
+            "kind": "browsing_agent",
+            "evidence": "verified_ip",
+            "requests": 1,
+            "sessions": 1
+        },
+        {
+            "operator": "unknown",
+            "agent": "unknown",
+            "kind": "human_or_unknown",
+            "evidence": "none",
+            "requests": 1,
+            "sessions": 1
+        }
+    ],
+    "human_browsers": [
+        {
+            "browser_family": "chrome",
+            "requests": 1,
+            "sessions": 1
+        }
+    ],
+    "proxy_diagnostics": {
+        "window": "2026-10-14-07 UTC",
+        "requests": 11,
+        "cdn_resolved_client_ips": 1,
+        "warning": false,
+        "message": null,
+        "remediation": "Configure only your actual proxy addresses in TRUSTED_PROXIES and Symfony trusted_headers; make the proxy overwrite forwarded headers, then verify Request::getClientIp(). Never trust visitor-supplied X-Forwarded-For or CF-Connecting-IP directly. The warning resets with the next hourly window."
+    }
+}

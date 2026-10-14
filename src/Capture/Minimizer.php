@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Capture;
 
@@ -8,13 +10,15 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class Minimizer
 {
-    /** @return array<string, mixed> */
-    public function minimize(Request $request, Classification $classification, string $key, \DateTimeImmutable $at, int $status): array
+    /** @param array<string, mixed>|null $signatureContext
+     * @return array<string, mixed>
+     */
+    public function minimize(Request $request, Classification $classification, string $key, \DateTimeImmutable $at, int $status, ?array $signatureContext = null): array
     {
         $hmac = static fn (string $purpose, string $value): string => hash_hmac('sha256', $purpose . "\0" . $value, $key);
         $ip = $request->getClientIp() ?? '';
         $ipHash = $hmac('ip', $ip);
-        $userAgent = substr($request->headers->get('User-Agent', ''), 0, 1024);
+        $userAgent = substr(($request->headers->get('User-Agent') ?? ''), 0, 1024);
         $context = $request->headers->get('sw-context-token');
         $cookie = null;
         foreach ($request->cookies->all() as $name => $value) {
@@ -48,14 +52,24 @@ final class Minimizer
             'route' => (new ObservationScope())->route($request),
             'method' => substr($request->getMethod(), 0, 10), 'ip_hmac' => $ipHash,
             'user_agent' => $classification->isNonHuman() ? $userAgent : '',
+            'browser_family' => $classification->isNonHuman() ? '' : BrowserFamily::fromUserAgent($userAgent),
             'network_prefix' => null, 'signature_input' => null,
             'signature_value' => null, 'signature_agent' => null, 'key_id' => $classification->keyId,
+            'pending_context' => null, 'verify_after' => null, 'verify_attempts' => 0,
         ];
         // Unvalidated header input may contain personal data: only preserve verified signature metadata.
-        if ($classification->evidence === Evidence::Signature) {
-            $row['signature_input'] = $request->headers->get('Signature-Input');
-            $row['signature_value'] = $request->headers->get('Signature');
-            $row['signature_agent'] = $request->headers->get('Signature-Agent');
+        if ($classification->evidence === Evidence::Signature && $signatureContext !== null) {
+            $row['signature_input'] = $signatureContext['headers']['Signature-Input'];
+            $row['signature_value'] = $signatureContext['headers']['Signature'];
+            $row['signature_agent'] = $signatureContext['headers']['Signature-Agent'];
+        }
+        if ($classification->reason === 'directory_unreachable') {
+            if ($signatureContext === null) {
+                $row['reason'] = 'directory_unreachable_privacy';
+            } else {
+                $row['pending_context'] = json_encode($signatureContext, JSON_THROW_ON_ERROR);
+                $row['verify_after'] = $at->modify('+5 minutes')->format('Y-m-d H:i:s');
+            }
         }
         if (in_array($classification->evidence, [Evidence::Ip, Evidence::Rdns, Evidence::Signature], true) && $ip !== '') {
             $packed = inet_pton($ip);
