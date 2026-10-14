@@ -1,0 +1,48 @@
+{
+  "startedAt": "2026-10-14T11:40:45.450995+00:00",
+  "demo": true,
+  "checks": {
+    "environment": "test",
+    "offBeforeConsent": true,
+    "demoConfiguredBeforeIdentity": true,
+    "network": {
+      "positiveControlPackets": 18,
+      "beforeConsentPackets": 0,
+      "filter": "(udp port 53 or tcp port 53) or (tcp and (dst port 80 or dst port 443) and not net 127.0.0.0/8 and not host ::1)",
+      "direction": "out"
+    },
+    "k10AndByteHash": {
+      "channels": 3,
+      "fullyEligible": 1,
+      "fullySuppressed": 1,
+      "agentDistributionsSuppressed": 1,
+      "cliApiBytesEqual": true
+    },
+    "explicitConsent": {
+      "locale": "de-DE",
+      "version": "2",
+      "registered": true,
+      "missingConsentStatus": 400
+    },
+    "nativeCloudSend": {
+      "acceptedDocuments": 3,
+      "identicalRetryAccepted": true,
+      "historyHashesMatchPreview": true
+    },
+    "withdrawal": {
+      "confirmedByNativeClient": true,
+      "requiredCloudStatus": 204,
+      "sendingStopped": true
+    }
+  },
+  "cleanup": {
+    "cloudWithdrawalConfirmed": true,
+    "dailyRestored": true,
+    "ownDraftsDeleted": true,
+    "configurationRestored": true,
+    "complete": true
+  },
+  "period": "2026-W41",
+  "passed": true,
+  "finishedAt": "2026-10-14T11:42:12.484119+00:00"
+}

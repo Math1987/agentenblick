@@ -20,6 +20,7 @@
         <mt-banner v-if="status.pendingWithdrawal" variant="attention">
             {{ $t('agentenblick.benchmark.withdrawalPending') }}
         </mt-banner>
+        <mt-banner v-if="needsConsentUpdate" variant="attention">{{ $t('agentenblick.benchmark.consentUpdate') }}</mt-banner>
 
         <mt-card position-identifier="agentenblick-benchmark-participation" :title="$t('agentenblick.benchmark.title')">
             <div class="agentenblick-benchmark__heading">
@@ -28,6 +29,7 @@
             </div>
             <ul class="agentenblick-benchmark__privacy">
                 <li>{{ $t('agentenblick.benchmark.privacy.aggregate') }}</li>
+                <li>{{ $t('agentenblick.benchmark.privacy.journey') }}</li>
                 <li>{{ $t('agentenblick.benchmark.privacy.excluded') }}</li>
                 <li>{{ $t('agentenblick.benchmark.privacy.threshold') }}</li>
                 <li>{{ $t('agentenblick.benchmark.privacy.retention') }}</li>
@@ -37,11 +39,11 @@
                 <dt>{{ $t('agentenblick.benchmark.installation') }}</dt><dd><code>{{ status.installationId }}</code></dd>
                 <template v-if="status.consentAt"><dt>{{ $t('agentenblick.benchmark.consentAt') }}</dt><dd>{{ date(status.consentAt) }} · {{ status.locale }} · v{{ status.consentVersion }}</dd></template>
             </dl>
-            <div v-if="!status.enabled && !status.pendingWithdrawal && canEdit" class="agentenblick-benchmark__consent">
+            <div v-if="(!status.enabled || needsConsentUpdate) && !status.pendingWithdrawal && canEdit" class="agentenblick-benchmark__consent">
                 <label><input v-model="consent" type="checkbox" :disabled="busy || status.offline || identityConflict" /> <span>{{ $t('agentenblick.benchmark.consent') }}</span></label>
-                <mt-button variant="primary" :disabled="!consent || busy || status.offline || identityConflict" :is-loading="busy" @click="update('enable')">{{ $t('agentenblick.benchmark.enable') }}</mt-button>
+                <mt-button variant="primary" :disabled="!canEnable" :is-loading="busy" @click="update('enable')">{{ $t(needsConsentUpdate ? 'agentenblick.benchmark.renewConsent' : 'agentenblick.benchmark.enable') }}</mt-button>
             </div>
-            <div v-else-if="status.enabled && canEdit" class="agentenblick-benchmark__actions">
+            <div v-if="status.enabled && canEdit" class="agentenblick-benchmark__actions">
                 <mt-button :disabled="!canTransmit" :is-loading="busy" @click="update('send')">{{ $t('agentenblick.benchmark.send') }}</mt-button>
                 <mt-button :disabled="busy" @click="confirmWithdrawal = true">{{ $t('agentenblick.benchmark.disable') }}</mt-button>
             </div>

@@ -24,15 +24,15 @@ final class BenchmarkCommand extends Command
     {
         $this->addArgument('action', InputArgument::OPTIONAL, 'status, preview, history, enable, disable, send, run or comparison', 'status');
         $this->addOption('period', null, InputOption::VALUE_REQUIRED, 'Completed ISO week for preview');
-        $this->addOption('accept-consent', null, InputOption::VALUE_REQUIRED, 'Consent version 1; required to enable');
+        $this->addOption('accept-consent', null, InputOption::VALUE_REQUIRED, 'Consent version ' . Manager::CONSENT_VERSION . '; required to enable');
         $this->addOption('locale', null, InputOption::VALUE_REQUIRED, 'Consent language de-DE or en-GB');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $action = $input->getArgument('action');
-        if ($action === 'enable' && ($input->getOption('accept-consent') !== '1' || !in_array($input->getOption('locale'), ['de-DE', 'en-GB'], true))) {
-            throw new \InvalidArgumentException('Read the README consent notice and pass --accept-consent=1 --locale=de-DE or en-GB.');
+        if ($action === 'enable' && ($input->getOption('accept-consent') !== Manager::CONSENT_VERSION || !in_array($input->getOption('locale'), ['de-DE', 'en-GB'], true))) {
+            throw new \InvalidArgumentException('Read the README consent notice and pass --accept-consent=' . Manager::CONSENT_VERSION . ' --locale=de-DE or en-GB.');
         }
         $period = $input->getOption('period');
         $result = match ($action) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Persistence;
 
+use Aithos\Agentenblick\Journey\SessionCloser;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
@@ -21,6 +22,14 @@ final class Purger
         $humanHours = max(1, min(168, $this->config->getInt('AithosAgentenblick.config.humanRetentionHours') ?: 48));
         $months = max(1, min(36, $this->config->getInt('AithosAgentenblick.config.aggregateRetentionMonths') ?: 13));
         $cutoff = $now->modify('-' . $agentDays . ' days')->format('Y-m-d H:i:s');
+        $closureFailed = 0;
+        try {
+            (new SessionCloser($this->connection))->run($now->getTimestamp());
+        } catch (\Throwable) {
+            $closureFailed = 1;
+        }
+        // Closure is best effort and bounded. Privacy retention takes precedence
+        // over completing a backlog: an unclosed session must not keep details.
         $result = [
             'requests' => (int) $this->connection->executeStatement('DELETE FROM agentenblick_request WHERE observed_at < ?', [$cutoff]),
             'agent_sessions' => (int) $this->connection->executeStatement("DELETE FROM agentenblick_session WHERE kind <> 'human_or_unknown' AND last_seen < ?", [$cutoff]),
@@ -28,7 +37,9 @@ final class Purger
             'daily' => (int) $this->connection->executeStatement('DELETE FROM agentenblick_daily WHERE day < ?', [$now->modify('-' . $months . ' months')->format('Y-m-d')]),
             'expired_state' => (int) $this->connection->executeStatement("DELETE FROM agentenblick_state WHERE name <> 'daily_hmac_key' AND updated_at < ?", [$now->modify('-48 hours')->format('Y-m-d H:i:s')]),
             'expired_keys' => (int) $this->connection->executeStatement('DELETE FROM agentenblick_key_cache WHERE fetched_at < ?', [$now->modify('-24 hours')->format('Y-m-d H:i:s')]),
+            'closure_failed' => $closureFailed,
         ];
+        $this->connection->executeStatement('DELETE FROM agentenblick_journey_daily WHERE day < ?', [$now->modify('-' . $months . ' months')->format('Y-m-d')]);
         $key = $this->keys->current($now->format('Y-m-d'));
         sodium_memzero($key);
         return $result;

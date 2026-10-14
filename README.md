@@ -73,12 +73,12 @@ performance result. The measurements are under `handoffs/evidence/`.
 Participation is **off by default**. The Benchmark tab and
 `bin/console agentenblick:benchmark preview` show the exact JSON bytes that will
 be sent. This preview only writes a local frozen draft; it makes no request.
-Activation requires explicit consent version `1` in `de-DE` or `en-GB`.
+Activation requires explicit consent version `2` in `de-DE` or `en-GB`.
 
-**English consent, version 1:** I agree to send weekly aggregated traffic shares
+**English consent, version 2:** I agree to send weekly aggregated traffic shares
 to Aithos for the Shopware benchmark. The document contains random installation
 and channel identifiers, completed ISO week, country, Shopware/plugin versions,
-a broad traffic bucket, the Agentic Commerce extension flag, and rounded shares.
+a broad traffic bucket, the Agentic Commerce extension flag, and rounded traffic, journey-stage and evaluated-failure shares.
 It contains no domain, IP, URL, query string, user agent, cart, order, customer
 identifier or exact traffic count. Shares with fewer than ten sessions in their
 denominator are suppressed. Published comparisons require five distinct eligible
@@ -86,11 +86,11 @@ installations per metric.
 I can preview each document and withdraw at any time. Withdrawal stops new
 submissions immediately and requests deletion of this installation's submissions.
 
-**Deutsche Einwilligung, Version 1:** Ich stimme zu, wöchentliche aggregierte
+**Deutsche Einwilligung, Version 2:** Ich stimme zu, wöchentliche aggregierte
 Verkehrsanteile für den Shopware-Benchmark an Aithos zu senden. Das Dokument
 enthält zufällige Installations- und Kanal-IDs, eine abgeschlossene Kalenderwoche,
 Land, Shopware-/Plugin-Version, eine grobe Größenklasse, den Status der
-Agentic-Commerce-Erweiterung und gerundete Anteile. Domains, IP-Adressen, URLs,
+Agentic-Commerce-Erweiterung und gerundete Verkehrs-, Besuchsschritt- und ausgewertete Fehleranteile. Domains, IP-Adressen, URLs,
 Query-Strings, User-Agents, Warenkörbe, Bestellungen, Kundendaten und genaue
 Besuchszahlen werden nicht gesendet. Anteile mit weniger als zehn Sitzungen im
 Nenner werden unterdrückt. Vergleiche erfordern mindestens fünf unterschiedliche
@@ -101,7 +101,7 @@ stoppt neue Übermittlungen sofort und veranlasst die Löschung der Beiträge.
 ```sh
 bin/console agentenblick:benchmark status
 bin/console agentenblick:benchmark preview
-bin/console agentenblick:benchmark enable --accept-consent=1 --locale=en-GB
+bin/console agentenblick:benchmark enable --accept-consent=2 --locale=en-GB
 bin/console agentenblick:benchmark send
 bin/console agentenblick:benchmark history
 bin/console agentenblick:benchmark disable
@@ -126,8 +126,13 @@ The installation has one cohort per week: country of its oldest active
 storefront channel, overall weekly traffic bucket, minor Shopware version and
 active `SwagAgenticCommerce` flag. Channel aliases are random UUIDv4, unrelated
 to Shopware IDs. Agent distributions use their own ten-session threshold;
-rounded values sum to 100.0. No raw counts leave the shop. Funnel and failure
-fields remain `suppressed` in schema version 1.
+rounded values sum to 100.0. No raw counts leave the shop. Schema version 2 adds independent stage and failure
+shares for verified and declared agents. Stages use closed sessions; failures use
+only sessions in which that condition was evaluated. Unknown cache states do not
+become successes. Each denominator has its own k10 threshold. Weekly drafts wait
+until at least 45 minutes after the week ends and all relevant sessions close.
+Frozen version-1 documents remain unchanged and retryable. Participation enabled
+under consent version 1 pauses until the merchant reviews and accepts version 2.
 
 Offline mode (`AithosAgentenblick.config.offline=true`) blocks every benchmark
 request, including registration, comparison and withdrawal. Only the explicit

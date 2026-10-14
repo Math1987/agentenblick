@@ -6,6 +6,7 @@ namespace Aithos\Agentenblick\Capture;
 
 use Aithos\Agentenblick\Domain\Classification;
 use Aithos\Agentenblick\Domain\Evidence;
+use Aithos\Agentenblick\Journey\Signals;
 use Symfony\Component\HttpFoundation\Request;
 
 final class Minimizer
@@ -79,6 +80,6 @@ final class Minimizer
                 $row['network_prefix'] = inet_ntop($prefix) . ($v4 ? '/24' : '/48');
             }
         }
-        return $row;
+        return $row + Signals::minimized($request, $status, $classification->isNonHuman());
     }
 }

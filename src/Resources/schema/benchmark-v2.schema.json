@@ -1,0 +1,1215 @@
+{
+  "$id": "https://shopware.aithos.app/schemas/benchmark-v2.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "agentenblick.benchmark/2"
+    },
+    "installationId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+    },
+    "channelId": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$"
+    },
+    "period": {
+      "type": "string",
+      "pattern": "^20[2-9][0-9]-W(?:0[1-9]|[1-4][0-9]|5[0-3])$"
+    },
+    "demo": {
+      "type": "boolean"
+    },
+    "segment": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "shopware": {
+          "type": "string",
+          "pattern": "^6\\.(?:[6-9]|[1-9][0-9])$"
+        },
+        "plugin": {
+          "type": "string",
+          "pattern": "^[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}$"
+        },
+        "trafficBucket": {
+          "type": "string",
+          "enum": ["<1k", "1k-10k", "10k-100k", "100k+"]
+        },
+        "agenticCommerceExtension": {
+          "type": "boolean"
+        }
+      },
+      "required": ["country", "shopware", "plugin", "trafficBucket", "agenticCommerceExtension"],
+      "additionalProperties": false
+    },
+    "denominators": {
+      "type": "object",
+      "properties": {
+        "sessions": {
+          "type": "string",
+          "enum": ["below_10", "at_least_10"]
+        },
+        "agentSessions": {
+          "type": "string",
+          "enum": ["below_10", "at_least_10"]
+        }
+      },
+      "required": ["sessions", "agentSessions"],
+      "additionalProperties": false
+    },
+    "shares": {
+      "type": "object",
+      "properties": {
+        "aiSessionsPct": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100
+            },
+            {
+              "type": "string",
+              "const": "suppressed"
+            }
+          ]
+        },
+        "byKind": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "training_crawler": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "search_crawler": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "user_fetch": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "browsing_agent": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "automation_unknown": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "training_crawler",
+                "search_crawler",
+                "user_fetch",
+                "browsing_agent",
+                "automation_unknown"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "string",
+              "const": "suppressed"
+            }
+          ]
+        },
+        "byEvidence": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "verified_signature": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "verified_ip": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "verified_rdns": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "declared_unverified": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "none": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": [
+                "verified_signature",
+                "verified_ip",
+                "verified_rdns",
+                "declared_unverified",
+                "none"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "string",
+              "const": "suppressed"
+            }
+          ]
+        },
+        "byOperator": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "openai": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "google": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "anthropic": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "perplexity": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "other": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                }
+              },
+              "required": ["openai", "google", "anthropic", "perplexity", "other"],
+              "additionalProperties": false
+            },
+            {
+              "type": "string",
+              "const": "suppressed"
+            }
+          ]
+        }
+      },
+      "required": ["aiSessionsPct", "byKind", "byEvidence", "byOperator"],
+      "additionalProperties": false
+    },
+    "funnel": {
+      "type": "object",
+      "properties": {
+        "verified": {
+          "type": "object",
+          "properties": {
+            "discover": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "browse": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "search": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "product": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "cart": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "checkout": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "order": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["discover", "browse", "search", "product", "cart", "checkout", "order"],
+          "additionalProperties": false
+        },
+        "declared": {
+          "type": "object",
+          "properties": {
+            "discover": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "browse": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "search": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "product": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "cart": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "checkout": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "order": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["discover", "browse", "search", "product", "cart", "checkout", "order"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["verified", "declared"],
+      "additionalProperties": false
+    },
+    "failures": {
+      "type": "object",
+      "properties": {
+        "verified": {
+          "type": "object",
+          "properties": {
+            "search_empty": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "product_unavailable": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "product_out_of_stock": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "http_4xx": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "http_5xx": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "forbidden": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "rate_limited": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "checkout_form": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "cart_error": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "payment_error": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "abandoned_cart": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "abandoned_checkout": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "search_empty",
+            "product_unavailable",
+            "product_out_of_stock",
+            "http_4xx",
+            "http_5xx",
+            "forbidden",
+            "rate_limited",
+            "checkout_form",
+            "cart_error",
+            "payment_error",
+            "abandoned_cart",
+            "abandoned_checkout"
+          ],
+          "additionalProperties": false
+        },
+        "declared": {
+          "type": "object",
+          "properties": {
+            "search_empty": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "product_unavailable": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "product_out_of_stock": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "http_4xx": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "http_5xx": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "forbidden": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "rate_limited": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "checkout_form": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "cart_error": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "payment_error": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "abandoned_cart": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            },
+            "abandoned_checkout": {
+              "type": "object",
+              "properties": {
+                "denominator": {
+                  "type": "string",
+                  "enum": ["below_10", "at_least_10"]
+                },
+                "pct": {
+                  "anyOf": [
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    {
+                      "type": "string",
+                      "const": "suppressed"
+                    }
+                  ]
+                }
+              },
+              "required": ["denominator", "pct"],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "search_empty",
+            "product_unavailable",
+            "product_out_of_stock",
+            "http_4xx",
+            "http_5xx",
+            "forbidden",
+            "rate_limited",
+            "checkout_form",
+            "cart_error",
+            "payment_error",
+            "abandoned_cart",
+            "abandoned_checkout"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": ["verified", "declared"],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema",
+    "installationId",
+    "channelId",
+    "period",
+    "demo",
+    "segment",
+    "denominators",
+    "shares",
+    "funnel",
+    "failures"
+  ],
+  "additionalProperties": false,
+  "$comment": "Additional semantic validation: ISO week exists and is completed; shares rounded to 0.1; distribution sums 100±0.5; below_10 denominators require suppressed values; one installation cohort per week; demo is fixed by registration. No raw counts or personal identifiers accepted."
+}

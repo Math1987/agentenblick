@@ -5,10 +5,14 @@ declare(strict_types=1);
 namespace Aithos\Agentenblick\Verification;
 
 use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpClient\NoPrivateNetworkHttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class SafeFetcher
 {
+    public function __construct(private readonly ?HttpClientInterface $transport = null)
+    {
+    }
+
     /** @return array<string, mixed> */
     public function json(string $url, int $maximumBytes = 65536, bool $testOnly = false): array
     {
@@ -17,9 +21,9 @@ final class SafeFetcher
             || isset($parts['fragment']) || (!$testOnly && (($parts['scheme'] ?? '') !== 'https' || ($parts['port'] ?? 443) !== 443))) {
             throw new \UnexpectedValueException('invalid_source_url');
         }
-        $client = HttpClient::create();
+        $client = $this->transport ?? HttpClient::create();
         if (!$testOnly) {
-            $client = new NoPrivateNetworkHttpClient($client);
+            $client = PublicNetworkClient::protect($client);
         }
         $response = $client->request('GET', $url, [
             'max_redirects' => 0, 'timeout' => 2.0, 'max_duration' => 2.0, 'buffer' => false,

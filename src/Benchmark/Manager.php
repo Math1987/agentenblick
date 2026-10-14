@@ -11,6 +11,7 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 /** @phpstan-import-type Settings from State */
 final class Manager
 {
+    public const CONSENT_VERSION = '2';
     public function __construct(private readonly Connection $connection, private readonly State $settings, private readonly Drafts $drafts, private readonly Transport $transport)
     {
     }
@@ -24,7 +25,8 @@ final class Manager
             'enabled' => $state['enabled'], 'offline' => $offline, 'pendingWithdrawal' => $state['pendingWithdrawal'], 'registered' => $state['registered'],
             'demo' => $state['demo'], 'installationId' => $state['installationId'] === '' ? null : $state['installationId'],
             'consentAt' => $state['consentAt'], 'locale' => $state['locale'], 'consentVersion' => $state['consentVersion'],
-            'reasonCode' => $this->settings->testIdentityConflict($state) ? 'test_identity_conflict' : ($state['pendingWithdrawal'] ? 'withdrawal_pending' : ($offline ? 'offline' : (!$state['enabled'] ? 'disabled' : (!$state['registered'] ? 'registration_pending' : 'ready')))),
+            'requiredConsentVersion' => self::CONSENT_VERSION,
+            'reasonCode' => $this->settings->testIdentityConflict($state) ? 'test_identity_conflict' : ($state['pendingWithdrawal'] ? 'withdrawal_pending' : ($offline ? 'offline' : (!$state['enabled'] ? 'disabled' : ($state['consentVersion'] !== self::CONSENT_VERSION ? 'consent_update_required' : (!$state['registered'] ? 'registration_pending' : 'ready'))))),
         ];
     }
 
@@ -57,7 +59,7 @@ final class Manager
                 throw new ConflictHttpException('Complete the pending withdrawal before opting in again.');
             }
             $state['enabled'] = true;
-            $state['consentVersion'] = '1';
+            $state['consentVersion'] = self::CONSENT_VERSION;
             $state['consentAt'] = gmdate('c');
             $state['locale'] = $locale;
             $this->settings->save($state);
@@ -105,6 +107,9 @@ final class Manager
             if (!$state['enabled']) {
                 return ['status' => 'disabled'];
             }
+            if ($state['consentVersion'] !== self::CONSENT_VERSION) {
+                return ['status' => 'consent_update_required'];
+            }
             if (!$state['registered']) {
                 $this->register($state);
                 return ['status' => $this->settings->read()['registered'] ? 'registered' : 'registration_pending'];
@@ -143,7 +148,7 @@ final class Manager
     {
         return $this->locked(function (): array {
             $state = $this->settings->read();
-            if (!$state['enabled'] || $state['pendingWithdrawal'] || $this->settings->offline() || $this->settings->testIdentityConflict($state)) {
+            if (!$state['enabled'] || $state['consentVersion'] !== self::CONSENT_VERSION || $state['pendingWithdrawal'] || $this->settings->offline() || $this->settings->testIdentityConflict($state)) {
                 return ['available' => false, 'reason' => 'benchmark_not_connected'];
             }
             if ($state['demo']) {

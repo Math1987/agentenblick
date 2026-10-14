@@ -20,7 +20,10 @@
     "tabs": {
       "overview": "Übersicht",
       "agents": "Agenten",
-      "benchmark": "Benchmark"
+      "benchmark": "Benchmark",
+      "funnel": "Trichter",
+      "journeys": "Verläufe",
+      "failures": "Fehler"
     },
     "filters": {
       "period": "Zeitraum",
@@ -122,12 +125,13 @@
         "aggregate": "Übermittelt werden nur abgeschlossene ISO-Wochen: auf 0,1 Prozentpunkt gerundete Anteile, grobe Segmente und eine zufällige Installationskennung. Verkaufskanal-Kennungen werden in der Meldung pseudonymisiert.",
         "excluded": "Keine Roh-IP, Besucher- oder Sitzungskennung, Shop-Domain, Anfrageinhalte, URL-Parameter, Bestellkennung oder einzelne Anfrage wird übermittelt.",
         "threshold": "Bei einem Nenner unter 10 Sitzungen wird die Shop-Kennzahl unterdrückt. Eine veröffentlichte Benchmark-Kennzahl benötigt mindestens 5 berechtigte Installationen; mehrere Kanäle eines Shops zählen als ein Teilnehmer.",
-        "retention": "Meldungen werden 13 Monate aufbewahrt. Ein Widerruf beendet künftige Meldungen und fordert die Löschung gespeicherter Meldungen dieser Installation an."
+        "retention": "Meldungen werden 13 Monate aufbewahrt. Ein Widerruf beendet künftige Meldungen und fordert die Löschung gespeicherter Meldungen dieser Installation an.",
+        "journey": "Version 2 ergänzt Anteile unabhängig beobachteter Schritte und benannter Fehler, getrennt nach verifizierten und deklarierten Agenten. Fehlerquoten berücksichtigen nur Sitzungen mit bekanntem Ergebnis; fehlende Schritte werden nicht ergänzt."
       },
       "methodology": "Öffentliche Methodik und Datenschutzregeln lesen",
       "installation": "Zufällige Installations-ID",
       "consentAt": "Einwilligung erfasst (UTC)",
-      "consent": "Ich habe die Meldungsvorschau und die Methodik geprüft. Ich stimme der Übermittlung der beschriebenen Wochenaggregate an den Aithos-Benchmark gemäß Einwilligungsversion 1 zu. Ich kann die Teilnahme jederzeit widerrufen.",
+      "consent": "Ich habe die Datenvorschau und Methodik geprüft. Ich stimme der Übermittlung der beschriebenen wöchentlichen Verkehrs-, Verlaufs- und Fehleraggregate an den Aithos-Benchmark gemäß Einwilligungsversion 2 zu. Einzelne Anfragen, Sitzungen oder Bestellungen werden nicht gesendet. Ich kann jederzeit widerrufen.",
       "enable": "Wöchentliche Teilnahme aktivieren",
       "send": "Ausstehende Wochenaggregate senden",
       "disable": "Teilnahme widerrufen",
@@ -166,7 +170,8 @@
         "ready": "Teilnahme aktiviert",
         "disabled": "Teilnahme deaktiviert",
         "registration_pending": "Registrierung ausstehend",
-        "test_identity_conflict": "Echte Identität im Test gesperrt"
+        "test_identity_conflict": "Echte Identität im Test gesperrt",
+        "consent_update_required": "Neue Einwilligung erforderlich"
       },
       "submission": {
         "draft": "Lokaler Entwurf",
@@ -196,7 +201,118 @@
         "disabled": "Aktivieren Sie die Teilnahme, bevor Sie einen Vergleich abrufen.",
         "withdrawal_pending": "Während der ausstehenden Löschanfrage ist kein Vergleich verfügbar."
       },
-      "identityConflict": "Diese Testumgebung enthält eine bestehende echte Installationsidentität. Aktivierung, Meldungen, Vergleiche und serverseitige Löschung sind gesperrt. Verwenden Sie eine separate Demonstrationsidentität und nicht die Produktionsidentität einer geklonten Datenbank."
+      "identityConflict": "Diese Testumgebung enthält eine bestehende echte Installationsidentität. Aktivierung, Meldungen, Vergleiche und serverseitige Löschung sind gesperrt. Verwenden Sie eine separate Demonstrationsidentität und nicht die Produktionsidentität einer geklonten Datenbank.",
+      "consentUpdate": "Der Benchmark enthält jetzt Verlaufs- und Fehleranteile. Neue Übermittlungen sind bis zur ausdrücklichen Zustimmung zu Einwilligungsversion 2 pausiert. Bereits festgeschriebene Dokumente bleiben unverändert; ein Widerruf ist weiterhin möglich.",
+      "renewConsent": "Version 2 akzeptieren und Teilnahme fortsetzen"
+    },
+    "journey": {
+      "description": "Lokale Verläufe beobachteter Crawler und Agenten. Keine einzelnen Anfragen oder Sitzungen menschlicher Besucher werden angezeigt. Alle Zeiten sind UTC.",
+      "unknown": "Unbekannt",
+      "unknownRoute": "Nicht aufgelöste Route",
+      "loadFailed": "Die Verläufe konnten für diese Auswahl nicht geladen werden. Bitte erneut versuchen.",
+      "detailFailed": "Dieser Verlauf ist nicht verfügbar, liegt außerhalb des gewählten Zeitraums oder Verkaufskanals oder wurde bereits gelöscht.",
+      "funnelHint": "Jede Stufe zählt geschlossene Agentensitzungen, in denen dieser Schritt tatsächlich beobachtet wurde. Übersprungene oder unbekannte Schritte werden nicht ergänzt. Ein Seitenaufruf beweist keinen erfolgreichen Abschluss.",
+      "sessionCounts": "{closed} geschlossene Sitzungen · {open} offene Sitzungen",
+      "groupSessions": "{count} Sitzungen mit diesem Nachweis",
+      "empty": "Für diese Auswahl sind keine Agentenverläufe verfügbar.",
+      "proofGroup": {
+        "verified": "Verifizierte Agenten",
+        "declared": "Deklarierte Agenten",
+        "other": "Andere Nachweise"
+      },
+      "proofHint": {
+        "verified": "Identität durch Signatur, IP-Bereich oder Reverse-DNS bestätigt. Die Nachweisarten werden getrennt angezeigt.",
+        "declared": "Der Agent gibt eine bisher nicht verifizierte Identität an. Das beweist keinen Identitätsmissbrauch.",
+        "other": "Keine bestätigte Betreiberidentität. Diese Sitzungen zählen nicht zu den verifizierten Agenten."
+      },
+      "stage": {
+        "discover": "Entdeckung",
+        "browse": "Stöbern",
+        "search": "Suche",
+        "product": "Produkt",
+        "cart": "Warenkorb",
+        "checkout": "Checkout",
+        "order": "Bestellung aufgegeben"
+      },
+      "failure": "Beobachteter Fehler",
+      "affected": "Betroffene Sitzungen",
+      "eligible": "Sitzungen mit bekanntem Ergebnis",
+      "rate": "Anteil",
+      "allProofs": "Alle Agentennachweise",
+      "failuresCaption": "Benannte Fehler und die zugehörigen auswertbaren Sitzungen",
+      "failuresHint": "Anteile berücksichtigen nur Sitzungen mit bekanntem Ergebnis für den jeweiligen Vorgang. Unbekannte Ergebnisse, etwa Cache-Treffer ohne entsprechendes Ereignis, bleiben ausgeschlossen. „—“ bedeutet kein gültiger Nenner, niemals Erfolg. Eine Sitzung kann mehrere Fehler enthalten.",
+      "noFailures": "Keine benannten Fehler verfügbar. Daraus folgt nicht, dass alle Vorgänge erfolgreich waren.",
+      "listHint": "Der zuletzt beobachtete Schritt kann von der höchsten beobachteten Stufe abweichen. Offene Sitzungen können sich noch ändern. Nach mehr als 30 Minuten Inaktivität werden Sitzungen alle 15 Minuten geschlossen; eine geschlossene Sitzung bedeutet keinen Kaufabschluss.",
+      "listCaption": "Minimierte Agentensitzungen mit letztem Schritt und höchster beobachteter Stufe",
+      "lastStage": "Letzter Schritt",
+      "maxStage": "Höchste Stufe",
+      "state": "Sitzungsstatus",
+      "timeline": "Sitzungsverlauf",
+      "noneObserved": "Keine erfasst",
+      "closed": "Geschlossen",
+      "open": "Offen",
+      "inspect": "Verlauf ansehen",
+      "pagination": "Seite {page} von {pages} · {total} Agentensitzungen",
+      "firstSeen": "Erstmals gesehen (UTC)",
+      "reason": "Klassifizierungsgrund",
+      "observedSteps": "Beobachtete Schritte",
+      "orderIds": "Verknüpfte Shopware-Bestell-IDs",
+      "orderId": "Verknüpfte Shopware-Bestell-ID",
+      "timelineHint": "Es werden nur gespeicherte, minimierte Anfragen angezeigt. Fehlende Schritte und Geschäftsergebnisse bleiben unbekannt. Bestell-IDs erscheinen nur, wenn ein Shopware-Bestellereignis dieser Agentensitzung zugeordnet wurde.",
+      "noTimeline": "Für diese Sitzung sind keine Anfragedetails mehr gespeichert.",
+      "close": "Schließen",
+      "linkage": {
+        "exact": "Exakte Zuordnung",
+        "probabilistic": "Wahrscheinliche Zuordnung"
+      },
+      "linkageHint": {
+        "exact": "Die Anfragen verwenden denselben eingehenden Kontext-Token oder dasselbe Sitzungscookie. Dies verknüpft Anfragen und identifiziert keine Person.",
+        "probabilistic": "Ein geteilter Anbieterschlüssel oder Anfragemerkmale können mehrere Besuche zusammenfassen. Dieser Verlauf ist eine Schätzung."
+      },
+      "failureCode": {
+        "search_empty": "Suche ohne Treffer",
+        "product_unavailable": "Produkt nicht verfügbar",
+        "product_out_of_stock": "Produkt nicht auf Lager",
+        "http_4xx": "HTTP-Clientfehler (4xx)",
+        "http_5xx": "HTTP-Serverfehler (5xx)",
+        "forbidden": "Zugriff verweigert (403)",
+        "rate_limited": "Anfragelimit erreicht (429)",
+        "checkout_form": "Formularfehler im Checkout",
+        "cart_error": "Warenkorbfehler",
+        "payment_error": "Zahlungsfehler",
+        "abandoned_cart": "Abbruch nach Warenkorb",
+        "abandoned_checkout": "Abbruch nach Checkout"
+      },
+      "reasonCode": {
+        "no_evidence": "Kein Identitätsnachweis",
+        "ip_in_official_range": "Client-IP gehört zu einem akzeptierten Betreiberbereich",
+        "identity_not_verified": "Deklarierte Identität ohne verifizierten Nachweis",
+        "forward_confirmed_reverse_dns": "Reverse-DNS durch Vorwärtsauflösung bestätigt",
+        "valid_web_bot_auth": "Gültige Web-Bot-Auth-Signatur",
+        "bad_signature": "Signatur konnte nicht validiert werden",
+        "unknown_key": "Verifizierungsschlüssel unbekannt",
+        "expired": "Signatur außerhalb ihres Gültigkeitszeitraums",
+        "directory_unreachable": "Schlüsselverzeichnis nicht erreichbar",
+        "directory_retry_expired": "Wiederholungsfrist für Schlüsselverzeichnis abgelaufen",
+        "invalid_replay_context": "Gespeicherter Kontext kann nicht erneut verifiziert werden"
+      },
+      "unknownFailures": "Für {count} Fehler-/Nachweiskombinationen gibt es keine Sitzungen mit bekanntem Ergebnis",
+      "errorRoutes": "Routen mit HTTP-Fehlern",
+      "errorRoutesHint": "Die 20 häufigsten Fehlerrouten gespeicherter Agentenanfragen, einschließlich offener Sitzungen. Angezeigt werden Anfragen, keine Fehlerquoten.",
+      "route": "Route",
+      "step": "Schritt",
+      "noErrorRoutes": "Für diese Auswahl sind keine HTTP-Fehlerrouten gespeichert.",
+      "truncated": "Die ersten 500 gespeicherten Anfragen werden angezeigt. Dieser Verlauf ist unvollständig.",
+      "knownOutcomes": "Bekannte Ergebnisse",
+      "outcome": {
+        "search": "Anzahl der Suchtreffer",
+        "product": "Produktverfügbarkeit",
+        "cart": "Warenkorbprüfung",
+        "checkout": "Checkout-Prüfung",
+        "order": "Bestellversuch/-ergebnis",
+        "http": "HTTP-Antwort",
+        "payment": "Zahlungsprüfung"
+      }
     }
   },
   "sw-privileges": {

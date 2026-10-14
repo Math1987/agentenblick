@@ -27,13 +27,23 @@ final class Comparison
                     $published = $published || is_array($metrics[$field][$key]);
                 }
             }
+            foreach (['funnel' => JourneyPayload::STAGES, 'failures' => JourneyPayload::FAILURES] as $field => $keys) {
+                $metrics[$field] = [];
+                foreach (['verified', 'declared'] as $proof) {
+                    $source = is_array($cell['metrics'][$field][$proof] ?? null) ? $cell['metrics'][$field][$proof] : [];
+                    foreach ($keys as $key) {
+                        $metrics[$field][$proof][$key] = self::metric($source[$key] ?? null);
+                        $published = $published || is_array($metrics[$field][$proof][$key]);
+                    }
+                }
+            }
             if ($published) {
                 $cells[] = ['period' => $period, 'cohortId' => $cohort, 'metrics' => $metrics];
             }
         }
         [$country, $shopware, $bucket, $extension] = explode('|', $cohort);
         $cohorts = $cells === [] ? [] : [['id' => $cohort, 'country' => $country, 'shopware' => $shopware, 'trafficBucket' => $bucket, 'agenticCommerceExtension' => $extension === '1']];
-        return ['demo' => false, 'methodologyVersion' => '1', 'periods' => [$period], 'cohorts' => $cohorts, 'cells' => $cells, 'status' => $cells === [] ? 'insufficient_data' : 'published'];
+        return ['demo' => false, 'methodologyVersion' => '2', 'periods' => [$period], 'cohorts' => $cohorts, 'cells' => $cells, 'status' => $cells === [] ? 'insufficient_data' : 'published'];
     }
 
     /** @return array{p25: float, median: float, p75: float, installations: int}|string */

@@ -5,10 +5,10 @@
     </template>
 
     <template #smart-bar-actions>
-        <mt-button v-if="activeTab !== 'benchmark'" :disabled="isLoading || !canView" @click="loadData">
+        <mt-button v-if="activeTab !== 'benchmark'" :disabled="isLoading || !canView" @click="refreshVisible">
             {{ $t('agentenblick.actions.refresh') }}
         </mt-button>
-        <mt-button v-if="activeTab !== 'benchmark'" variant="primary" :disabled="isLoading || !canView || isExporting" :is-loading="isExporting" @click="exportCsv">
+        <mt-button v-if="['overview', 'agents'].includes(activeTab)" variant="primary" :disabled="isLoading || !canView || isExporting" :is-loading="isExporting" @click="exportCsv">
             {{ $t('agentenblick.actions.export') }}
         </mt-button>
     </template>
@@ -45,45 +45,29 @@
 
                 <div class="agentenblick-index__tabs" role="tablist" :aria-label="$t('agentenblick.general.title')">
                     <button
-                        id="agentenblick-overview-tab"
-                        ref="overviewTab"
+                        v-for="tab in tabs"
+                        :id="`agentenblick-${tab}-tab`"
+                        :key="tab"
+                        :ref="`${tab}Tab`"
                         type="button"
                         role="tab"
-                        aria-controls="agentenblick-overview-panel"
-                        :aria-selected="activeTab === 'overview'"
-                        :tabindex="activeTab === 'overview' ? 0 : -1"
-                        @click="selectTab('overview')"
-                        @keydown.right.prevent="selectTab('agents', true)"
-                        @keydown.left.prevent="selectTab('benchmark', true)"
-                    >{{ $t('agentenblick.tabs.overview') }}</button>
-                    <button
-                        id="agentenblick-agents-tab"
-                        ref="agentsTab"
-                        type="button"
-                        role="tab"
-                        aria-controls="agentenblick-agents-panel"
-                        :aria-selected="activeTab === 'agents'"
-                        :tabindex="activeTab === 'agents' ? 0 : -1"
-                        @click="selectTab('agents')"
-                        @keydown.right.prevent="selectTab('benchmark', true)"
-                        @keydown.left.prevent="selectTab('overview', true)"
-                    >{{ $t('agentenblick.tabs.agents') }}</button>
-                    <button
-                        id="agentenblick-benchmark-tab"
-                        ref="benchmarkTab"
-                        type="button"
-                        role="tab"
-                        aria-controls="agentenblick-benchmark-panel"
-                        :aria-selected="activeTab === 'benchmark'"
-                        :tabindex="activeTab === 'benchmark' ? 0 : -1"
-                        @click="selectTab('benchmark')"
-                        @keydown.right.prevent="selectTab('overview', true)"
-                        @keydown.left.prevent="selectTab('agents', true)"
-                    >{{ $t('agentenblick.tabs.benchmark') }}</button>
+                        :aria-controls="`agentenblick-${tab}-panel`"
+                        :aria-selected="activeTab === tab"
+                        :tabindex="activeTab === tab ? 0 : -1"
+                        @click="selectTab(tab)"
+                        @keydown.right.prevent="moveTab(1)"
+                        @keydown.left.prevent="moveTab(-1)"
+                        @keydown.home.prevent="selectTab(tabs[0], true)"
+                        @keydown.end.prevent="selectTab(tabs[tabs.length - 1], true)"
+                    >{{ $t(`agentenblick.tabs.${tab}`) }}</button>
                 </div>
 
                 <section v-if="activeTab === 'benchmark'" id="agentenblick-benchmark-panel" role="tabpanel" aria-labelledby="agentenblick-benchmark-tab">
                     <agentenblick-benchmark />
+                </section>
+
+                <section v-else-if="isJourneyTab" :id="`agentenblick-${activeTab}-panel`" role="tabpanel" :aria-labelledby="`agentenblick-${activeTab}-tab`">
+                    <agentenblick-journey ref="journey" :mode="activeTab" :filters="filters" />
                 </section>
 
                 <div v-else-if="isLoading" class="agentenblick-index__loading" role="status">

@@ -17,6 +17,18 @@ export default class AgentenblickApiService extends ApiService {
         return this.get('ranges/pending');
     }
 
+    getJourneySummary(params) {
+        return this.get('journey/summary', params);
+    }
+
+    getJourneySessions(params) {
+        return this.get('journey/sessions', params);
+    }
+
+    getJourneySession(id, params) {
+        return this.get(`journey/sessions/${encodeURIComponent(id)}`, params);
+    }
+
     getBenchmarkStatus() {
         return this.get('benchmark/status');
     }
