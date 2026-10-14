@@ -29,15 +29,18 @@ final class AnalyticsReader
     }
 
     /** @param list<array<string, mixed>> $groups
-     * @return array{requests: int, sessions: int, agentRequests: int, agentSessions: int, agentRequestsPct: ?float, agentSessionsPct: ?float}
+     * @return array{requests: int, sessions: int, agentRequests: int, agentSessions: int, suspectedRequests: int, suspectedSessions: int, agentRequestsPct: ?float, agentSessionsPct: ?float}
      */
     public static function totals(array $groups): array
     {
-        $totals = ['requests' => 0, 'sessions' => 0, 'agentRequests' => 0, 'agentSessions' => 0];
+        $totals = ['requests' => 0, 'sessions' => 0, 'agentRequests' => 0, 'agentSessions' => 0, 'suspectedRequests' => 0, 'suspectedSessions' => 0];
         foreach ($groups as $row) {
             $totals['requests'] += (int) $row['requests'];
             $totals['sessions'] += (int) $row['sessions'];
-            if ($row['kind'] !== 'human_or_unknown') {
+            if ($row['evidence'] === 'suspected') {
+                $totals['suspectedRequests'] += (int) $row['requests'];
+                $totals['suspectedSessions'] += (int) $row['sessions'];
+            } elseif ($row['kind'] !== 'human_or_unknown') {
                 $totals['agentRequests'] += (int) $row['requests'];
                 $totals['agentSessions'] += (int) $row['sessions'];
             }
@@ -51,24 +54,24 @@ final class AnalyticsReader
         $groups = $this->groups($filter);
         $agentGroups = array_values(array_filter($groups, static fn (array $row): bool => $row['kind'] !== 'human_or_unknown'));
         [$where, $parameters] = $filter->where();
-        $dailyRows = $this->connection->fetchAllAssociative("SELECT day, SUM(requests) AS requests, SUM(sessions) AS sessions, SUM(IF(kind <> 'human_or_unknown', requests, 0)) AS agentRequests, SUM(IF(kind <> 'human_or_unknown', sessions, 0)) AS agentSessions FROM agentenblick_daily WHERE " . $where . ' GROUP BY day', $parameters);
+        $dailyRows = $this->connection->fetchAllAssociative("SELECT day, SUM(requests) AS requests, SUM(sessions) AS sessions, SUM(IF(kind <> 'human_or_unknown' AND evidence <> 'suspected', requests, 0)) AS agentRequests, SUM(IF(kind <> 'human_or_unknown' AND evidence <> 'suspected', sessions, 0)) AS agentSessions, SUM(IF(evidence = 'suspected', requests, 0)) AS suspectedRequests, SUM(IF(evidence = 'suspected', sessions, 0)) AS suspectedSessions FROM agentenblick_daily WHERE " . $where . ' GROUP BY day', $parameters);
         $dailyByDate = [];
         foreach ($dailyRows as $row) {
-            $dailyByDate[$row['day']] = ['date' => $row['day'], 'requests' => (int) $row['requests'], 'sessions' => (int) $row['sessions'], 'agentRequests' => (int) $row['agentRequests'], 'agentSessions' => (int) $row['agentSessions']];
+            $dailyByDate[$row['day']] = ['date' => $row['day'], 'requests' => (int) $row['requests'], 'sessions' => (int) $row['sessions'], 'agentRequests' => (int) $row['agentRequests'], 'agentSessions' => (int) $row['agentSessions'], 'suspectedRequests' => (int) $row['suspectedRequests'], 'suspectedSessions' => (int) $row['suspectedSessions']];
         }
         $period = $filter->period();
         $date = new \DateTimeImmutable($period['since'], new \DateTimeZone('UTC'));
         $daily = [];
         for ($i = 0; $i < $filter->days; ++$i) {
             $day = $date->format('Y-m-d');
-            $daily[] = $dailyByDate[$day] ?? ['date' => $day, 'requests' => 0, 'sessions' => 0, 'agentRequests' => 0, 'agentSessions' => 0];
+            $daily[] = $dailyByDate[$day] ?? ['date' => $day, 'requests' => 0, 'sessions' => 0, 'agentRequests' => 0, 'agentSessions' => 0, 'suspectedRequests' => 0, 'suspectedSessions' => 0];
             $date = $date->modify('+1 day');
         }
         return [
             'period' => $period,
-            'scope' => 'PHP-visible main requests; identified or declared agents, not all AI usage. Sessions are provisional.',
+            'scope' => 'PHP-visible main requests; identified or declared agents, not all AI usage. Suspected automation is reported separately, without an asserted AI identity. Sessions are provisional.',
             'totals' => self::totals($groups), 'daily' => $daily,
-            'byKind' => self::breakdown($agentGroups, 'kind'), 'byEvidence' => self::breakdown($agentGroups, 'evidence'),
+            'byKind' => self::breakdown(array_values(array_filter($agentGroups, static fn (array $row): bool => $row['evidence'] !== 'suspected')), 'kind'), 'byEvidence' => self::breakdown($agentGroups, 'evidence'),
             'humanBrowsers' => $this->humanBrowsers($filter),
             'proxyDiagnostics' => $this->diagnostics->report(),
             'salesChannels' => $this->connection->fetchAllAssociative("SELECT LOWER(HEX(s.id)) AS id, COALESCE(t.name, fallback.name, LOWER(HEX(s.id))) AS name FROM sales_channel s LEFT JOIN sales_channel_translation t ON t.sales_channel_id = s.id AND t.language_id = UNHEX(?) LEFT JOIN sales_channel_translation fallback ON fallback.sales_channel_id = s.id AND fallback.language_id = UNHEX(?) ORDER BY name, id", [$languageId, Defaults::LANGUAGE_SYSTEM]),

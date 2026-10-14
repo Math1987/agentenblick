@@ -118,6 +118,7 @@
 
         &--all { background: #94a3b8; }
         &--agents { background: var(--agentenblick-accent); }
+        &--suspected { background: #7952a8; }
     }
 
     &__chart {
@@ -136,6 +137,8 @@
     &__line { fill: none; stroke-width: 2.5; stroke-linejoin: round; }
     &__line--all { stroke: #94a3b8; stroke-dasharray: 5 4; }
     &__line--agents { stroke: var(--agentenblick-accent); }
+    &__line--suspected { stroke: #7952a8; stroke-dasharray: 3 4; }
+    &__suspected-counts { margin-top: 12px; font-size: 20px; font-variant-numeric: tabular-nums; }
     &__point { fill: var(--agentenblick-accent); }
 
     &__table-wrap {
@@ -227,4 +230,5 @@
 
     &--verified { background: #e7f5f0; color: #17624e; }
     &--unverified { background: #fff3dc; color: #805500; }
+    &--suspected { background: #f1eaf8; color: #673a89; }
 }

@@ -1,0 +1,900 @@
+{
+  "collectedAt": "2026-10-14T12:19:08.533550+00:00",
+  "container": "agentenblick-shop",
+  "fixedFictitiousAgent": true,
+  "requestCount": 41,
+  "sessionCount": 4,
+  "byRoute": [
+    {
+      "route": "/{unresolved}",
+      "stage": "product",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 1
+    },
+    {
+      "route": "/{unresolved}",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 1
+    },
+    {
+      "route": "frontend.account.register.save",
+      "stage": "",
+      "method": "POST",
+      "status": 302,
+      "evidence": "verified_ip",
+      "requests": 1
+    },
+    {
+      "route": "frontend.cart.offcanvas",
+      "stage": "cart",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 3
+    },
+    {
+      "route": "frontend.checkout.confirm.page",
+      "stage": "checkout",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 2
+    },
+    {
+      "route": "frontend.checkout.confirm.page",
+      "stage": "checkout",
+      "method": "GET",
+      "status": 302,
+      "evidence": "verified_ip",
+      "requests": 1
+    },
+    {
+      "route": "frontend.checkout.info",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 4
+    },
+    {
+      "route": "frontend.checkout.info",
+      "stage": "",
+      "method": "GET",
+      "status": 204,
+      "evidence": "verified_ip",
+      "requests": 6
+    },
+    {
+      "route": "frontend.checkout.line-item.add",
+      "stage": "cart",
+      "method": "POST",
+      "status": 302,
+      "evidence": "verified_ip",
+      "requests": 2
+    },
+    {
+      "route": "frontend.checkout.register.page",
+      "stage": "checkout",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 1
+    },
+    {
+      "route": "frontend.cookie.groups",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 10
+    },
+    {
+      "route": "frontend.country.country.data",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 2
+    },
+    {
+      "route": "frontend.detail.page",
+      "stage": "product",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 1
+    },
+    {
+      "route": "frontend.footer",
+      "stage": "browse",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 2
+    },
+    {
+      "route": "frontend.home.page",
+      "stage": "browse",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 1
+    },
+    {
+      "route": "frontend.navigation.page",
+      "stage": "browse",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 1
+    },
+    {
+      "route": "frontend.search.page",
+      "stage": "search",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 1
+    },
+    {
+      "route": "frontend.search.suggest",
+      "stage": "search",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "requests": 1
+    }
+  ],
+  "recentRequestsNewestFirst": [
+    {
+      "route": "frontend.cookie.groups",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.confirm.page",
+      "stage": "checkout",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 44,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.info",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.cart.offcanvas",
+      "stage": "cart",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 36,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.cookie.groups",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.info",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.navigation.page",
+      "stage": "browse",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.info",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.cookie.groups",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.home.page",
+      "stage": "browse",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.cookie.groups",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.confirm.page",
+      "stage": "checkout",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 44,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.account.register.save",
+      "stage": "",
+      "method": "POST",
+      "status": 302,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.country.country.data",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.cookie.groups",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.country.country.data",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.register.page",
+      "stage": "checkout",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 44,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.confirm.page",
+      "stage": "checkout",
+      "method": "GET",
+      "status": 302,
+      "evidence": "verified_ip",
+      "knownMask": 36,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.info",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.cart.offcanvas",
+      "stage": "cart",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 36,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.line-item.add",
+      "stage": "cart",
+      "method": "POST",
+      "status": 302,
+      "evidence": "verified_ip",
+      "knownMask": 36,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.info",
+      "stage": "",
+      "method": "GET",
+      "status": 204,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.cookie.groups",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.detail.page",
+      "stage": "product",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 34,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.info",
+      "stage": "",
+      "method": "GET",
+      "status": 204,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.cart.offcanvas",
+      "stage": "cart",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.line-item.add",
+      "stage": "cart",
+      "method": "POST",
+      "status": 302,
+      "evidence": "verified_ip",
+      "knownMask": 36,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.checkout.info",
+      "stage": "",
+      "method": "GET",
+      "status": 204,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "frontend.cookie.groups",
+      "stage": "",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 32,
+      "failureMask": 0,
+      "orderLinked": false
+    },
+    {
+      "route": "/{unresolved}",
+      "stage": "product",
+      "method": "GET",
+      "status": 200,
+      "evidence": "verified_ip",
+      "knownMask": 34,
+      "failureMask": 0,
+      "orderLinked": false
+    }
+  ],
+  "journeys": [
+    {
+      "ordinal": 1,
+      "requests": 12,
+      "sequence": [
+        {
+          "route": "frontend.checkout.confirm.page",
+          "stage": "checkout",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 44,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.cookie.groups",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.home.page",
+          "stage": "browse",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.cookie.groups",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.info",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.navigation.page",
+          "stage": "browse",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.info",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.cookie.groups",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.cart.offcanvas",
+          "stage": "cart",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 36,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.info",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.confirm.page",
+          "stage": "checkout",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 44,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.cookie.groups",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        }
+      ]
+    },
+    {
+      "ordinal": 2,
+      "requests": 11,
+      "sequence": [
+        {
+          "route": "frontend.cookie.groups",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.info",
+          "stage": "",
+          "method": "GET",
+          "status": 204,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.line-item.add",
+          "stage": "cart",
+          "method": "POST",
+          "status": 302,
+          "evidence": "verified_ip",
+          "knownMask": 36,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.cart.offcanvas",
+          "stage": "cart",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 36,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.info",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.confirm.page",
+          "stage": "checkout",
+          "method": "GET",
+          "status": 302,
+          "evidence": "verified_ip",
+          "knownMask": 36,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.register.page",
+          "stage": "checkout",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 44,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.country.country.data",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.cookie.groups",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.country.country.data",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.account.register.save",
+          "stage": "",
+          "method": "POST",
+          "status": 302,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        }
+      ]
+    },
+    {
+      "ordinal": 3,
+      "requests": 17,
+      "sequence": [
+        {
+          "route": "frontend.footer",
+          "stage": "browse",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.info",
+          "stage": "",
+          "method": "GET",
+          "status": 204,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.cookie.groups",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.search.suggest",
+          "stage": "search",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 33,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.search.page",
+          "stage": "search",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 33,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.info",
+          "stage": "",
+          "method": "GET",
+          "status": 204,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.cookie.groups",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "/{unresolved}",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.cookie.groups",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.info",
+          "stage": "",
+          "method": "GET",
+          "status": 204,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "/{unresolved}",
+          "stage": "product",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 34,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.cookie.groups",
+          "stage": "",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.info",
+          "stage": "",
+          "method": "GET",
+          "status": 204,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.line-item.add",
+          "stage": "cart",
+          "method": "POST",
+          "status": 302,
+          "evidence": "verified_ip",
+          "knownMask": 36,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.cart.offcanvas",
+          "stage": "cart",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.checkout.info",
+          "stage": "",
+          "method": "GET",
+          "status": 204,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        },
+        {
+          "route": "frontend.detail.page",
+          "stage": "product",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 34,
+          "failureMask": 0,
+          "orderLinked": false
+        }
+      ]
+    },
+    {
+      "ordinal": 4,
+      "requests": 1,
+      "sequence": [
+        {
+          "route": "frontend.footer",
+          "stage": "browse",
+          "method": "GET",
+          "status": 200,
+          "evidence": "verified_ip",
+          "knownMask": 32,
+          "failureMask": 0,
+          "orderLinked": false
+        }
+      ]
+    }
+  ],
+  "syntheticOrdersPlaced": 0,
+  "privacy": {
+    "textColumnsScanned": 56,
+    "forbiddenMarkerMatches": 0,
+    "noIdentifiersExported": true
+  },
+  "lastSeoNavigationRecognized": true,
+  "lastProductRecognized": true,
+  "checkoutFormFailureObserved": false
+}

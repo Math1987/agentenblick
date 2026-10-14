@@ -305,3 +305,52 @@ follows the accepted CLI milestone. The optional benchmark service is
 maintained in the separate private `agentenblick-benchmark` repository (lot 2).
 
 Runtime background: [Symfony HttpKernel termination](https://symfony.com/doc/current/components/http_kernel.html#the-kernel-terminate-event).
+
+## Experimental detection of undeclared automation
+
+**Disabled by default, and disabled for this demonstration.** The experimental
+score is not calibrated on real labelled human sessions. No claim of a human
+false-positive rate below 2% is made. A `suspected` result means possible
+automation, not proof of AI use or an operator identity. Signed, IP-verified,
+reverse-DNS-verified and declared agents keep their separate classifications.
+
+An editor can inspect and save the switch and threshold (30–100, default 60) in
+the administration; viewing the page does not enable collection. All scoring
+runs after the response, without external lookups. Only bounded counters and
+named boolean signals are retained for unknown sessions. Raw Referer, Client
+Hints, cookie values and client IPs are not added to storage. The embedded
+hosting snapshot covers a limited set of official AWS EC2 eu-west-3 prefixes;
+it is a weak hint, not a complete ASN or VPN database. A resolved CDN address
+does not contribute this hint.
+
+While the experiment is enabled, new unknown sessions use an unassigned
+aggregate bucket: no browser family is stored on individual sessions. When a
+session crosses the threshold, exactly one session counter moves out of that
+bucket. Earlier human requests stay as counters; no detailed history is
+reconstructed. The displayed timeline begins at detection. Partial journeys do
+not contribute inferred cart or checkout abandonments.
+The local report lists suspected automation separately from identified/declared
+agent totals. Benchmark schema 2 keeps it only in the all-session denominator,
+never in agent shares, operator distributions, or verified/declared funnels.
+
+## Experimentelle Erkennung nicht deklarierter Automatisierung
+
+**Standardmäßig und in dieser Demo deaktiviert.** Der experimentelle Score ist
+nicht mit echten, gekennzeichneten menschlichen Sitzungen kalibriert. Eine
+Falsch-Positiv-Rate unter 2 % wird nicht behauptet. `suspected` bedeutet mögliche
+Automatisierung, weder einen KI-Nachweis noch die Identität eines Betreibers.
+Verifizierte und deklarierte Agenten bleiben getrennt ausgewiesen.
+
+Nur Bearbeitungsberechtigte können die Erkennung und den Schwellenwert
+(30–100, Standard 60) ausdrücklich speichern. Das Öffnen der Ansicht aktiviert
+nichts. Die Auswertung erfolgt nach der Antwort ohne externe Abfragen. Begrenzte
+Zähler und benannte boolesche Signale ersetzen rohe Header und Cookie-Werte.
+Der schwache Hosting-Hinweis deckt nur einen begrenzten, eingebetteten AWS-EC2-
+Bereich ab, keine vollständige ASN- oder VPN-Datenbank; CDN-Adressen sind davon
+ausgenommen. Neue unbekannte Sitzungen werden im Experiment ohne Browserfamilie
+aggregiert; keine Browserfamilie wird an einzelnen Sitzungen gespeichert.
+Bei Erkennung wird eine Sitzung atomar umgebucht. Frühere
+menschliche Anfragen werden nicht rekonstruiert. Die Zeitlinie beginnt erst bei
+der Erkennung. Aus Teilverläufen werden keine Abbrüche abgeleitet.
+Verdachtsfälle sind lokal getrennt sichtbar und gehen im
+Benchmark v2 ausschließlich in die Gesamtzahl der Sitzungen ein.

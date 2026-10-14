@@ -6,6 +6,7 @@ namespace Aithos\Agentenblick\Journey;
 
 use Aithos\Agentenblick\Admin\ReportFilter;
 use Aithos\Agentenblick\Domain\Evidence;
+use Aithos\Agentenblick\Heuristics\HeuristicScore;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -69,7 +70,7 @@ final class JourneyReader
         if ($row === false) {
             throw new NotFoundHttpException('Journey not found.');
         }
-        $requests = $this->connection->fetchAllAssociative("SELECT observed_at, route, method, status, stage, failure_mask, known_mask, reason, evidence, LOWER(HEX(order_id)) AS order_id FROM agentenblick_request WHERE session_id = UNHEX(?) AND kind <> 'human_or_unknown' ORDER BY observed_at, id LIMIT 501", [$id]);
+        $requests = $this->connection->fetchAllAssociative("SELECT observed_at, route, method, status, stage, failure_mask, known_mask, reason, evidence, heuristic_score, heuristic_flags, heuristic_version, heuristic_threshold, LOWER(HEX(order_id)) AS order_id FROM agentenblick_request WHERE session_id = UNHEX(?) AND kind <> 'human_or_unknown' ORDER BY observed_at, id LIMIT 501", [$id]);
         $items = [];
         foreach (array_slice($requests, 0, 500) as $request) {
             $known = [];
@@ -78,7 +79,7 @@ final class JourneyReader
                     $known[] = $name;
                 }
             }
-            $items[] = ['at' => self::time($request['observed_at']), 'route' => $request['route'], 'method' => $request['method'], 'status' => (int) $request['status'], 'stage' => $request['stage'] === '' ? null : $request['stage'], 'failures' => self::failures((int) $request['failure_mask']), 'knownOutcomes' => $known, 'reason' => $request['reason'], 'evidence' => $request['evidence'], 'linkage' => $row['linkage'], 'orderId' => $request['order_id']];
+            $items[] = ['at' => self::time($request['observed_at']), 'route' => $request['route'], 'method' => $request['method'], 'status' => (int) $request['status'], 'stage' => $request['stage'] === '' ? null : $request['stage'], 'failures' => self::failures((int) $request['failure_mask']), 'knownOutcomes' => $known, 'reason' => $request['reason'], 'evidence' => $request['evidence'], 'linkage' => $row['linkage'], 'orderId' => $request['order_id'], 'heuristics' => self::heuristics($request)];
         }
         return ['session' => $this->session($row), 'items' => $items, 'truncated' => count($requests) > 500];
     }
@@ -103,7 +104,18 @@ final class JourneyReader
         }
         $reason = $this->connection->fetchOne('SELECT reason FROM agentenblick_request WHERE session_id = ? AND evidence = ? ORDER BY observed_at DESC LIMIT 1', [$row['id'], $row['evidence']]);
         $orders = $this->connection->fetchFirstColumn('SELECT DISTINCT LOWER(HEX(order_id)) FROM agentenblick_request WHERE session_id = ? AND order_id IS NOT NULL LIMIT 20', [$row['id']]);
-        return ['id' => bin2hex((string) $row['id']), 'firstSeen' => self::time($row['first_seen']), 'lastSeen' => self::time($row['last_seen']), 'operator' => $row['operator'], 'agent' => $row['agent'], 'kind' => $row['kind'], 'evidence' => $row['evidence'], 'linkage' => $row['linkage'], 'lastStage' => $row['last_stage'] === '' ? null : $row['last_stage'], 'maxStage' => $steps === [] ? null : $steps[count($steps) - 1], 'steps' => $steps, 'failures' => array_values(array_unique($failures)), 'closedAt' => self::time($row['closed_at']), 'orderIds' => $orders, 'reason' => is_string($reason) ? $reason : null, 'requests' => (int) $row['requests']];
+        return ['id' => bin2hex((string) $row['id']), 'firstSeen' => self::time($row['first_seen']), 'lastSeen' => self::time($row['last_seen']), 'operator' => $row['operator'], 'agent' => $row['agent'], 'kind' => $row['kind'], 'evidence' => $row['evidence'], 'linkage' => $row['linkage'], 'lastStage' => $row['last_stage'] === '' ? null : $row['last_stage'], 'maxStage' => $steps === [] ? null : $steps[count($steps) - 1], 'steps' => $steps, 'failures' => array_values(array_unique($failures)), 'closedAt' => self::time($row['closed_at']), 'orderIds' => $orders, 'reason' => is_string($reason) ? $reason : null, 'requests' => (int) $row['requests'], 'detectedAt' => self::time($row['detected_at'] ?? null), 'timelineStartsAtDetection' => $row['evidence'] === 'suspected', 'observationPartial' => (bool) ($row['journey_partial'] ?? false), 'heuristics' => self::heuristics($row)];
+    }
+
+    /** @param array<string, mixed> $row
+     * @return array{score: int, flags: list<string>, version: string, threshold: int}|null
+     */
+    private static function heuristics(array $row): ?array
+    {
+        if ($row['evidence'] !== 'suspected') {
+            return null;
+        }
+        return ['score' => (int) $row['heuristic_score'], 'flags' => HeuristicScore::codes((int) $row['heuristic_flags']), 'version' => (string) $row['heuristic_version'], 'threshold' => (int) $row['heuristic_threshold']];
     }
 
     /** @return array{string, list<string>} */

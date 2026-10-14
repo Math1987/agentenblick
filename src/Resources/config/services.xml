@@ -4,6 +4,14 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <defaults autowire="true" autoconfigure="true" public="false"/>
+        <service id="Aithos\Agentenblick\Heuristics\Settings"/>
+        <service id="Aithos\Agentenblick\Heuristics\HostingRanges"/>
+        <service id="Aithos\Agentenblick\Heuristics\HeuristicSignals"/>
+        <service id="Aithos\Agentenblick\Heuristics\HeuristicScore"/>
+        <service id="Aithos\Agentenblick\Controller\HeuristicsController" public="true">
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="Aithos\Agentenblick\Command\HeuristicsCommand"/>
         <service id="Aithos\Agentenblick\Journey\SessionCloser"/>
         <service id="Aithos\Agentenblick\Journey\JourneyReader"/>
         <service id="Aithos\Agentenblick\Journey\EventSubscriber"/>

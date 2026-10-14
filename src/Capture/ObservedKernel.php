@@ -30,7 +30,7 @@ final class ObservedKernel implements HttpKernelInterface, TerminableInterface
             --$this->depth;
         }
         if ($main) {
-            $this->observer->complete($request, $response->getStatusCode());
+            $this->observer->complete($request, $response->getStatusCode(), ObservationSubscriber::offersSessionCookie($response));
         }
         return $response;
     }

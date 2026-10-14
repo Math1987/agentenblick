@@ -40,7 +40,7 @@ if __name__ == '__main__':
     status, _, body = request(prefix + 'agents?days=7', token)
     assert status == 200
     agents = json.loads(body)
-    assert sum(x['requests'] for x in agents['items']) == summary['totals']['agentRequests']
+    assert sum(x['requests'] for x in agents['items']) == summary['totals']['agentRequests'] + summary['totals'].get('suspectedRequests', 0)
     status, headers, body = request(prefix + 'export?days=7', token)
     assert status == 200 and headers['Content-Type'].startswith('text/csv')
     csv_rows = list(csv.reader(io.StringIO(body.decode('utf-8-sig'))))

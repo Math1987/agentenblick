@@ -33,7 +33,7 @@
     },
     "metrics": {
       "share": "Beobachteter Agentenanteil",
-      "shareHint": "Anteil an allen beobachteten Sitzungen, einschließlich deklarierter Identitäten.",
+      "shareHint": "Verifizierte oder deklarierte Agentensitzungen geteilt durch alle beobachteten Sitzungen. Vermutete Automatisierung ist nicht im Zähler enthalten.",
       "agentSessions": "Agentensitzungen",
       "agentSessionsHint": "Crawler und Agenten, verifiziert oder deklariert.",
       "agentRequests": "Agentenanfragen",
@@ -45,13 +45,14 @@
       "title": "Sitzungen im Zeitverlauf",
       "all": "Alle Sitzungen",
       "agents": "Agentensitzungen",
-      "accessible": "Tägliche Anzahl aller Sitzungen und Agentensitzungen. Die genauen Werte stehen in der Tabelle darunter.",
+      "accessible": "Tägliche Gesamtsitzungen, verifizierte oder deklarierte Agentensitzungen und getrennt vermutete Automatisierung. Genaue Werte stehen in der Tabelle darunter.",
       "values": "Tageswerte anzeigen",
-      "date": "Datum (UTC)"
+      "date": "Datum (UTC)",
+      "suspected": "Vermutete Automatisierung"
     },
     "breakdown": {
       "kinds": "Agententypen",
-      "evidence": "Identitätsnachweise",
+      "evidence": "Nachweise und Verdachtsfälle",
       "proofHint": "Jede Anfrage behält ihren eigenen Nachweis. Sitzungen verwenden den stärksten bei der Erfassung beobachteten Nachweis; für spätere Prüfungen gelten strengere Regeln."
     },
     "table": {
@@ -65,7 +66,7 @@
       "routes": "Häufigste Routen",
       "showRoutes": "Routen anzeigen",
       "pagination": "Seite {page} von {pages} · {total} Agenten",
-      "proofHint": "Eine deklarierte Identität ist nicht verifiziert und belegt keine Identitätstäuschung. Unterschiedliche Nachweise werden mit ihrer jeweiligen Anfrageanzahl angezeigt.",
+      "proofHint": "Eine deklarierte Identität ist nicht verifiziert und belegt keine Identitätstäuschung. Unterschiedliche Nachweise werden mit ihrer jeweiligen Anfrageanzahl angezeigt. Vermutete Automatisierung ist kein Nachweis für KI oder eine Betreiberidentität.",
       "retentionHint": "Letzter Besuch und häufigste Routen stammen aus den noch gespeicherten Anfragedetails. Eine generische Route bedeutet, dass Shopware keine aufgelöste Route bereitgestellt hat, etwa bei einem Cache-Treffer."
     },
     "kind": {
@@ -83,7 +84,8 @@
       "verified_rdns": "Reverse-DNS verifiziert",
       "declared_unverified": "Deklariert, nicht verifiziert",
       "none": "Kein Identitätsnachweis",
-      "mixed": "Unterschiedliche Nachweise"
+      "mixed": "Unterschiedliche Nachweise",
+      "suspected": "Automatisierung vermutet"
     },
     "proxy": {
       "title": "Konfiguration vertrauenswürdiger Proxys prüfen",
@@ -206,24 +208,26 @@
       "renewConsent": "Version 2 akzeptieren und Teilnahme fortsetzen"
     },
     "journey": {
-      "description": "Lokale Verläufe beobachteter Crawler und Agenten. Keine einzelnen Anfragen oder Sitzungen menschlicher Besucher werden angezeigt. Alle Zeiten sind UTC.",
+      "description": "Lokale Verläufe klassifizierter Crawler, Agenten und getrennt vermuteter Automatisierung. Gewöhnliche menschliche oder nicht identifizierte Anfragedetails werden nicht gespeichert. Alle Zeiten in UTC.",
       "unknown": "Unbekannt",
       "unknownRoute": "Nicht aufgelöste Route",
       "loadFailed": "Die Verläufe konnten für diese Auswahl nicht geladen werden. Bitte erneut versuchen.",
       "detailFailed": "Dieser Verlauf ist nicht verfügbar, liegt außerhalb des gewählten Zeitraums oder Verkaufskanals oder wurde bereits gelöscht.",
-      "funnelHint": "Jede Stufe zählt geschlossene Agentensitzungen, in denen dieser Schritt tatsächlich beobachtet wurde. Übersprungene oder unbekannte Schritte werden nicht ergänzt. Ein Seitenaufruf beweist keinen erfolgreichen Abschluss.",
+      "funnelHint": "Jeder Schritt zählt abgeschlossene klassifizierte Sitzungen, in denen er tatsächlich beobachtet wurde, getrennt nach Nachweis oder Verdacht. Übersprungene oder unbekannte Schritte werden nicht ergänzt. Eine erreichte Seite beweist keine erfolgreiche Aktion.",
       "sessionCounts": "{closed} geschlossene Sitzungen · {open} offene Sitzungen",
       "groupSessions": "{count} Sitzungen mit diesem Nachweis",
       "empty": "Für diese Auswahl sind keine Agentenverläufe verfügbar.",
       "proofGroup": {
         "verified": "Verifizierte Agenten",
         "declared": "Deklarierte Agenten",
-        "other": "Andere Nachweise"
+        "other": "Andere Nachweise",
+        "suspected": "Vermutete Automatisierung"
       },
       "proofHint": {
         "verified": "Identität durch Signatur, IP-Bereich oder Reverse-DNS bestätigt. Die Nachweisarten werden getrennt angezeigt.",
         "declared": "Der Agent gibt eine bisher nicht verifizierte Identität an. Das beweist keinen Identitätsmissbrauch.",
-        "other": "Keine bestätigte Betreiberidentität. Diese Sitzungen zählen nicht zu den verifizierten Agenten."
+        "other": "Keine bestätigte Betreiberidentität. Diese Sitzungen zählen nicht zu den verifizierten Agenten.",
+        "suspected": "Vermutete Automatisierung ist kein Nachweis für KI oder eine Betreiberidentität. Dieser Verlauf beginnt beim Erreichen der Erkennungsschwelle. Frühere menschliche Anfragedetails wurden nicht gespeichert und werden nicht rekonstruiert; frühere Schritte bleiben unbekannt."
       },
       "stage": {
         "discover": "Entdeckung",
@@ -243,7 +247,7 @@
       "failuresHint": "Anteile berücksichtigen nur Sitzungen mit bekanntem Ergebnis für den jeweiligen Vorgang. Unbekannte Ergebnisse, etwa Cache-Treffer ohne entsprechendes Ereignis, bleiben ausgeschlossen. „—“ bedeutet kein gültiger Nenner, niemals Erfolg. Eine Sitzung kann mehrere Fehler enthalten.",
       "noFailures": "Keine benannten Fehler verfügbar. Daraus folgt nicht, dass alle Vorgänge erfolgreich waren.",
       "listHint": "Der zuletzt beobachtete Schritt kann von der höchsten beobachteten Stufe abweichen. Offene Sitzungen können sich noch ändern. Nach mehr als 30 Minuten Inaktivität werden Sitzungen alle 15 Minuten geschlossen; eine geschlossene Sitzung bedeutet keinen Kaufabschluss.",
-      "listCaption": "Minimierte Agentensitzungen mit letztem Schritt und höchster beobachteter Stufe",
+      "listCaption": "Minimierte klassifizierte Sitzungen mit letztem und weitestem beobachtetem Schritt",
       "lastStage": "Letzter Schritt",
       "maxStage": "Höchste Stufe",
       "state": "Sitzungsstatus",
@@ -252,13 +256,14 @@
       "closed": "Geschlossen",
       "open": "Offen",
       "inspect": "Verlauf ansehen",
-      "pagination": "Seite {page} von {pages} · {total} Agentensitzungen",
+      "pagination": "Seite {page} von {pages} · {total} klassifizierte Sitzungen",
       "firstSeen": "Erstmals gesehen (UTC)",
       "reason": "Klassifizierungsgrund",
       "observedSteps": "Beobachtete Schritte",
       "orderIds": "Verknüpfte Shopware-Bestell-IDs",
       "orderId": "Verknüpfte Shopware-Bestell-ID",
       "timelineHint": "Es werden nur gespeicherte, minimierte Anfragen angezeigt. Fehlende Schritte und Geschäftsergebnisse bleiben unbekannt. Bestell-IDs erscheinen nur, wenn ein Shopware-Bestellereignis dieser Agentensitzung zugeordnet wurde.",
+      "observationPartial": "Diese Sitzung wurde nur teilweise beobachtet: Die Erkennung begann später oder die Erfassung wurde unterbrochen. Beobachtete Schritte und bekannte Fehler bleiben erhalten; Warenkorb- und Checkout-Abbrüche werden nicht abgeleitet.",
       "noTimeline": "Für diese Sitzung sind keine Anfragedetails mehr gespeichert.",
       "close": "Schließen",
       "linkage": {
@@ -294,7 +299,9 @@
         "expired": "Signatur außerhalb ihres Gültigkeitszeitraums",
         "directory_unreachable": "Schlüsselverzeichnis nicht erreichbar",
         "directory_retry_expired": "Wiederholungsfrist für Schlüsselverzeichnis abgelaufen",
-        "invalid_replay_context": "Gespeicherter Kontext kann nicht erneut verifiziert werden"
+        "invalid_replay_context": "Gespeicherter Kontext kann nicht erneut verifiziert werden",
+        "heuristic_threshold": "Die Verhaltenspunktzahl hat die experimentelle Erkennungsschwelle erreicht",
+        "heuristic_session_context": "Anfrage mit einer bereits als vermutete Automatisierung klassifizierten Sitzung verknüpft"
       },
       "unknownFailures": "Für {count} Fehler-/Nachweiskombinationen gibt es keine Sitzungen mit bekanntem Ergebnis",
       "errorRoutes": "Routen mit HTTP-Fehlern",
@@ -313,6 +320,49 @@
         "http": "HTTP-Antwort",
         "payment": "Zahlungsprüfung"
       }
+    },
+    "heuristics": {
+      "title": "Erkennung nicht deklarierter Automatisierung",
+      "experimental": "Experimentell · nicht kalibriert",
+      "experimentalHint": "Erkennungsrate und Fehlalarmquote wurden noch nicht anhand realer menschlicher Referenzsitzungen validiert. Eine verdächtige Sitzung kann von einer Person oder einem gewöhnlichen Automatisierungswerkzeug stammen.",
+      "privacy": "Standardmäßig deaktiviert. Die Bewertung erfolgt lokal und setzt kein zusätzliches Tracking-Cookie. Frühere menschliche Anfragedetails werden beim Erreichen des Schwellenwerts nicht rekonstruiert.",
+      "enabledState": "Experimentelle Erkennung aktiviert",
+      "disabledState": "Erkennung deaktiviert",
+      "version": "Regelversion {version}",
+      "enable": "Experimentelle Erkennung nicht deklarierter Automatisierung aktivieren",
+      "threshold": "Erkennungsschwelle (30–100)",
+      "thresholdHint": "Ganze Zahl von 30 bis 100. Ein höherer Schwellenwert erfordert eine höhere Punktzahl. Änderungen gelten für künftige Beobachtungen; bestehende Klassifizierungen bleiben erhalten.",
+      "invalidThreshold": "Eine ganze Zahl von 30 bis 100 eingeben.",
+      "editorRequired": "Zum Ändern der Erkennungseinstellungen ist die Bearbeitungsberechtigung erforderlich.",
+      "save": "Erkennungseinstellungen speichern",
+      "saved": "Die Erkennungseinstellungen wurden gespeichert.",
+      "loadFailed": "Die Erkennungseinstellungen konnten nicht geladen werden. Es wurde nichts geändert.",
+      "saveFailed": "Die Änderung konnte nicht bestätigt werden. Die Einstellungen vor einem erneuten Versuch neu laden.",
+      "observedTitle": "Vermutete Automatisierung",
+      "observedCounts": "{sessions} Sitzungen · {requests} Anfragen",
+      "observedHint": "Getrennt von verifizierten oder deklarierten Agenten. Nicht im Zähler des Agentenanteils oder den Agentenkennzahlen des Benchmarks enthalten; in der Gesamtzahl der Sitzungen enthalten.",
+      "notProof": "Vermutete Automatisierung ist kein Nachweis für KI oder eine Betreiberidentität.",
+      "unidentifiedAutomation": "Nicht identifizierte Automatisierung",
+      "score": "Verhaltenspunktzahl",
+      "scoreHint": "Die Punktzahl kombiniert gewichtete serverseitige Signale. Sie ist weder eine Wahrscheinlichkeit noch das Ergebnis einer Identitätsprüfung.",
+      "journeyWarning": "Vermutete Automatisierung wird getrennt dargestellt. Die Erkennung ist experimentell und wurde nicht anhand realer menschlicher Referenzsitzungen kalibriert. Eine KI-Identität ist damit nicht nachgewiesen.",
+      "timelineStartsAtDetection": "Dieser Verlauf beginnt beim Erreichen der Erkennungsschwelle. Frühere menschliche Anfragedetails wurden nicht gespeichert und werden nicht rekonstruiert; frühere Schritte bleiben unbekannt.",
+      "detectedAt": "Erstmals erkannt (UTC)",
+      "flag": {
+        "fetch_metadata_missing": "Fetch-Metadata-Header fehlen",
+        "client_hints_missing": "Browser-Client-Hints fehlen",
+        "browser_headers_incoherent": "Browser-Header passen nicht zum User-Agent",
+        "tool_user_agent": "User-Agent nennt ein Automatisierungswerkzeug",
+        "wildcard_html_accept": "Allgemeiner Accept-Header auf einer HTML-Seite",
+        "language_missing": "Accept-Language fehlt",
+        "deep_without_referer": "Unterseite ohne Referer angefordert",
+        "api_without_session_cookie": "API-Anfrage ohne Storefront-Sitzungscookie",
+        "hosting_network": "Client-IP im mitgelieferten Teilbestand der AWS-EC2-Bereiche für eu-west-3",
+        "high_cadence": "Hohe Anfragerate über mehrere Beobachtungen",
+        "regular_cadence": "Regelmäßige Anfrageabstände über mehrere Beobachtungen",
+        "cookie_ignored": "Erwartetes Sitzungscookie über mehrere Beobachtungen nicht zurückgesendet"
+      },
+      "appliedThreshold": "Angewandter Schwellenwert"
     }
   },
   "sw-privileges": {

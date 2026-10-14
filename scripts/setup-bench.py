@@ -68,7 +68,7 @@ if __name__ == '__main__':
     # Development stops if the real web server did not flush before termination.
     environment('test')
     copy('dev/services_test.php', '/var/www/html/config/services_test.php')
-    write('/var/www/html/config/packages/agentenblick-test-proxy.yaml', "when@test:\n  framework:\n    trusted_proxies: '127.0.0.1'\n    trusted_headers: ['x-forwarded-for']\n")
+    write('/var/www/html/config/packages/agentenblick-test-proxy.yaml', "when@test:\n  framework:\n    trusted_proxies: '127.0.0.1'\n    trusted_headers: ['x-forwarded-for', 'x-forwarded-host']\n")
     console('plugin:install', '--activate', 'AithosAgentenblick')
     console('plugin:activate', 'AithosAgentenblick')
     console('database:migrate', 'AithosAgentenblick', '--all')

@@ -34,6 +34,9 @@ final class JourneyContribution
         foreach (Failure::cases() as $failure) {
             $code = $failure->code();
             $eligible = self::eligible($code, $steps, $known);
+            if ((bool) ($session['journey_partial'] ?? false) && str_starts_with($code, 'abandoned_')) {
+                $eligible = false;
+            }
             $failed = ($failures & $failure->value) !== 0;
             if ($code === 'abandoned_cart') {
                 $failed = $eligible && ($steps & 32) === 0 && ($steps & 64) === 0;

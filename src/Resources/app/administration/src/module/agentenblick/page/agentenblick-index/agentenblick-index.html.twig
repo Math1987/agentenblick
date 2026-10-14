@@ -5,7 +5,7 @@
     </template>
 
     <template #smart-bar-actions>
-        <mt-button v-if="activeTab !== 'benchmark'" :disabled="isLoading || !canView" @click="refreshVisible">
+        <mt-button v-if="activeTab !== 'benchmark'" :disabled="isLoading || heuristicSaving || !canView" @click="refreshVisible">
             {{ $t('agentenblick.actions.refresh') }}
         </mt-button>
         <mt-button v-if="['overview', 'agents'].includes(activeTab)" variant="primary" :disabled="isLoading || !canView || isExporting" :is-loading="isExporting" @click="exportCsv">
@@ -28,7 +28,7 @@
                         :model-value="days"
                         :label="$t('agentenblick.filters.period')"
                         :options="periodOptions"
-                        :disabled="isLoading"
+                        :disabled="isLoading || heuristicSaving"
                         hide-clearable-button
                         @update:model-value="onDaysChange"
                     />
@@ -37,7 +37,7 @@
                         :model-value="salesChannelId"
                         :label="$t('agentenblick.filters.channel')"
                         :options="channelOptions"
-                        :disabled="isLoading"
+                        :disabled="isLoading || heuristicSaving"
                         hide-clearable-button
                         @update:model-value="onChannelChange"
                     />
@@ -54,6 +54,7 @@
                         :aria-controls="`agentenblick-${tab}-panel`"
                         :aria-selected="activeTab === tab"
                         :tabindex="activeTab === tab ? 0 : -1"
+                        :disabled="heuristicSaving"
                         @click="selectTab(tab)"
                         @keydown.right.prevent="moveTab(1)"
                         @keydown.left.prevent="moveTab(-1)"
@@ -112,12 +113,19 @@
                             </mt-card>
                         </div>
 
+                        <mt-card position-identifier="agentenblick-suspected" :title="$t('agentenblick.heuristics.observedTitle')">
+                            <span class="agentenblick-proof agentenblick-proof--suspected">{{ $t('agentenblick.evidence.suspected') }}</span>
+                            <p class="agentenblick-index__suspected-counts">{{ $t('agentenblick.heuristics.observedCounts', { sessions: formatNumber(totals.suspectedSessions), requests: formatNumber(totals.suspectedRequests) }) }}</p>
+                            <p class="agentenblick-index__hint">{{ $t('agentenblick.heuristics.observedHint') }}</p>
+                        </mt-card>
+
                         <mt-card position-identifier="agentenblick-trend" :title="$t('agentenblick.trend.title')">
                             <p v-if="!totals.requests" class="agentenblick-index__empty">{{ $t('agentenblick.general.empty') }}</p>
                             <template v-else>
                                 <div class="agentenblick-index__legend">
                                     <span><i class="agentenblick-index__legend-dot agentenblick-index__legend-dot--all"></i>{{ $t('agentenblick.trend.all') }}</span>
                                     <span><i class="agentenblick-index__legend-dot agentenblick-index__legend-dot--agents"></i>{{ $t('agentenblick.trend.agents') }}</span>
+                                    <span v-if="hasSuspected"><i class="agentenblick-index__legend-dot agentenblick-index__legend-dot--suspected"></i>{{ $t('agentenblick.trend.suspected') }}</span>
                                 </div>
                                 <svg class="agentenblick-index__chart" viewBox="0 0 720 210" role="img" :aria-label="$t('agentenblick.trend.accessible')">
                                     <title>{{ $t('agentenblick.trend.accessible') }}</title>
@@ -127,6 +135,7 @@
                                     </g>
                                     <polyline :points="sessionPoints" class="agentenblick-index__line agentenblick-index__line--all" />
                                     <polyline :points="agentSessionPoints" class="agentenblick-index__line agentenblick-index__line--agents" />
+                                    <polyline v-if="hasSuspected" :points="suspectedSessionPoints" class="agentenblick-index__line agentenblick-index__line--suspected" />
                                     <circle v-for="(day, index) in daily" :key="day.date" :cx="chartX(index)" :cy="chartY(day.agentSessions)" r="3.5" class="agentenblick-index__point">
                                         <title>{{ formatDate(day.date) }}: {{ formatNumber(day.agentSessions) }} {{ $t('agentenblick.trend.agents') }} / {{ formatNumber(day.sessions) }} {{ $t('agentenblick.trend.all') }}</title>
                                     </circle>
@@ -137,8 +146,8 @@
                                     <summary>{{ $t('agentenblick.trend.values') }}</summary>
                                     <div class="agentenblick-index__table-wrap">
                                         <table class="agentenblick-index__table">
-                                            <thead><tr><th scope="col">{{ $t('agentenblick.trend.date') }}</th><th scope="col">{{ $t('agentenblick.trend.all') }}</th><th scope="col">{{ $t('agentenblick.trend.agents') }}</th></tr></thead>
-                                            <tbody><tr v-for="day in daily" :key="day.date"><th scope="row">{{ formatDate(day.date) }}</th><td>{{ formatNumber(day.sessions) }}</td><td>{{ formatNumber(day.agentSessions) }}</td></tr></tbody>
+                                            <thead><tr><th scope="col">{{ $t('agentenblick.trend.date') }}</th><th scope="col">{{ $t('agentenblick.trend.all') }}</th><th scope="col">{{ $t('agentenblick.trend.agents') }}</th><th scope="col">{{ $t('agentenblick.trend.suspected') }}</th></tr></thead>
+                                            <tbody><tr v-for="day in daily" :key="day.date"><th scope="row">{{ formatDate(day.date) }}</th><td>{{ formatNumber(day.sessions) }}</td><td>{{ formatNumber(day.agentSessions) }}</td><td>{{ formatNumber(day.suspectedSessions) }}</td></tr></tbody>
                                         </table>
                                     </div>
                                 </details>
@@ -160,13 +169,14 @@
                                 <table class="agentenblick-index__table">
                                     <thead><tr><th scope="col">{{ $t('agentenblick.table.evidence') }}</th><th scope="col">{{ $t('agentenblick.table.requests') }}</th><th scope="col">{{ $t('agentenblick.table.sessions') }}</th></tr></thead>
                                     <tbody>
-                                        <tr v-for="row in summary.byEvidence" :key="row.value"><th scope="row">{{ label('evidence', row.value) }}</th><td>{{ formatNumber(row.requests) }}</td><td>{{ formatNumber(row.sessions) }}</td></tr>
+                                        <tr v-for="row in summary.byEvidence" :key="row.value"><th scope="row"><span class="agentenblick-proof" :class="evidenceClass(row.value)">{{ label('evidence', row.value) }}</span></th><td>{{ formatNumber(row.requests) }}</td><td>{{ formatNumber(row.sessions) }}</td></tr>
                                         <tr v-if="!summary.byEvidence.length"><td colspan="3">{{ $t('agentenblick.general.noAgents') }}</td></tr>
                                     </tbody>
                                 </table>
                                 <p class="agentenblick-index__hint">{{ $t('agentenblick.breakdown.proofHint') }}</p>
                             </mt-card>
                         </div>
+                        <agentenblick-heuristics @saving="heuristicSaving = $event" />
                     </section>
 
                     <section
@@ -190,7 +200,7 @@
                                     </tr></thead>
                                     <tbody>
                                         <tr v-for="agent in agents" :key="`${agent.operator}:${agent.agent}`">
-                                            <th scope="row"><strong>{{ agent.agent }}</strong><span class="agentenblick-index__subline">{{ agent.operator }} · {{ label('kind', agent.kind) }}</span></th>
+                                            <th scope="row"><strong>{{ agentName(agent) }}</strong><span class="agentenblick-index__subline">{{ agent.operator }} · {{ label('kind', agent.kind) }}</span><span v-if="agent.evidence === 'suspected'" class="agentenblick-index__subline">{{ $t('agentenblick.heuristics.notProof') }}</span></th>
                                             <td>
                                                 <span class="agentenblick-proof" :class="evidenceClass(agent.evidence)">{{ label('evidence', agent.evidence) }}</span>
                                                 <ul v-if="agent.evidence === 'mixed'" class="agentenblick-index__proof-list">

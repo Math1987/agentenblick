@@ -1,0 +1,24 @@
+<mt-card v-if="canView" class="agentenblick-heuristics" position-identifier="agentenblick-heuristics" :title="$t('agentenblick.heuristics.title')">
+    <mt-banner variant="attention">
+        <strong>{{ $t('agentenblick.heuristics.experimental') }}</strong>
+        <p>{{ $t('agentenblick.heuristics.experimentalHint') }}</p>
+    </mt-banner>
+    <p class="agentenblick-heuristics__hint">{{ $t('agentenblick.heuristics.privacy') }}</p>
+    <p v-if="loading" role="status">{{ $t('agentenblick.general.loading') }}</p>
+    <mt-banner v-else-if="failed" variant="critical">
+        <p>{{ $t('agentenblick.heuristics.loadFailed') }}</p>
+        <mt-button @click="load">{{ $t('agentenblick.actions.retry') }}</mt-button>
+    </mt-banner>
+    <template v-else-if="settings">
+        <p class="agentenblick-heuristics__state"><strong>{{ $t(settings.enabled ? 'agentenblick.heuristics.enabledState' : 'agentenblick.heuristics.disabledState') }}</strong> · {{ $t('agentenblick.heuristics.version', { version: settings.version }) }}</p>
+        <mt-checkbox :model-value="enabled" :label="$t('agentenblick.heuristics.enable')" :disabled="!canEdit || saving" @update:model-value="changeEnabled" />
+        <label class="agentenblick-heuristics__threshold">
+            <span>{{ $t('agentenblick.heuristics.threshold') }}</span>
+            <input type="number" inputmode="numeric" min="30" max="100" step="1" :value="threshold" :disabled="!canEdit || saving" :aria-invalid="!thresholdValid" aria-describedby="agentenblick-heuristic-threshold-hint" @input="changeThreshold($event.target.value)">
+        </label>
+        <p id="agentenblick-heuristic-threshold-hint" class="agentenblick-heuristics__hint">{{ $t('agentenblick.heuristics.thresholdHint') }}</p>
+        <p v-if="!thresholdValid" class="agentenblick-heuristics__error" role="alert">{{ $t('agentenblick.heuristics.invalidThreshold') }}</p>
+        <p v-if="!canEdit" class="agentenblick-heuristics__hint">{{ $t('agentenblick.heuristics.editorRequired') }}</p>
+        <mt-button v-else variant="primary" :disabled="!canSave" :is-loading="saving" @click="save">{{ $t('agentenblick.heuristics.save') }}</mt-button>
+    </template>
+</mt-card>

@@ -46,6 +46,25 @@ final class PayloadTest extends TestCase
         self::assertStringNotContainsString('"sessions":' . $total, Payload::bytes($document));
     }
 
+    public function testSuspectedAutomationNeverContaminatesTheVersionTwoAgentCohort(): void
+    {
+        $document = Payload::document(Payload::uuid(), Payload::uuid(), '2026-W40', true, ['country' => 'DE', 'shopware' => '6.7', 'plugin' => '0.1.0', 'trafficBucket' => '<1k', 'agenticCommerceExtension' => false], [
+            ['kind' => 'human_or_unknown', 'evidence' => 'none', 'sessions' => 10],
+            ['kind' => 'automation_unknown', 'evidence' => 'suspected', 'sessions' => 80],
+            ['kind' => 'training_crawler', 'evidence' => 'verified_ip', 'operator' => 'openai', 'sessions' => 10],
+        ], [
+            ['evidence' => 'suspected', 'metric' => 'sessions', 'sessions' => 80],
+            ['evidence' => 'suspected', 'metric' => 'step.order', 'sessions' => 80],
+        ]);
+        self::assertSame(10.0, $document['shares']['aiSessionsPct']);
+        self::assertSame(0.0, $document['shares']['byEvidence']['none']);
+        self::assertSame(100.0, $document['shares']['byEvidence']['verified_ip']);
+        self::assertSame(0.0, $document['shares']['byKind']['automation_unknown']);
+        self::assertSame(['denominator' => 'below_10', 'pct' => 'suppressed'], $document['funnel']['verified']['order']);
+        self::assertSame(['denominator' => 'below_10', 'pct' => 'suppressed'], $document['funnel']['declared']['order']);
+        self::assertStringNotContainsString('suspected', Payload::bytes($document));
+    }
+
     public function testRoundingKeepsExactlyOneHundredAndFixedOperatorBuckets(): void
     {
         self::assertSame(['a' => 33.4, 'b' => 33.3, 'c' => 33.3], Payload::distribution(['a' => 4, 'b' => 4, 'c' => 4]));

@@ -21,6 +21,18 @@ export default class AgentenblickApiService extends ApiService {
         return this.get('journey/summary', params);
     }
 
+    getHeuristicSettings() {
+        return this.get('heuristics/settings');
+    }
+
+    updateHeuristicSettings(body) {
+        return this.httpClient.post(
+            `${this.getApiBasePath()}/heuristics/settings`,
+            body,
+            { headers: this.getBasicHeaders() },
+        ).then(ApiService.handleResponse);
+    }
+
     getJourneySessions(params) {
         return this.get('journey/sessions', params);
     }
