@@ -45,5 +45,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - run: npm ci --prefix src/Resources/app/administration --ignore-scripts --no-audit --no-fund
       - run: node --test src/Resources/app/administration/tests/*.test.mjs
       - run: python3 -c 'from pathlib import Path; [compile(p.read_bytes(), str(p), "exec") for p in Path("scripts").glob("*.py")]'

@@ -1,7 +1,7 @@
 /vendor/
 /.tools/
 /.local/
-/node_modules/
+node_modules/
 /.phpunit.cache/
 /.phpstan/
 .env

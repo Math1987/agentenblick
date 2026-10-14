@@ -190,7 +190,7 @@
                                 <p class="agentenblick-index__hint">{{ $t('agentenblick.breakdown.proofHint') }}</p>
                             </agentenblick-card>
                         </div>
-                        <agentenblick-heuristics @saving="heuristicSaving || healthProbing = $event" />
+                        <agentenblick-heuristics @saving="heuristicSaving = $event" />
                     </section>
 
                     <section
