@@ -1,0 +1,80 @@
+{
+  "checkedAt": "2026-10-14T13:22:25+00:00",
+  "readOnly": true,
+  "realDataSubmitted": false,
+  "dockerUsed": false,
+  "passed": true,
+  "github": {
+    "commit": "9faf6b495ed89009af49479772d7804439c1ce27",
+    "commitUrl": "https://github.com/Math1987/agentenblick-benchmark/commit/9faf6b495ed89009af49479772d7804439c1ce27",
+    "workflowUrl": "https://github.com/Math1987/agentenblick-benchmark/actions/runs/38562379595",
+    "conclusion": "success",
+    "updatedAt": "2026-10-14T12:16:36Z",
+    "jobs": [
+      {
+        "name": "checks",
+        "status": "completed",
+        "conclusion": "success",
+        "completedAt": "2026-10-14T12:15:44Z"
+      },
+      {
+        "name": "deploy",
+        "status": "completed",
+        "conclusion": "success",
+        "completedAt": "2026-10-14T12:16:36Z"
+      }
+    ],
+    "mainHeadMatches": true,
+    "latestMainPushRunMatches": true
+  },
+  "checks": {
+    "dashboard": {
+      "url": "https://shopware.aithos.app/",
+      "status": 200,
+      "applicationShell": true,
+      "javascriptAssets": [
+        {
+          "path": "/assets/index-BGF6PCCo.js",
+          "status": 200,
+          "bytes": 256978
+        }
+      ]
+    },
+    "publicConfiguration": {
+      "status": 200,
+      "demo": true,
+      "cognitoConfigured": true
+    },
+    "health": {
+      "url": "https://shopware.aithos.app/v1/health",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "schema": "agentenblick.benchmark/1"
+      }
+    },
+    "demoWithoutAuthentication": {
+      "url": "https://shopware.aithos.app/v1/benchmarks?demo=true",
+      "status": 401,
+      "error": "dashboard_authentication_required"
+    },
+    "demoWithInvalidAuthentication": {
+      "url": "https://shopware.aithos.app/v1/benchmarks?demo=true",
+      "status": 401,
+      "error": "invalid_dashboard_authentication"
+    },
+    "directApiOrigin": {
+      "url": "https://gbsjig43qb.execute-api.eu-west-3.amazonaws.com/v1/benchmarks",
+      "status": 403,
+      "error": "trusted_origin_required"
+    },
+    "publicRealAggregates": {
+      "url": "https://shopware.aithos.app/v1/benchmarks",
+      "status": 200,
+      "demo": false,
+      "publishedCells": 0,
+      "methodologyVersion": "2"
+    }
+  },
+  "runtimeVersionLimitation": "The public health endpoint exposes its schema only, not the running commit or Lambda version. Commit deployment is evidenced by the successful GitHub deploy job; HTTPS checks confirm current behavior."
+}

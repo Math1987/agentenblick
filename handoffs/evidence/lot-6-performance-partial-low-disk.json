@@ -1,0 +1,729 @@
+{
+  "check": "cached_plugin_phase_cost",
+  "startedAt": "2026-10-14T13:48:38.799876+00:00",
+  "finishedAt": "2026-10-14T13:55:23.049202+00:00",
+  "run": "594e18e3257bbc45",
+  "versions": {
+    "shopware": "Shopware 6.7.15.0 (env: test, debug: false)",
+    "php_cli": "8.2.34",
+    "source_commit": "5ce57bb464d18d7f197c8d3645504054113dec27",
+    "image_id": "sha256:1c3f867fb1e990f69e33252158c998bae7cde9be5ed61efed85cd38cca4eb17e"
+  },
+  "catalogue": {
+    "production_cdn_ranges": 289,
+    "fixture_cdn_ranges": 1,
+    "measured_cdn_ranges": 290,
+    "production_sha256": "4c9be186cff0d72aa140ff97b510fe339d26dee8f391c739c2854e04b14abe8c",
+    "measured_test_catalogue_sha256": "c9382deaa723d8a8ed9b9a433503a9f33620b411e7f63b6479687587c858a982",
+    "test_agents": 27
+  },
+  "method": {
+    "stage_order": [
+      "off-1",
+      "on-1",
+      "off-2",
+      "on-2"
+    ],
+    "measured_requests_per_stage": 1000,
+    "populations": [
+      "human",
+      "declared_agent",
+      "verified_fixture_ip",
+      "verified_signature_cached_key"
+    ],
+    "requests_per_population_per_stage": 250,
+    "first_requests_per_stage": 4,
+    "warmups_per_stage": 20,
+    "concurrency": 1,
+    "p95": "nearest rank ceil(0.95 * n)",
+    "threshold_ms": {
+      "pre_p95": 0.5,
+      "post_p95": 5.0
+    },
+    "measurement": "hrtime union of nested instrumented plugin methods by phase; JSONL appended at shutdown outside the timers. Client completion is measured separately. Every next request waits for the previous shutdown record, outside client timing.",
+    "instrumented_pre": [
+      "capture begin/onRequest/complete/onResponse/offersSessionCookie",
+      "Journey callbacks and observe; nested calls counted once"
+    ],
+    "instrumented_post": [
+      "capture onTerminate/flush; nested and duplicate no-op calls counted without overlapping time"
+    ],
+    "limitations": [
+      "The first four requests after cache clear and Apache graceful reload are labelled first-after-clear, not a guaranteed cold OS/MySQL cache.",
+      "Warmed homepage only; no capacity claim or checkout/product-route benchmark.",
+      "Synthetic fixture identities and test-mode catalogue; no genuine provider traffic.",
+      "Signed requests use a preseeded public key cache; no remote directory, rDNS or catalogue refresh cost is represented.",
+      "Instrumentation overhead is included, not subtracted; core event dispatch and outer decorator bookkeeping are not included in the selected plugin phase timers.",
+      "Dependency injection, service construction and autoload before the first instrumented method are outside the phase timers; the client off/on comparison includes their effect.",
+      "Health token checks inside capture are included; public probes are not triggered.",
+      "Client off/on differences include ordinary local scheduling variance and cannot alone establish a causal regression.",
+      "Repeated four synthetic streams keep a small number of sessions warm; concurrent creation or many distinct sessions are not measured."
+    ]
+  },
+  "web_runtime": [
+    {
+      "php_version_id": 80234,
+      "sapi_code": 2
+    }
+  ],
+  "sapi_codes": {
+    "1": "apache2handler",
+    "2": "fpm-fcgi",
+    "3": "cgi-fcgi",
+    "0": "other"
+  },
+  "restoration": {
+    "source_hashes_match": true,
+    "test_catalogue_restored": true,
+    "key_cache_restored": true,
+    "plugin_active": true
+  },
+  "minimum_host_free_bytes": 2723004416,
+  "host_disk_stop_threshold_bytes": 3221225472,
+  "measurement_complete": false,
+  "phase_thresholds_pass": false,
+  "active": {
+    "pre": {
+      "count": 1000,
+      "median_ms": 0.0875205,
+      "p95_ms": 0.230292,
+      "min_ms": 0.066666,
+      "max_ms": 5.060208
+    },
+    "post": {
+      "count": 1000,
+      "median_ms": 8.2428125,
+      "p95_ms": 31.937292,
+      "min_ms": 4.207375,
+      "max_ms": 942.758668
+    },
+    "client": {
+      "count": 1000,
+      "median_ms": 114.94118799999706,
+      "p95_ms": 288.0857079999987,
+      "min_ms": 85.73670799999672,
+      "max_ms": 2947.5427099999797
+    },
+    "http_status_counts": {
+      "200": 1000
+    },
+    "response_combinations": [
+      {
+        "status": 200,
+        "body_bytes": 76558,
+        "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "requests": 1000
+      }
+    ]
+  },
+  "inactive": {
+    "pre": {
+      "count": 1000,
+      "median_ms": 0.0,
+      "p95_ms": 0.0,
+      "min_ms": 0.0,
+      "max_ms": 0.0
+    },
+    "post": {
+      "count": 1000,
+      "median_ms": 0.0,
+      "p95_ms": 0.0,
+      "min_ms": 0.0,
+      "max_ms": 0.0
+    },
+    "client": {
+      "count": 1000,
+      "median_ms": 114.1612499999992,
+      "p95_ms": 226.20187499999884,
+      "min_ms": 85.62141700000211,
+      "max_ms": 1411.7061259999755
+    },
+    "http_status_counts": {
+      "200": 1000
+    },
+    "response_combinations": [
+      {
+        "status": 200,
+        "body_bytes": 76558,
+        "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+        "requests": 1000
+      }
+    ]
+  },
+  "active_by_population": {
+    "human": {
+      "pre": {
+        "count": 250,
+        "median_ms": 0.0878545,
+        "p95_ms": 0.23771,
+        "min_ms": 0.066792,
+        "max_ms": 2.864959
+      },
+      "post": {
+        "count": 250,
+        "median_ms": 7.232416499999999,
+        "p95_ms": 25.672583,
+        "min_ms": 4.207375,
+        "max_ms": 158.302125
+      },
+      "client": {
+        "count": 250,
+        "median_ms": 115.14039600000251,
+        "p95_ms": 270.28387500000827,
+        "min_ms": 85.99304200000188,
+        "max_ms": 890.1884169999976
+      },
+      "http_status_counts": {
+        "200": 250
+      },
+      "response_combinations": [
+        {
+          "status": 200,
+          "body_bytes": 76558,
+          "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "requests": 250
+        }
+      ]
+    },
+    "declared_agent": {
+      "pre": {
+        "count": 250,
+        "median_ms": 0.0875205,
+        "p95_ms": 0.258541,
+        "min_ms": 0.067917,
+        "max_ms": 5.060208
+      },
+      "post": {
+        "count": 250,
+        "median_ms": 8.2581865,
+        "p95_ms": 37.561832,
+        "min_ms": 4.810542,
+        "max_ms": 174.52575
+      },
+      "client": {
+        "count": 250,
+        "median_ms": 117.50435450000441,
+        "p95_ms": 286.3795839999948,
+        "min_ms": 85.73670799999672,
+        "max_ms": 1761.5560430000041
+      },
+      "http_status_counts": {
+        "200": 250
+      },
+      "response_combinations": [
+        {
+          "status": 200,
+          "body_bytes": 76558,
+          "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "requests": 250
+        }
+      ]
+    },
+    "verified_fixture_ip": {
+      "pre": {
+        "count": 250,
+        "median_ms": 0.0887915,
+        "p95_ms": 0.240582,
+        "min_ms": 0.066666,
+        "max_ms": 1.493125
+      },
+      "post": {
+        "count": 250,
+        "median_ms": 8.1387285,
+        "p95_ms": 33.832917,
+        "min_ms": 4.793709,
+        "max_ms": 942.758668
+      },
+      "client": {
+        "count": 250,
+        "median_ms": 113.17547900000409,
+        "p95_ms": 347.29187600000296,
+        "min_ms": 85.81620800000383,
+        "max_ms": 2947.5427099999797
+      },
+      "http_status_counts": {
+        "200": 250
+      },
+      "response_combinations": [
+        {
+          "status": 200,
+          "body_bytes": 76558,
+          "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "requests": 250
+        }
+      ]
+    },
+    "verified_signature_cached_key": {
+      "pre": {
+        "count": 250,
+        "median_ms": 0.0859375,
+        "p95_ms": 0.214166,
+        "min_ms": 0.067125,
+        "max_ms": 0.729917
+      },
+      "post": {
+        "count": 250,
+        "median_ms": 9.608625,
+        "p95_ms": 32.241375,
+        "min_ms": 5.63725,
+        "max_ms": 117.059167
+      },
+      "client": {
+        "count": 250,
+        "median_ms": 113.6013959999982,
+        "p95_ms": 269.0224579999922,
+        "min_ms": 86.00150000001304,
+        "max_ms": 1449.4930420000019
+      },
+      "http_status_counts": {
+        "200": 250
+      },
+      "response_combinations": [
+        {
+          "status": 200,
+          "body_bytes": 76558,
+          "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+          "requests": 250
+        }
+      ]
+    }
+  },
+  "client_delta_ms": {
+    "median_ms": 0.7799379999978555,
+    "p95_ms": 61.88383299999987
+  },
+  "identical_measured_status_body": true,
+  "errors": [
+    "Host disk below 3 GiB; restoring disposable bench"
+  ],
+  "status": "incomplete_low_disk",
+  "stages": [
+    {
+      "index": 0,
+      "plugin_active": false,
+      "classification_counts_including_warmup": {},
+      "metrics": {
+        "pre": {
+          "count": 1000,
+          "median_ms": 0.0,
+          "p95_ms": 0.0,
+          "min_ms": 0.0,
+          "max_ms": 0.0
+        },
+        "post": {
+          "count": 1000,
+          "median_ms": 0.0,
+          "p95_ms": 0.0,
+          "min_ms": 0.0,
+          "max_ms": 0.0
+        },
+        "client": {
+          "count": 1000,
+          "median_ms": 114.1612499999992,
+          "p95_ms": 226.20187499999884,
+          "min_ms": 85.62141700000211,
+          "max_ms": 1411.7061259999755
+        },
+        "http_status_counts": {
+          "200": 1000
+        },
+        "response_combinations": [
+          {
+            "status": 200,
+            "body_bytes": 76558,
+            "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+            "requests": 1000
+          }
+        ]
+      },
+      "first_after_clear": {
+        "pre": {
+          "count": 4,
+          "median_ms": 0.0,
+          "p95_ms": 0.0,
+          "min_ms": 0.0,
+          "max_ms": 0.0
+        },
+        "post": {
+          "count": 4,
+          "median_ms": 0.0,
+          "p95_ms": 0.0,
+          "min_ms": 0.0,
+          "max_ms": 0.0
+        },
+        "client": {
+          "count": 4,
+          "median_ms": 576.013146,
+          "p95_ms": 1846.2312499999998,
+          "min_ms": 163.3376659999999,
+          "max_ms": 1846.2312499999998
+        },
+        "http_status_counts": {
+          "200": 4
+        },
+        "response_combinations": [
+          {
+            "status": 200,
+            "body_bytes": 76558,
+            "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+            "requests": 4
+          }
+        ]
+      },
+      "populations": {
+        "human": {
+          "pre": {
+            "count": 250,
+            "median_ms": 0.0,
+            "p95_ms": 0.0,
+            "min_ms": 0.0,
+            "max_ms": 0.0
+          },
+          "post": {
+            "count": 250,
+            "median_ms": 0.0,
+            "p95_ms": 0.0,
+            "min_ms": 0.0,
+            "max_ms": 0.0
+          },
+          "client": {
+            "count": 250,
+            "median_ms": 113.66364599999724,
+            "p95_ms": 205.90637500000594,
+            "min_ms": 86.73500000000058,
+            "max_ms": 625.718417
+          },
+          "http_status_counts": {
+            "200": 250
+          },
+          "response_combinations": [
+            {
+              "status": 200,
+              "body_bytes": 76558,
+              "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+              "requests": 250
+            }
+          ]
+        },
+        "declared_agent": {
+          "pre": {
+            "count": 250,
+            "median_ms": 0.0,
+            "p95_ms": 0.0,
+            "min_ms": 0.0,
+            "max_ms": 0.0
+          },
+          "post": {
+            "count": 250,
+            "median_ms": 0.0,
+            "p95_ms": 0.0,
+            "min_ms": 0.0,
+            "max_ms": 0.0
+          },
+          "client": {
+            "count": 250,
+            "median_ms": 115.16647950000515,
+            "p95_ms": 235.34754200000316,
+            "min_ms": 85.62141700000211,
+            "max_ms": 733.8375420000011
+          },
+          "http_status_counts": {
+            "200": 250
+          },
+          "response_combinations": [
+            {
+              "status": 200,
+              "body_bytes": 76558,
+              "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+              "requests": 250
+            }
+          ]
+        },
+        "verified_fixture_ip": {
+          "pre": {
+            "count": 250,
+            "median_ms": 0.0,
+            "p95_ms": 0.0,
+            "min_ms": 0.0,
+            "max_ms": 0.0
+          },
+          "post": {
+            "count": 250,
+            "median_ms": 0.0,
+            "p95_ms": 0.0,
+            "min_ms": 0.0,
+            "max_ms": 0.0
+          },
+          "client": {
+            "count": 250,
+            "median_ms": 115.89083349999783,
+            "p95_ms": 223.5072499999951,
+            "min_ms": 86.57429199999024,
+            "max_ms": 1411.7061259999755
+          },
+          "http_status_counts": {
+            "200": 250
+          },
+          "response_combinations": [
+            {
+              "status": 200,
+              "body_bytes": 76558,
+              "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+              "requests": 250
+            }
+          ]
+        },
+        "verified_signature_cached_key": {
+          "pre": {
+            "count": 250,
+            "median_ms": 0.0,
+            "p95_ms": 0.0,
+            "min_ms": 0.0,
+            "max_ms": 0.0
+          },
+          "post": {
+            "count": 250,
+            "median_ms": 0.0,
+            "p95_ms": 0.0,
+            "min_ms": 0.0,
+            "max_ms": 0.0
+          },
+          "client": {
+            "count": 250,
+            "median_ms": 113.28170849999515,
+            "p95_ms": 235.78525099999388,
+            "min_ms": 86.12491700000828,
+            "max_ms": 521.6400420000136
+          },
+          "http_status_counts": {
+            "200": 250
+          },
+          "response_combinations": [
+            {
+              "status": 200,
+              "body_bytes": 76558,
+              "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+              "requests": 250
+            }
+          ]
+        }
+      }
+    },
+    {
+      "index": 1,
+      "plugin_active": true,
+      "classification_counts_including_warmup": {
+        "declared_unverified": 256,
+        "verified_signature": 256,
+        "none": 256,
+        "verified_ip": 256
+      },
+      "metrics": {
+        "pre": {
+          "count": 1000,
+          "median_ms": 0.0875205,
+          "p95_ms": 0.230292,
+          "min_ms": 0.066666,
+          "max_ms": 5.060208
+        },
+        "post": {
+          "count": 1000,
+          "median_ms": 8.2428125,
+          "p95_ms": 31.937292,
+          "min_ms": 4.207375,
+          "max_ms": 942.758668
+        },
+        "client": {
+          "count": 1000,
+          "median_ms": 114.94118799999706,
+          "p95_ms": 288.0857079999987,
+          "min_ms": 85.73670799999672,
+          "max_ms": 2947.5427099999797
+        },
+        "http_status_counts": {
+          "200": 1000
+        },
+        "response_combinations": [
+          {
+            "status": 200,
+            "body_bytes": 76558,
+            "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+            "requests": 1000
+          }
+        ]
+      },
+      "first_after_clear": {
+        "pre": {
+          "count": 4,
+          "median_ms": 1.066834,
+          "p95_ms": 5.472542,
+          "min_ms": 0.138541,
+          "max_ms": 5.472542
+        },
+        "post": {
+          "count": 4,
+          "median_ms": 17.921062,
+          "p95_ms": 22.397042,
+          "min_ms": 10.166417,
+          "max_ms": 22.397042
+        },
+        "client": {
+          "count": 4,
+          "median_ms": 221.9056045000001,
+          "p95_ms": 1098.442542,
+          "min_ms": 182.405209,
+          "max_ms": 1098.442542
+        },
+        "http_status_counts": {
+          "200": 4
+        },
+        "response_combinations": [
+          {
+            "status": 200,
+            "body_bytes": 76558,
+            "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+            "requests": 4
+          }
+        ]
+      },
+      "populations": {
+        "human": {
+          "pre": {
+            "count": 250,
+            "median_ms": 0.0878545,
+            "p95_ms": 0.23771,
+            "min_ms": 0.066792,
+            "max_ms": 2.864959
+          },
+          "post": {
+            "count": 250,
+            "median_ms": 7.232416499999999,
+            "p95_ms": 25.672583,
+            "min_ms": 4.207375,
+            "max_ms": 158.302125
+          },
+          "client": {
+            "count": 250,
+            "median_ms": 115.14039600000251,
+            "p95_ms": 270.28387500000827,
+            "min_ms": 85.99304200000188,
+            "max_ms": 890.1884169999976
+          },
+          "http_status_counts": {
+            "200": 250
+          },
+          "response_combinations": [
+            {
+              "status": 200,
+              "body_bytes": 76558,
+              "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+              "requests": 250
+            }
+          ]
+        },
+        "declared_agent": {
+          "pre": {
+            "count": 250,
+            "median_ms": 0.0875205,
+            "p95_ms": 0.258541,
+            "min_ms": 0.067917,
+            "max_ms": 5.060208
+          },
+          "post": {
+            "count": 250,
+            "median_ms": 8.2581865,
+            "p95_ms": 37.561832,
+            "min_ms": 4.810542,
+            "max_ms": 174.52575
+          },
+          "client": {
+            "count": 250,
+            "median_ms": 117.50435450000441,
+            "p95_ms": 286.3795839999948,
+            "min_ms": 85.73670799999672,
+            "max_ms": 1761.5560430000041
+          },
+          "http_status_counts": {
+            "200": 250
+          },
+          "response_combinations": [
+            {
+              "status": 200,
+              "body_bytes": 76558,
+              "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+              "requests": 250
+            }
+          ]
+        },
+        "verified_fixture_ip": {
+          "pre": {
+            "count": 250,
+            "median_ms": 0.0887915,
+            "p95_ms": 0.240582,
+            "min_ms": 0.066666,
+            "max_ms": 1.493125
+          },
+          "post": {
+            "count": 250,
+            "median_ms": 8.1387285,
+            "p95_ms": 33.832917,
+            "min_ms": 4.793709,
+            "max_ms": 942.758668
+          },
+          "client": {
+            "count": 250,
+            "median_ms": 113.17547900000409,
+            "p95_ms": 347.29187600000296,
+            "min_ms": 85.81620800000383,
+            "max_ms": 2947.5427099999797
+          },
+          "http_status_counts": {
+            "200": 250
+          },
+          "response_combinations": [
+            {
+              "status": 200,
+              "body_bytes": 76558,
+              "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+              "requests": 250
+            }
+          ]
+        },
+        "verified_signature_cached_key": {
+          "pre": {
+            "count": 250,
+            "median_ms": 0.0859375,
+            "p95_ms": 0.214166,
+            "min_ms": 0.067125,
+            "max_ms": 0.729917
+          },
+          "post": {
+            "count": 250,
+            "median_ms": 9.608625,
+            "p95_ms": 32.241375,
+            "min_ms": 5.63725,
+            "max_ms": 117.059167
+          },
+          "client": {
+            "count": 250,
+            "median_ms": 113.6013959999982,
+            "p95_ms": 269.0224579999922,
+            "min_ms": 86.00150000001304,
+            "max_ms": 1449.4930420000019
+          },
+          "http_status_counts": {
+            "200": 250
+          },
+          "response_combinations": [
+            {
+              "status": 200,
+              "body_bytes": 76558,
+              "sha256": "f40dcf36aaca5662967b1ee3581ce7a62056d945cc8605ed7c5af9899670c98e",
+              "requests": 250
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

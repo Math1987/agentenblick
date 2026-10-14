@@ -1,18 +1,59 @@
 # Agentenblick
 
 Server-side AI traffic measurement for self-hosted Shopware. Complements
-Shopware Agentic Commerce. Development is proceeding through acceptance gates;
-the plugin is not yet ready to install on a merchant shop.
+Shopware Agentic Commerce. Version 0.1.0 is an early demonstration release.
 
 Technical plugin name: `AithosAgentenblick`. License: MIT.
 
-**Current status:** the lot 1a CLI pipeline passes its isolated-bench checks
-(61 unit tests and 8 database tests, PHPStan level 8, HTTP/privacy/failure/offline
-checks). The [acceptance report](handoffs/2026-10-14-lot-1a-acceptance.md) records
-the measured results and remaining limits. Lot 1a was accepted on 2026-10-14.
-Development now continues through the remaining lots and production deployment,
-with automated acceptance checks at each stage. Lot 1b adds the native
-administration, shared CLI/API aggregates, CSV export and versioned IP-range approval.
+**Current status:** CLI, native administration, identity checks, journeys, Health
+diagnostics and the opt-in benchmark are implemented on the isolated Shopware bench.
+The benchmark demo is deployed at [shopware.aithos.app](https://shopware.aithos.app).
+Experimental undeclared-automation detection is disabled by default: the frozen
+evaluation found 11 of 13 scripted profiles, below the 90% target, and no real
+human reference set is available. See the [lot 4 report](https://github.com/Math1987/agentenblick/blob/v0.1.0/handoffs/2026-10-14-lot-4-acceptance.md).
+The [Health acceptance report](https://github.com/Math1987/agentenblick/blob/v0.1.0/handoffs/2026-10-14-lot-5-acceptance.md) and
+[release qualification report](https://github.com/Math1987/agentenblick/blob/v0.1.0/handoffs/2026-10-14-lot-6-acceptance.md) give exact
+versions, commands, measurements and remaining limitations. Shopware Store
+submission is deferred; no Store acceptance is claimed. Production qualification
+is also pending the post-response performance target documented in the release report.
+
+[Deutsch](README.de.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
+
+## Installation and operation
+
+Use the versioned `AithosAgentenblick` ZIP from the GitHub release, with its
+published SHA-256 checksum. Upload it through **Extensions > My extensions**, or
+extract its `AithosAgentenblick` directory into `custom/plugins/` and run:
+
+```sh
+bin/console plugin:refresh
+bin/console plugin:install --activate AithosAgentenblick
+bin/console cache:clear
+bin/console assets:install
+bin/console agentenblick:selftest
+bin/console agentenblick:report --days=7
+```
+
+PHP 8.2+, Sodium and OpenSSL are required. The plugin declares its Composer
+dependencies and asks Shopware to resolve them during installation. Run these
+commands as the shop's normal deployment user. Keep the Shopware scheduler and
+message consumers running: catalogue refresh, deferred verification, session
+closure, retention and optional benchmark delivery rely on them. Confirm
+`agentenblick:selftest` after installation and after an update.
+
+The qualification targets are Shopware **6.6.10.29** and **6.7.15.0**, PHP-FPM,
+with debug disabled. Results do not establish performance on every hosting
+configuration. Under mod_php, termination work can still delay the visitor;
+verify response flushing on the target host before enabling production traffic.
+Trust only the real proxy addresses in Symfony's `TRUSTED_PROXIES`; configure the
+forwarded headers your proxy overwrites. Never trust arbitrary visitor-supplied
+`X-Forwarded-For` or `CF-Connecting-IP` values.
+
+Benchmark participation and experimental automation detection start disabled.
+The offline setting disables outbound identity verification and Health probes
+as well as all benchmark requests. Deactivation stops capture and preserves
+data. Uninstall offers data retention; read the pending-withdrawal limitation
+below before requesting complete deletion.
 
 ## Isolated development bench
 
@@ -115,6 +156,11 @@ withdrawal succeeds. An offline or failed withdrawal retains only the local
 credentials needed for retry and leaves participation disabled. The daily task
 retries withdrawals even while disabled. Destructive uninstall is blocked while
 withdrawal is pending; keeping plugin data preserves the retry credentials.
+After uninstalling with data retained, withdrawal retries require reinstalling
+and reactivating the plugin: its scheduled handler does not run while absent.
+This privacy safeguard conflicts with the Store requirement for unconditional
+uninstall and must be resolved before Store submission. The current demo does
+not claim Store compliance.
 
 The daily task sends at most twenty pending documents from the last thirteen weeks.
 One document per channel and completed week is frozen before transport; exact
@@ -144,6 +190,49 @@ so a cloned database cannot mutate real contributions. Demo data never enter rea
 their dashboard requires Cognito sign-in. The fixed destination is
 `https://shopware.aithos.app`, redirects are disabled, each request is bounded to
 six seconds and each response to 64 KiB. No capture subscriber calls this client.
+
+## Health diagnostics
+
+The **Health** tab reads saved results and observed contradictions. Opening it
+does not contact a shop or external service. An editor can explicitly probe a
+configured sales-channel domain; the API accepts its database ID, never a
+free-form URL. Probes require public HTTPS and enforce private-network blocking,
+no redirects, two seconds per resource and twenty seconds for the whole run.
+HTTP-only development domains remain visible with an explanation and cannot be
+probed through the product.
+
+The snapshot records the served robots policy and HTTP status of `llms.txt`,
+`llms-full.txt`, `agents.md`, `AGENTS.md`, `/.well-known/ucp`,
+`/.well-known/agent-card.json` and `/store-api/_mcp`. Robots and `.well-known`
+probes use the origin root; llms, agents and MCP probes respect the configured
+domain's path prefix. MCP uses OPTIONS: an HTTP response is not proof of protocol support.
+The optional auto-test calls the selected domain's homepage with GPTBot,
+ClaudeBot and ChatGPT-User user-agents. These requests originate from **the
+shop server's IP**, not the operators' IPs; results cannot establish how a WAF
+treats real operator traffic. One-use request capabilities exclude these probes
+from traffic statistics.
+
+Robots evaluation merges applicable groups, supports wildcards and anchors,
+normalizes percent-encoding, and resolves equal specificity in favor of Allow.
+The parser is bounded to 512,000 bytes, 4,096 rules and a matching work budget.
+Unsupported/oversized responses and redirects remain unknown. Redirects are
+deliberately not followed, so this diagnostic is not a complete crawler
+implementation of RFC 9309. Saved policies expire after 24 hours; configuration
+changes invalidate the corresponding snapshot. Google-Extended appears as a
+policy token, not an independently identified visitor.
+
+For observed agents, local aggregates identify an allowed request receiving
+403/429, a disallowed request still arriving, or UCP/MCP returning an error. Each
+finding includes its HTTP status, public matched rule when available, reason
+and snapshot time. Paths and query strings used for rule matching remain in
+memory. Later activity after a successful llms response is a temporal
+association; it does not prove that the agent read or obeyed the file.
+
+```sh
+bin/console agentenblick:health
+bin/console agentenblick:health --domain=<configured-domain-id> --days=30
+bin/console agentenblick:health --probe=<configured-domain-id> --auto-test
+```
 
 ## Current implementation details
 
@@ -269,6 +358,19 @@ The overhead script alternates off/on/off/on, clears the cache each time, warms
 median/p95, response fingerprints and deltas in `.local/overhead.json`, and
 attempts to restore the active plugin even on failure. This measures initial
 local client overhead, not capacity or all post-response processing cost.
+
+For the final cached-request phase experiment, reserve the bench exclusively
+and run `python3 scripts/measure-phases.py`. It alternates four stages of 1,000
+measured requests each, separates first requests and warmup, and reports each
+population independently: human, declared agent, fictitious IP-verified agent
+and signature with a cached public key. Temporary instrumentation runs only in
+container copies and restores/hash-checks them in `finally`. This adds synthetic
+traffic to the bench. It is not a load test, a network-key-lookup measurement or
+a guarantee for every storefront route. The selected pre-response timers exclude
+dependency injection, service construction and autoload before the first measured
+method; they do not establish the complete 0.5 ms pre-response overhead target.
+The experiment exercises four warm sessions, not new-session churn or lock
+contention. See the release report for results and the unmet targets.
 
 **`acceptance.py` resets Agentenblick observations on the disposable bench.** It
 checks identities, trusted and forged proxy headers, concurrent traffic, safe

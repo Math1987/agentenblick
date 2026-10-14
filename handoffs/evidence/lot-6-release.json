@@ -1,0 +1,72 @@
+{
+  "check": "demo_release_package",
+  "checkedAt": "2026-10-14T14:08:10.156422+00:00",
+  "runtimeSourceCommit": "5ce57bb464d18d7f197c8d3645504054113dec27",
+  "shopwareCliVersion": "0.18.5",
+  "packageCommand": "shopware-cli extension package . --disable-git --filename AithosAgentenblick-0.1.0.zip --output-directory releases --no-interaction --no-update-hint",
+  "temporaryDirectory": "Math17 directory outside the source tree",
+  "archiveVerification": {
+    "passed": true,
+    "archive": "AithosAgentenblick-0.1.0.zip",
+    "version": "0.1.0",
+    "bytes": 336268,
+    "files": 161,
+    "sha256": "d59cf205402071b3003b1d4b1b5dc88ee8a929ab71ba6c97eb47f88d3054f144",
+    "legacyAndViteAssetsPresent": true,
+    "checksumSourceInventoryComplete": true,
+    "compiledAssetsOutsideCliChecksum": 6,
+    "developmentContentExcluded": true,
+    "exactLocalCredentialValuesExcluded": 8
+  },
+  "qualifiedRuntimeComparison": {
+    "allowedChanges": [
+      "CHANGELOG.md",
+      "README.de.md",
+      "README.md",
+      "checksum.json",
+      "docs/DEMO.fr.md",
+      "docs/STORE.de-DE.md",
+      "docs/STORE.en-GB.md"
+    ],
+    "assetNamesAdded": [
+      "js/aithos-agentenblick-C7LZ4QHD.js"
+    ],
+    "assetNamesRemoved": [
+      "js/aithos-agentenblick-TG2VSCQ6.js"
+    ],
+    "candidateSha256": "d59cf205402071b3003b1d4b1b5dc88ee8a929ab71ba6c97eb47f88d3054f144",
+    "compiledAssetFiles": 4,
+    "errors": [],
+    "normalizedManifestLinksEqual": true,
+    "passed": true,
+    "qualifiedSha256": "8880f61c2da05554c6ef3e773d105607d7155820e81cbaf4b9c12bf9c08475a5",
+    "runtimeFilesCompared": 143
+  },
+  "officialMetadataValidation": {
+    "command": "shopware-cli extension validate <final.zip> --store-compliance --format=json --no-interaction --no-update-hint",
+    "full": false,
+    "exitCode": 0,
+    "results": [
+      {
+        "path": "src/Resources/config/services.xml",
+        "line": 1,
+        "message": "Found deprecated src/Resources/config/services.xml. Symfony services.xml is deprecated, migrate to services.yaml. Run \"shopware-cli extension fix\" to convert it automatically.",
+        "severity": "warning",
+        "identifier": "config.services_xml.deprecated"
+      },
+      {
+        "path": "src/Resources/config/routes.xml",
+        "line": 1,
+        "message": "Found deprecated src/Resources/config/routes.xml. Symfony routes.xml is deprecated, migrate to routes.yaml. Run \"shopware-cli extension fix\" to convert it automatically.",
+        "severity": "warning",
+        "identifier": "config.routes_xml.deprecated"
+      }
+    ]
+  },
+  "lifecycleEvidence": [
+    "lot-6-backend-sw66.json",
+    "lot-6-lifecycle-sw67.json"
+  ],
+  "scope": "Demonstration prerelease. Production performance and Shopware Store approval are not established. Full Store findings are recorded separately on their original candidate; this metadata-only recheck does not waive them.",
+  "demoHeuristicsEnabled": false
+}

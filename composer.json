@@ -12,10 +12,42 @@
     "bakame/http-structured-fields": "^2.0",
     "phpseclib/phpseclib": "^3.0"
   },
-  "autoload": {"psr-4": {"Aithos\\Agentenblick\\": "src/"}},
-  "autoload-dev": {"psr-4": {"Aithos\\Agentenblick\\Tests\\": "tests/"}},
+  "suggest": {
+    "shopware/storefront": "Enables optional Storefront page events in minimized agent journeys."
+  },
+  "autoload": {
+    "psr-4": {
+      "Aithos\\Agentenblick\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Aithos\\Agentenblick\\Tests\\": "tests/"
+    }
+  },
   "extra": {
     "shopware-plugin-class": "Aithos\\Agentenblick\\AithosAgentenblick",
-    "label": {"de-DE": "Agentenblick", "en-GB": "Agentenblick"}
-  }
+    "label": {
+      "de-DE": "Agentenblick",
+      "en-GB": "Agentenblick"
+    },
+    "description": {
+      "en-GB": "Understand AI crawlers and agents visiting your Shopware shop: identity evidence, minimized journeys, local diagnostics and an optional aggregate benchmark with explicit consent.",
+      "de-DE": "KI-Crawler und Agenten in Shopware verstehen: Identitätsnachweise, minimierte Besuchsverläufe, lokale Diagnosen und ein optionaler aggregierter Benchmark nach Zustimmung."
+    },
+    "manufacturerLink": {
+      "en-GB": "https://aithos.app",
+      "de-DE": "https://aithos.app"
+    },
+    "supportLink": {
+      "en-GB": "https://github.com/Math1987/agentenblick/issues",
+      "de-DE": "https://github.com/Math1987/agentenblick/issues"
+    }
+  },
+  "authors": [
+    {
+      "name": "Aithos",
+      "homepage": "https://aithos.app"
+    }
+  ]
 }

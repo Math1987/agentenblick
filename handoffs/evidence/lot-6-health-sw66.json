@@ -1,0 +1,16 @@
+{
+  "finishedAt": 1791983189.4360268,
+  "sourceRelease": "fe5f718",
+  "shopware": "6.6.10.29",
+  "php": "8.2.34",
+  "tables": 10,
+  "selftestOk": true,
+  "cliHealthLocal": true,
+  "offline": true,
+  "anonymousHealth": 401,
+  "adminHealth": 200,
+  "localDomainProbeRejected": 404,
+  "assetsInstalled": true,
+  "apacheReload": false,
+  "uiVisuallyVerified": false
+}

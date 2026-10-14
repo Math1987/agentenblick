@@ -4,3 +4,21 @@ build:
     assets:
       enable_es_build_for_admin: true
       npm_strict: true
+    pack:
+      excludes:
+        paths:
+          - .github
+          - .local
+          - .tools
+          - dev
+          - tests
+          - src/Resources/app/administration/tests
+          - scripts
+          - handoffs
+          - releases
+          - compose.yaml
+          - phpunit.xml
+          - phpstan.neon
+          - .php-cs-fixer.dist.php
+          - .env
+          - .env.local

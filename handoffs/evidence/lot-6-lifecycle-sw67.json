@@ -1,0 +1,160 @@
+{
+  "startedAt": 1791985547.257778,
+  "shopware": "6.7.15.0",
+  "baselineRef": "4786b97",
+  "databaseIsolated": true,
+  "vendorIndependentCopy": true,
+  "existingSecretsCopied": false,
+  "offline": true,
+  "outboundEmailDisabled": true,
+  "checks": {
+    "baselineCapture": {
+      "requests": 1,
+      "sessions": 1,
+      "dailyRequests": 1,
+      "dailySessions": 1
+    },
+    "upgrade": {
+      "from": "0.1.0",
+      "toFixtureVersion": "0.1.1",
+      "tablesBefore": 6,
+      "tablesAfter": 10,
+      "observationsPreserved": true,
+      "migrationsIdempotent": true
+    },
+    "selftest": {
+      "php": "8.2.34",
+      "sodium": true,
+      "openssl": true,
+      "debug": false,
+      "offline": true,
+      "catalogue_agents": 24,
+      "tables": {
+        "request": 1,
+        "session": 1,
+        "daily": 1,
+        "journey_daily": 0,
+        "ip_ranges": 0,
+        "key_cache": 0,
+        "state": 3,
+        "benchmark_draft": 0,
+        "health_snapshot": 0,
+        "health_daily": 0
+      },
+      "tasks": [
+        {
+          "name": "agentenblick.refresh_ranges",
+          "status": "scheduled",
+          "run_interval": "21600"
+        },
+        {
+          "name": "agentenblick.purge",
+          "status": "scheduled",
+          "run_interval": "86400"
+        },
+        {
+          "name": "agentenblick.reverify",
+          "status": "scheduled",
+          "run_interval": "300"
+        },
+        {
+          "name": "agentenblick.close_sessions",
+          "status": "scheduled",
+          "run_interval": "900"
+        },
+        {
+          "name": "agentenblick.benchmark",
+          "status": "scheduled",
+          "run_interval": "86400"
+        }
+      ],
+      "missing_tasks": [],
+      "proxy_diagnostics": {
+        "window": "2026-10-14-13 UTC",
+        "requests": 1,
+        "cdn_resolved_client_ips": 0,
+        "warning": false,
+        "message": null,
+        "remediation": "Configure only your actual proxy addresses in TRUSTED_PROXIES and Symfony trusted_headers; make the proxy overwrite forwarded headers, then verify Request::getClientIp(). Never trust visitor-supplied X-Forwarded-For or CF-Connecting-IP directly. The warning resets with the next hourly window."
+      },
+      "official_extension": null,
+      "collection_errors": [],
+      "warning": "CLI cannot prove web response flushing; verify PHP-FPM and measure the actual HTTP server.",
+      "ok": true
+    },
+    "api_summary": {
+      "anonymous": 401,
+      "admin": 200
+    },
+    "api_agents": {
+      "anonymous": 401,
+      "admin": 200
+    },
+    "api_export": {
+      "anonymous": 401,
+      "admin": 200
+    },
+    "api_journey/summary": {
+      "anonymous": 401,
+      "admin": 200
+    },
+    "api_journey/sessions": {
+      "anonymous": 401,
+      "admin": 200
+    },
+    "api_heuristics/settings": {
+      "anonymous": 401,
+      "admin": 200
+    },
+    "api_benchmark/status": {
+      "anonymous": 401,
+      "admin": 200
+    },
+    "api_health": {
+      "anonymous": 401,
+      "admin": 200
+    },
+    "deactivateReactivate": {
+      "storefront": 200,
+      "noCaptureWhenInactive": true,
+      "captureResumedExactlyOnce": true
+    },
+    "keepDataUninstallReinstall": {
+      "tablesPreserved": 10,
+      "observationsPreserved": true,
+      "failureCountersPreserved": true
+    },
+    "deleteDataUninstall": {
+      "analyticsTablesRemaining": 0,
+      "pluginSettingsRemaining": 0,
+      "ownedFailureFilesRemaining": 0,
+      "unrelatedLogPreserved": true
+    },
+    "finalReinstall": {
+      "version": "0.1.0",
+      "tables": 10,
+      "observations": 0,
+      "offline": true,
+      "heuristicsEnabled": false,
+      "source": "zip"
+    },
+    "installedZipBytes": {
+      "files": 161,
+      "mismatches": 0
+    }
+  },
+  "passed": true,
+  "zipSha256": "8880f61c2da05554c6ef3e773d105607d7155820e81cbaf4b9c12bf9c08475a5",
+  "zipFile": "AithosAgentenblick-0.1.0.zip",
+  "runtime": {
+    "php": "8.2.34",
+    "shopware": "v6.7.15.0",
+    "sodium": true,
+    "openssl": true
+  },
+  "temporaryInstallPrivilegeRevoked": true,
+  "databaseVersion": "8.0.46-0ubuntu0.24.04.4",
+  "releaseArchiveSha256": "3085f05ee45fb9d517857f03d4e2e02d28205ba4f2009c22b323b957886dafb0",
+  "finishedAt": 1791985652.7428071,
+  "hostFreeBytes": 5018546176
+}
