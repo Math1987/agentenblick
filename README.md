@@ -9,8 +9,10 @@ Technical plugin name: `AithosAgentenblick`. License: MIT.
 **Current status:** the lot 1a CLI pipeline passes its isolated-bench checks
 (61 unit tests and 8 database tests, PHPStan level 8, HTTP/privacy/failure/offline
 checks). The [acceptance report](handoffs/2026-10-14-lot-1a-acceptance.md) records
-the measured results and remaining limits. Lot 1a awaits explicit user acceptance;
-the administration UI (1b) has not started.
+the measured results and remaining limits. Lot 1a was accepted on 2026-10-14.
+Development now continues through the remaining lots and production deployment,
+with automated acceptance checks at each stage. Lot 1b adds the native
+administration, shared CLI/API aggregates, CSV export and versioned IP-range approval.
 
 ## Isolated development bench
 
@@ -38,6 +40,27 @@ and report the evidence if this gate fails.
 
 Setup deactivates the development-only probe after measurement. It is never
 part of the plugin ZIP.
+
+The demo image's short `APP_SECRET` is replaced by a persistent random secret.
+The test-only project configuration excludes Shopware's internal DAL fixture
+definitions, which otherwise break the administration entity-schema endpoint.
+Public assets are installed with `APP_ENV=prod` because Shopware's test filesystem
+is in-memory. These adaptations apply only to the disposable bench.
+
+## Administration
+
+`Marketing > AI agents` (`Marketing > KI-Agenten` in German) shows local counts,
+7/30-day trends, agent types and proof, sales-channel filters, top route names,
+and a CSV of agent aggregates. No human session detail is exposed. API responses
+are authenticated and `no-store`; `agentenblick.viewer` reads and exports,
+`agentenblick.editor` approves a reviewed IP-range proposal. A concurrent refresh
+invalidates an obsolete approval. The proxy diagnostic includes Symfony setup guidance.
+
+Build with `shopware-cli extension build . --no-interaction` (tested CLI 0.18.5).
+The standalone esbuild configuration emits legacy assets and Vite manifests.
+After copying sources to the bench, run `assets:install` with `APP_ENV=prod`, then
+clear the test cache. Run `python3 scripts/acceptance-admin.py` to compare the
+authenticated HTTP API and CSV with the CLI report.
 
 The stock image starts in debug mode. Measured on 2026-10-14, a two-second
 termination delay held the client for about two additional seconds in debug;
@@ -201,7 +224,7 @@ the initial identity counts remain available in `.local/acceptance.json`.
 
 1a delivers the measured CLI pipeline and identity verification, minimisation,
 failure tests and initial overhead measurement. The administration UI (1b)
-starts only after explicit acceptance of 1a. The optional benchmark service is
+follows the accepted CLI milestone. The optional benchmark service is
 maintained in the separate private `agentenblick-benchmark` repository (lot 2).
 
 Runtime background: [Symfony HttpKernel termination](https://symfony.com/doc/current/components/http_kernel.html#the-kernel-terminate-event).

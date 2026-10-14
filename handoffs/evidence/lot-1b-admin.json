@@ -1,0 +1,17 @@
+{
+  "totals": {
+    "requests": 11,
+    "sessions": 9,
+    "agentRequests": 10,
+    "agentSessions": 8,
+    "agentRequestsPct": 90.9,
+    "agentSessionsPct": 88.9
+  },
+  "agentRows": 4,
+  "csvRows": 4,
+  "days": 7,
+  "anonymous": 401,
+  "invalidFilter": 400,
+  "cliMatches": true,
+  "noStore": true
+}

@@ -1,0 +1,112 @@
+{
+  "agentenblick": {
+    "general": {
+      "title": "Agentenblick",
+      "menu": "AI agents",
+      "description": "See the crawlers and agents visiting your shop, with the evidence behind each identity.",
+      "loading": "Loading observed traffic…",
+      "empty": "No requests observed for this period and sales channel yet.",
+      "noAgents": "No crawler or agent traffic observed for this selection.",
+      "scope": "Only requests reaching Shopware are observed. Ordinary-looking browser agents may remain unidentified. Sessions are provisional; a shared agent key can group several visits. All dates use UTC."
+    },
+    "actions": {
+      "refresh": "Refresh",
+      "export": "Export agents CSV",
+      "retry": "Try again",
+      "previous": "Previous",
+      "next": "Next",
+      "cancel": "Cancel"
+    },
+    "tabs": { "overview": "Overview", "agents": "Agents" },
+    "filters": {
+      "period": "Period",
+      "lastDays": "Last {days} days",
+      "channel": "Sales channel",
+      "allChannels": "All sales channels"
+    },
+    "metrics": {
+      "share": "Observed agent share",
+      "shareHint": "Share of all observed sessions, including declared identities.",
+      "agentSessions": "Agent sessions",
+      "agentSessionsHint": "Crawlers and agents, verified or declared.",
+      "agentRequests": "Agent requests",
+      "requestsHint": "Out of {total} observed requests.",
+      "allSessions": "All sessions",
+      "allSessionsHint": "Humans, unidentified traffic and agents."
+    },
+    "trend": {
+      "title": "Sessions over time",
+      "all": "All sessions",
+      "agents": "Agent sessions",
+      "accessible": "Daily total and agent sessions. Exact values are available in the table below.",
+      "values": "Show daily values",
+      "date": "Date (UTC)"
+    },
+    "breakdown": {
+      "kinds": "Types of agent",
+      "evidence": "Identity evidence",
+      "proofHint": "Requests retain their own evidence. Sessions use the strongest proof observed during collection; deferred verification applies stricter rules."
+    },
+    "table": {
+      "caption": "Observed agents and their identity evidence",
+      "agent": "Agent / operator",
+      "kind": "Type",
+      "evidence": "Evidence",
+      "requests": "Requests",
+      "sessions": "Sessions",
+      "lastSeen": "Last seen (UTC)",
+      "routes": "Top routes",
+      "showRoutes": "Show routes",
+      "pagination": "Page {page} of {pages} · {total} agents",
+      "proofHint": "A declared identity is not verified and is not proof of impersonation. Mixed evidence is shown separately, with request counts.",
+      "retentionHint": "Last seen and top routes use retained request details. A generic route means Shopware did not expose a resolved route, for example on a cache hit."
+    },
+    "kind": {
+      "training_crawler": "Training crawler",
+      "search_crawler": "Search crawler",
+      "user_fetch": "User-triggered fetch",
+      "browsing_agent": "Browsing agent",
+      "automation_unknown": "Unidentified automation",
+      "human_or_unknown": "Human or unknown",
+      "mixed": "Multiple types"
+    },
+    "evidence": {
+      "verified_signature": "Signature verified",
+      "verified_ip": "IP range verified",
+      "verified_rdns": "Reverse DNS verified",
+      "declared_unverified": "Declared, unverified",
+      "none": "No identity evidence",
+      "mixed": "Mixed evidence"
+    },
+    "proxy": {
+      "title": "Check your trusted proxy configuration",
+      "description": "Most resolved client IPs in the current observation window belong to known CDN ranges. IP verification may be using the CDN address instead of the visitor address. This is not proof of impersonation.",
+      "remediation": "Configure only your actual proxy addresses in TRUSTED_PROXIES and the forwarded headers trusted by Symfony. The proxy must overwrite visitor-supplied headers. Verify the result of Request::getClientIp(). The warning clears when a new hourly window no longer has a CDN majority."
+    },
+    "ranges": {
+      "title": "IP range updates awaiting review",
+      "description": "These official lists changed by more than 30%. The existing ranges remain active until an editor approves the proposed version.",
+      "current": "Current ranges",
+      "proposed": "Proposed ranges",
+      "updated": "Downloaded (UTC)",
+      "review": "Review change",
+      "editorRequired": "Editor permission required",
+      "confirmTitle": "Approve IP ranges for {agent}",
+      "confirmText": "Replace the current {current} ranges with the proposed {proposed} ranges? Review the differences and the operator's official source before applying this version.",
+      "source": "Open official source",
+      "added": "Added ({count})",
+      "removed": "Removed ({count})",
+      "truncated": "The first 50 added and removed ranges are shown. Check the official source for the complete list.",
+      "approve": "Approve this version",
+      "approved": "The reviewed IP range version is now active.",
+      "changed": "The proposed ranges changed while you were reviewing them. Review the refreshed version before approving."
+    },
+    "errors": {
+      "load": "Traffic could not be loaded for this selection. Please try again.",
+      "export": "The CSV could not be downloaded. Try again or check your viewing permission.",
+      "approve": "The IP ranges could not be approved. Check your editor permission and try again.",
+      "permission": "You do not have permission to view Agentenblick."
+    }
+  },
+  "sw-privileges": { "permissions": { "agentenblick": { "label": "Agentenblick" } } }
+}

@@ -1,0 +1,112 @@
+{
+  "agentenblick": {
+    "general": {
+      "title": "Agentenblick",
+      "menu": "KI-Agenten",
+      "description": "Erkennen Sie, welche Crawler und Agenten Ihren Shop besuchen und welche Nachweise ihre Identität bestätigen.",
+      "loading": "Beobachteten Traffic laden…",
+      "empty": "Für diesen Zeitraum und Verkaufskanal wurden noch keine Anfragen beobachtet.",
+      "noAgents": "Für diese Auswahl wurde kein Crawler- oder Agenten-Traffic beobachtet.",
+      "scope": "Erfasst werden nur Anfragen, die Shopware erreichen. Agenten mit gewöhnlicher Browserkennung können unerkannt bleiben. Sitzungen sind vorläufig; ein gemeinsamer Agentenschlüssel kann mehrere Besuche zusammenfassen. Alle Zeitangaben sind in UTC."
+    },
+    "actions": {
+      "refresh": "Aktualisieren",
+      "export": "Agenten als CSV exportieren",
+      "retry": "Erneut versuchen",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "cancel": "Abbrechen"
+    },
+    "tabs": { "overview": "Übersicht", "agents": "Agenten" },
+    "filters": {
+      "period": "Zeitraum",
+      "lastDays": "Letzte {days} Tage",
+      "channel": "Verkaufskanal",
+      "allChannels": "Alle Verkaufskanäle"
+    },
+    "metrics": {
+      "share": "Beobachteter Agentenanteil",
+      "shareHint": "Anteil an allen beobachteten Sitzungen, einschließlich deklarierter Identitäten.",
+      "agentSessions": "Agentensitzungen",
+      "agentSessionsHint": "Crawler und Agenten, verifiziert oder deklariert.",
+      "agentRequests": "Agentenanfragen",
+      "requestsHint": "Von insgesamt {total} beobachteten Anfragen.",
+      "allSessions": "Alle Sitzungen",
+      "allSessionsHint": "Menschen, unbekannter Traffic und Agenten."
+    },
+    "trend": {
+      "title": "Sitzungen im Zeitverlauf",
+      "all": "Alle Sitzungen",
+      "agents": "Agentensitzungen",
+      "accessible": "Tägliche Anzahl aller Sitzungen und Agentensitzungen. Die genauen Werte stehen in der Tabelle darunter.",
+      "values": "Tageswerte anzeigen",
+      "date": "Datum (UTC)"
+    },
+    "breakdown": {
+      "kinds": "Agententypen",
+      "evidence": "Identitätsnachweise",
+      "proofHint": "Jede Anfrage behält ihren eigenen Nachweis. Sitzungen verwenden den stärksten bei der Erfassung beobachteten Nachweis; für spätere Prüfungen gelten strengere Regeln."
+    },
+    "table": {
+      "caption": "Beobachtete Agenten und ihre Identitätsnachweise",
+      "agent": "Agent / Betreiber",
+      "kind": "Typ",
+      "evidence": "Nachweis",
+      "requests": "Anfragen",
+      "sessions": "Sitzungen",
+      "lastSeen": "Zuletzt gesehen (UTC)",
+      "routes": "Häufigste Routen",
+      "showRoutes": "Routen anzeigen",
+      "pagination": "Seite {page} von {pages} · {total} Agenten",
+      "proofHint": "Eine deklarierte Identität ist nicht verifiziert und belegt keine Identitätstäuschung. Unterschiedliche Nachweise werden mit ihrer jeweiligen Anfrageanzahl angezeigt.",
+      "retentionHint": "Letzter Besuch und häufigste Routen stammen aus den noch gespeicherten Anfragedetails. Eine generische Route bedeutet, dass Shopware keine aufgelöste Route bereitgestellt hat, etwa bei einem Cache-Treffer."
+    },
+    "kind": {
+      "training_crawler": "Trainings-Crawler",
+      "search_crawler": "Suchmaschinen-Crawler",
+      "user_fetch": "Nutzerinitiierter Abruf",
+      "browsing_agent": "Browser-Agent",
+      "automation_unknown": "Unbekannte Automatisierung",
+      "human_or_unknown": "Mensch oder unbekannt",
+      "mixed": "Mehrere Typen"
+    },
+    "evidence": {
+      "verified_signature": "Signatur verifiziert",
+      "verified_ip": "IP-Bereich verifiziert",
+      "verified_rdns": "Reverse-DNS verifiziert",
+      "declared_unverified": "Deklariert, nicht verifiziert",
+      "none": "Kein Identitätsnachweis",
+      "mixed": "Unterschiedliche Nachweise"
+    },
+    "proxy": {
+      "title": "Konfiguration vertrauenswürdiger Proxys prüfen",
+      "description": "Die meisten aufgelösten Client-IP-Adressen im aktuellen Beobachtungsfenster gehören zu bekannten CDN-Bereichen. Die IP-Prüfung verwendet möglicherweise die CDN-Adresse statt der Besucheradresse. Dies belegt keine Identitätstäuschung.",
+      "remediation": "Tragen Sie in TRUSTED_PROXIES nur Ihre tatsächlichen Proxy-Adressen ein und konfigurieren Sie die von Symfony akzeptierten Weiterleitungsheader. Der Proxy muss vom Besucher gesendete Header überschreiben. Prüfen Sie das Ergebnis von Request::getClientIp(). Die Warnung verschwindet in einem neuen Stundenfenster ohne CDN-Mehrheit."
+    },
+    "ranges": {
+      "title": "IP-Bereichsänderungen zur Prüfung",
+      "description": "Diese offiziellen Listen haben sich um mehr als 30 % geändert. Die bisherigen Bereiche bleiben aktiv, bis ein Bearbeiter die vorgeschlagene Version bestätigt.",
+      "current": "Aktuelle Bereiche",
+      "proposed": "Vorgeschlagene Bereiche",
+      "updated": "Heruntergeladen (UTC)",
+      "review": "Änderung prüfen",
+      "editorRequired": "Bearbeitungsrecht erforderlich",
+      "confirmTitle": "IP-Bereiche für {agent} bestätigen",
+      "confirmText": "Die bisherigen {current} Bereiche durch die vorgeschlagenen {proposed} Bereiche ersetzen? Prüfen Sie vor der Übernahme die Unterschiede und die offizielle Quelle des Betreibers.",
+      "source": "Offizielle Quelle öffnen",
+      "added": "Hinzugefügt ({count})",
+      "removed": "Entfernt ({count})",
+      "truncated": "Es werden jeweils die ersten 50 hinzugefügten und entfernten Bereiche angezeigt. Die vollständige Liste finden Sie in der offiziellen Quelle.",
+      "approve": "Diese Version bestätigen",
+      "approved": "Die geprüfte Version der IP-Bereiche ist jetzt aktiv.",
+      "changed": "Die vorgeschlagenen Bereiche wurden während Ihrer Prüfung geändert. Prüfen Sie die aktualisierte Version vor der Bestätigung."
+    },
+    "errors": {
+      "load": "Der Traffic für diese Auswahl konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
+      "export": "Die CSV-Datei konnte nicht heruntergeladen werden. Versuchen Sie es erneut oder prüfen Sie Ihr Leserecht.",
+      "approve": "Die IP-Bereiche konnten nicht bestätigt werden. Prüfen Sie Ihr Bearbeitungsrecht und versuchen Sie es erneut.",
+      "permission": "Sie haben keine Berechtigung, Agentenblick anzuzeigen."
+    }
+  },
+  "sw-privileges": { "permissions": { "agentenblick": { "label": "Agentenblick" } } }
+}

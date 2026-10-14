@@ -19,6 +19,13 @@ def environment(name):
         execute('python3', '-c', code, path, name, PLUGIN + '/tests/fixtures/catalog.json', user='root')
 
 
+def ensure_app_secret():
+    # The disposable image ships a short demo secret, rejected by modern HS256.
+    # Keep an adequate existing value so rerunning setup does not revoke logins.
+    code = "from pathlib import Path; import secrets; p=Path('/var/www/html/.env'); lines=p.read_text().splitlines(); current=next((x.split('=',1)[1].strip(chr(34)+chr(39)) for x in lines if x.startswith('APP_SECRET=')), ''); secret=current if len(current)>=64 else secrets.token_hex(32); p.write_text('\\n'.join(x for x in lines if not x.startswith('APP_SECRET='))+'\\nAPP_SECRET='+secret+'\\n'); q=Path('/var/www/html/.env.local'); lines=q.read_text().splitlines() if q.exists() else []; q.write_text('\\n'.join(x for x in lines if not x.startswith('APP_SECRET='))+'\\nAPP_SECRET='+secret+'\\n'); t=Path('/var/www/html/.env.test.local'); lines=t.read_text().splitlines() if t.exists() else []; t.write_text('\\n'.join(x for x in lines if not x.startswith('APP_SECRET='))+'\\nAPP_SECRET='+secret+'\\n')"
+    execute('python3', '-c', code, user='root')
+
+
 def copy(source, destination):
     local = str(ROOT / source) + ('/.' if source.endswith('/.') else '')
     run('docker', 'cp', local, CONTAINER + ':' + destination)
@@ -37,6 +44,7 @@ if __name__ == '__main__':
     else:
         raise RuntimeError('Dockware did not become ready')
     environment('prod')
+    ensure_app_secret()
     sql("UPDATE sales_channel_domain SET url='http://127.0.0.1:18080' WHERE url NOT LIKE 'default.headless%'")
     console('plugin:deactivate', 'DockwareSamplePlugin')
     execute('mkdir', '-p', PLUGIN + '/dev', user='root')
@@ -59,12 +67,15 @@ if __name__ == '__main__':
         console('plugin:deactivate', 'AgentenblickTerminateProbe')
     # Development stops if the real web server did not flush before termination.
     environment('test')
+    copy('dev/services_test.php', '/var/www/html/config/services_test.php')
     write('/var/www/html/config/packages/agentenblick-test-proxy.yaml', "when@test:\n  framework:\n    trusted_proxies: '127.0.0.1'\n    trusted_headers: ['x-forwarded-for']\n")
     console('plugin:install', '--activate', 'AithosAgentenblick')
     console('plugin:activate', 'AithosAgentenblick')
     console('database:migrate', 'AithosAgentenblick', '--all')
     console('cache:clear')
     console('scheduled-task:register')
+    # Shopware's test filesystem is in-memory: install public assets in prod.
+    run('docker', 'exec', '-u', 'www-data', '-e', 'APP_ENV=prod', '-e', 'APP_DEBUG=0', CONTAINER, 'php', '/var/www/html/bin/console', 'assets:install')
     execute('php', '/var/www/html/vendor/bin/composer', 'install', '--working-dir=' + PLUGIN + '/dev/tools', '--no-interaction', '--no-scripts', '--no-plugins')
     subprocess.run(['docker', 'exec', '-u', 'root', CONTAINER, 'pkill', '-f', '^node ' + PLUGIN + '/scripts/test-proxy.mjs$'], check=False)
     run('docker', 'exec', '-d', '-u', 'www-data', CONTAINER, 'bash', '-lc', 'node ' + PLUGIN + '/scripts/test-proxy.mjs > /tmp/agentenblick-proxy.log 2>&1')

@@ -1,0 +1,6 @@
+compatibility_date: '2026-02-11'
+build:
+  zip:
+    assets:
+      enable_es_build_for_admin: true
+      npm_strict: true
