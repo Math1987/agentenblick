@@ -1,0 +1,49 @@
+name: Validate plugin
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: plugin-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  php:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shopware: ['6.6.10.29', '6.7.15.0']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: bcmath, curl, dom, fileinfo, gd, iconv, intl, mbstring, openssl, pdo_mysql, sodium, xml, zip
+          tools: composer:v2
+          coverage: none
+      - name: Install the isolated Shopware runtime
+        run: |
+          composer require --working-dir=dev/ci --no-update "shopware/core:${{ matrix.shopware }}" "shopware/storefront:${{ matrix.shopware }}"
+          composer install --working-dir=dev/ci --no-interaction --prefer-dist --no-scripts --no-plugins
+          composer install --working-dir=dev/tools --no-interaction --prefer-dist --no-scripts --no-plugins
+      - name: Unit tests
+        env:
+          SHOPWARE_AUTOLOAD: ${{ github.workspace }}/dev/ci/vendor/autoload.php
+        run: php dev/ci/vendor/bin/phpunit --configuration phpunit.xml
+      - name: Static analysis
+        env:
+          SHOPWARE_AUTOLOAD: ${{ github.workspace }}/dev/ci/vendor/autoload.php
+        run: php .tools/vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress --memory-limit=1G
+      - name: PHP formatting
+        run: php .tools/vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff
+  administration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --test src/Resources/app/administration/tests/*.test.mjs
+      - run: python3 -c 'from pathlib import Path; [compile(p.read_bytes(), str(p), "exec") for p in Path("scripts").glob("*.py")]'
