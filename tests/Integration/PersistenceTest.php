@@ -8,6 +8,7 @@ use Aithos\Agentenblick\Capture\Minimizer;
 use Aithos\Agentenblick\Domain\Classification;
 use Aithos\Agentenblick\Domain\Evidence;
 use Aithos\Agentenblick\Domain\Kind;
+use Aithos\Agentenblick\Journey\SessionCloser;
 use Aithos\Agentenblick\Persistence\DailyKey;
 use Aithos\Agentenblick\Persistence\ObservationStore;
 use Aithos\Agentenblick\Persistence\Purger;
@@ -48,7 +49,7 @@ final class PersistenceTest extends TestCase
         $this->oldCatalogue = $_SERVER['AGENTENBLICK_TEST_CATALOG'] ?? null;
         $params = (new DsnParser(['mysql' => 'pdo_mysql']))->parse('mysql://root:root@127.0.0.1/shopware');
         $this->connection = DriverManager::getConnection($params);
-        foreach (['request', 'session', 'daily', 'state', 'key_cache', 'ip_ranges'] as $name) {
+        foreach (['request', 'session', 'daily', 'journey_daily', 'state', 'key_cache', 'ip_ranges'] as $name) {
             $table = 'agentenblick_' . $name;
             $definition = $this->connection->fetchAssociative('SHOW CREATE TABLE ' . $table);
             self::assertNotFalse($definition);
@@ -173,7 +174,7 @@ final class PersistenceTest extends TestCase
 
         $result = (new Purger($this->db(), $keys, $config))->run();
 
-        self::assertSame(['requests' => 1, 'agent_sessions' => 1, 'human_sessions' => 1, 'daily' => 1, 'expired_state' => 1, 'expired_keys' => 1], $result);
+        self::assertSame(['requests' => 1, 'agent_sessions' => 1, 'human_sessions' => 1, 'daily' => 1, 'expired_state' => 1, 'expired_keys' => 1, 'closure_failed' => 0], $result);
         self::assertSame(1, $this->countRows('request'));
         self::assertSame(2, $this->countRows('session'));
         self::assertSame(1, $this->countRows('state'));
@@ -192,6 +193,7 @@ final class PersistenceTest extends TestCase
         self::assertNotNull($context);
         $row = (new Minimizer())->minimize($request, $classification, str_repeat('a', 32), $received, 200, $context);
         (new ObservationStore($this->db()))->record($row);
+        (new SessionCloser($this->db()))->run();
         $this->db()->insert('agentenblick_key_cache', [
             'origin' => 'https://signature-agent.test',
             'document_json' => json_encode(['keys' => [$key]], JSON_THROW_ON_ERROR),
@@ -210,6 +212,7 @@ final class PersistenceTest extends TestCase
         self::assertSame('valid_web_bot_auth_deferred', $this->db()->fetchOne('SELECT reason FROM agentenblick_request'));
         self::assertNull($this->db()->fetchOne('SELECT pending_context FROM agentenblick_request'));
         self::assertSame(Jwk::thumbprint($key), $this->db()->fetchOne('SELECT key_id FROM agentenblick_request'));
+        self::assertSame(1, (int) $this->db()->fetchOne("SELECT sessions FROM agentenblick_journey_daily WHERE metric = 'sessions' AND evidence = 'verified_signature'"));
 
         $second = $pending->run();
         self::assertSame(0, array_sum($second));

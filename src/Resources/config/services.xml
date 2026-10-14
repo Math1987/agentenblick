@@ -4,6 +4,20 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <defaults autowire="true" autoconfigure="true" public="false"/>
+        <service id="Aithos\Agentenblick\Journey\SessionCloser"/>
+        <service id="Aithos\Agentenblick\Journey\JourneyReader"/>
+        <service id="Aithos\Agentenblick\Journey\EventSubscriber"/>
+        <service id="Aithos\Agentenblick\Journey\ProductDetailRouteDecorator" decorates="Shopware\Core\Content\Product\SalesChannel\Detail\ProductDetailRoute">
+            <argument key="$inner" type="service" id="Aithos\Agentenblick\Journey\ProductDetailRouteDecorator.inner"/>
+        </service>
+        <service id="Aithos\Agentenblick\Controller\JourneyController" public="true">
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="Aithos\Agentenblick\Command\JourneyCommand"/>
+        <service id="Aithos\Agentenblick\ScheduledTask\CloseSessionsTask"><tag name="shopware.scheduled.task"/></service>
+        <service id="Aithos\Agentenblick\ScheduledTask\CloseSessionsTaskHandler">
+            <argument key="$scheduledTaskRepository" type="service" id="scheduled_task.repository"/>
+        </service>
         <service id="Aithos\Agentenblick\Benchmark\SecretVault">
             <argument key="$kernelSecret">%kernel.secret%</argument>
         </service>

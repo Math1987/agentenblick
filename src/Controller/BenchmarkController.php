@@ -58,8 +58,8 @@ final class BenchmarkController
             throw new BadRequestHttpException('Consent payload too large.');
         }
         $body = $request->toArray();
-        if (($body['consent'] ?? false) !== true || ($body['consentVersion'] ?? null) !== '1' || !in_array($body['locale'] ?? null, ['de-DE', 'en-GB'], true)) {
-            throw new BadRequestHttpException('Explicit consent to version 1 in German or English is required.');
+        if (($body['consent'] ?? false) !== true || ($body['consentVersion'] ?? null) !== Manager::CONSENT_VERSION || !in_array($body['locale'] ?? null, ['de-DE', 'en-GB'], true)) {
+            throw new BadRequestHttpException('Explicit consent to version ' . Manager::CONSENT_VERSION . ' in German or English is required.');
         }
         return $this->json($this->manager->enable($body['locale']));
     }

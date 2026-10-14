@@ -22,6 +22,7 @@
 
     &__tabs {
         display: flex;
+        flex-wrap: wrap;
         gap: 28px;
         border-bottom: 1px solid var(--agentenblick-border);
         margin: 0 0 24px;

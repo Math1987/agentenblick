@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Persistence;
 
+use Aithos\Agentenblick\Journey\JourneyContribution;
 use Doctrine\DBAL\Connection;
 
 /** Move a previously counted observation; never count it twice. Caller owns the transaction. */
@@ -28,5 +29,11 @@ final class AggregateCorrection
             throw new \LogicException('missing_aggregate_for_correction');
         }
         $connection->executeStatement('INSERT INTO agentenblick_daily (day, sales_channel_id, operator, agent, kind, evidence, browser_family, requests, sessions) VALUES (?, ?, ?, ?, ?, ?, \'\', ?, ?) ON DUPLICATE KEY UPDATE ' . $counter . ' = ' . $counter . ' + 1', [...$destination, $counter === 'requests' ? 1 : 0, $counter === 'sessions' ? 1 : 0]);
+        if ($counter === 'sessions' && isset($from['id'])) {
+            $session = $connection->fetchAssociative('SELECT * FROM agentenblick_session WHERE id = ?', [$from['id']]);
+            if ($session !== false) {
+                JourneyContribution::reconcile($connection, array_replace($session, ['operator' => $to['operator'], 'agent' => $to['agent'], 'kind' => $to['kind'], 'evidence' => $to['evidence']]));
+            }
+        }
     }
 }

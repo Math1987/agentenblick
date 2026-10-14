@@ -35,17 +35,27 @@ Shopware.Component.register('agentenblick-benchmark', {
             if (this.identityConflict) return this.$t('agentenblick.benchmark.state.test_identity_conflict');
             if (this.status?.pendingWithdrawal) return this.$t('agentenblick.benchmark.state.withdrawal_pending');
             if (this.status?.offline) return this.$t('agentenblick.benchmark.state.offline');
+            if (this.needsConsentUpdate) return this.$t('agentenblick.benchmark.state.consent_update_required');
             if (this.status?.reasonCode === 'registration_pending') return this.$t('agentenblick.benchmark.state.registration_pending');
             return this.$t(`agentenblick.benchmark.state.${this.status?.enabled ? 'ready' : 'disabled'}`);
         },
         identityConflict() {
             return this.status?.reasonCode === 'test_identity_conflict';
         },
+        requiredConsentVersion() { return String(this.status?.requiredConsentVersion || '2'); },
+        needsConsentUpdate() {
+            return Boolean(this.status?.enabled && (this.status.reasonCode === 'consent_update_required'
+                || String(this.status.consentVersion) !== this.requiredConsentVersion));
+        },
+        canEnable() {
+            return this.canEdit && this.consent && !this.busy && !this.status?.offline
+                && !this.status?.pendingWithdrawal && !this.identityConflict && this.requiredConsentVersion === '2';
+        },
         canTransmit() {
-            return this.canEdit && this.status?.enabled && !this.status?.offline && !this.status?.pendingWithdrawal && !this.identityConflict && !this.busy;
+            return this.canEdit && this.status?.enabled && !this.status?.offline && !this.status?.pendingWithdrawal && !this.identityConflict && !this.needsConsentUpdate && !this.busy;
         },
         canCompare() {
-            return this.status?.enabled && !this.status?.offline && !this.status?.pendingWithdrawal && !this.identityConflict && !this.comparing && !this.busy;
+            return this.status?.enabled && !this.status?.offline && !this.status?.pendingWithdrawal && !this.identityConflict && !this.needsConsentUpdate && !this.comparing && !this.busy;
         },
         comparisonCells() {
             const report = this.comparison?.report;
@@ -94,18 +104,18 @@ Shopware.Component.register('agentenblick-benchmark', {
         },
         async update(action) {
             if (!this.canEdit || this.busy || !this.status) return;
-            if (action === 'enable' && (!this.consent || this.status.pendingWithdrawal || this.status.offline || this.identityConflict)) return;
+            if (action === 'enable' && !this.canEnable) return;
             if (action === 'send' && !this.canTransmit) return;
             this.busy = true;
             try {
-                const body = action === 'enable' ? { consent: true, consentVersion: '1', locale: this.locale } : {};
+                const body = action === 'enable' ? { consent: true, consentVersion: '2', locale: this.locale } : {};
                 const result = await this.agentenblickApiService.updateBenchmark(action, body);
                 this.confirmWithdrawal = false;
                 this.consent = false;
                 this.comparison = null;
                 await this.load();
                 if (this.loadFailed) throw new Error('Reload failed');
-                if (action === 'send' && ['failed', 'registration_pending'].includes(result?.status)) {
+                if (action === 'send' && ['failed', 'registration_pending', 'consent_update_required'].includes(result?.status)) {
                     this.createNotificationError({ message: this.$t('agentenblick.benchmark.error.send') });
                     return;
                 }

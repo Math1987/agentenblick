@@ -33,7 +33,7 @@ final class AithosAgentenblick extends Plugin
         if (!$connection instanceof Connection) {
             throw new \LogicException('Database connection unavailable during uninstall.');
         }
-        foreach (['request', 'session', 'daily', 'ip_ranges', 'key_cache', 'state', 'benchmark_draft'] as $table) {
+        foreach (['request', 'session', 'daily', 'journey_daily', 'ip_ranges', 'key_cache', 'state', 'benchmark_draft'] as $table) {
             $connection->executeStatement('DROP TABLE IF EXISTS agentenblick_' . $table);
         }
         // Core only removes keys declared in config.xml; internal encrypted state

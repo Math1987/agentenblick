@@ -45,7 +45,10 @@ def capture(action):
     marker = uuid.uuid4().hex
     base = '/tmp/agentenblick-benchmark-' + marker
     pidfile, pcap = base + '.pid', base + '.pcap'
-    start = 'import os,sys; open(sys.argv[1],"w").write(str(os.getpid())); os.execvp("tcpdump",["tcpdump","-ni","any","-Q","out","-U","-w",sys.argv[2],sys.argv[3]])'
+    # -U flushes decoded packets to disk, but does not disable libpcap's kernel
+    # buffering. Immediate mode prevents a fast HTTPS control from finishing
+    # before that buffer is delivered to tcpdump and SIGINT stopping it at zero.
+    start = 'import os,sys; open(sys.argv[1],"w").write(str(os.getpid())); os.execvp("tcpdump",["tcpdump","--immediate-mode","-ni","any","-Q","out","-U","-w",sys.argv[2],sys.argv[3]])'
     process = subprocess.Popen(['docker', 'exec', '-u', 'root', CONTAINER, 'python3', '-c', start, pidfile, pcap, FILTER], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     try:
         ready = Event()
@@ -167,14 +170,14 @@ def main():
         require({row['channelId']: (row['sha256'], row['json']) for row in api_preview['items']} == snapshots, 'CLI and API previews differ')
         evidence['checks']['k10AndByteHash'] = {'channels': 3, 'fullyEligible': 1, 'fullySuppressed': 1, 'agentDistributionsSuppressed': 1, 'cliApiBytesEqual': True}
 
-        invalid_status, _, _ = admin.request(PREFIX + 'enable', token, json.dumps({'consent': False, 'consentVersion': '1', 'locale': 'de-DE'}).encode())
+        invalid_status, _, _ = admin.request(PREFIX + 'enable', token, json.dumps({'consent': False, 'consentVersion': '2', 'locale': 'de-DE'}).encode())
         require(invalid_status == 400, 'Missing explicit consent was accepted')
         consent_attempted = True
-        enabled = cli('enable', '--accept-consent=1', '--locale=de-DE')
-        require(enabled['enabled'] and enabled['registered'] and enabled['demo'] and enabled['locale'] == 'de-DE' and enabled['consentVersion'] == '1', 'Explicit German consent did not register the demo installation')
+        enabled = cli('enable', '--accept-consent=2', '--locale=de-DE')
+        require(enabled['enabled'] and enabled['registered'] and enabled['demo'] and enabled['locale'] == 'de-DE' and enabled['consentVersion'] == '2', 'Explicit German consent did not register the demo installation')
         require(enabled['installationId'] == installation, 'Registration changed the reviewed installation ID')
         require(api('status')['registered'] is True, 'API and CLI registration states disagree')
-        evidence['checks']['explicitConsent'] = {'locale': 'de-DE', 'version': '1', 'registered': True, 'missingConsentStatus': 400}
+        evidence['checks']['explicitConsent'] = {'locale': 'de-DE', 'version': '2', 'registered': True, 'missingConsentStatus': 400}
         for _ in range(3):
             result = cli('send')
             require(result['status'] == 'sent' and result['resultCode'] == 'accepted', 'Cloud rejected the native plugin submission')

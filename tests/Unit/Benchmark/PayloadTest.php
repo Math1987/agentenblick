@@ -39,8 +39,9 @@ final class PayloadTest extends TestCase
                 self::assertEqualsWithDelta(100.0, array_sum($document['shares'][$field]), 0.00001);
             }
         }
-        self::assertSame('suppressed', $document['funnel']);
-        self::assertSame('suppressed', $document['failures']);
+        self::assertSame('agentenblick.benchmark/2', $document['schema']);
+        self::assertSame(['denominator' => 'below_10', 'pct' => 'suppressed'], $document['funnel']['verified']['order']);
+        self::assertSame(['denominator' => 'below_10', 'pct' => 'suppressed'], $document['failures']['declared']['search_empty']);
         self::assertStringNotContainsString('"requests"', Payload::bytes($document));
         self::assertStringNotContainsString('"sessions":' . $total, Payload::bytes($document));
     }

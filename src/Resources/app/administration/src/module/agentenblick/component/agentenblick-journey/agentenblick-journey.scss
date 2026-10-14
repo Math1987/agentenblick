@@ -1,0 +1,31 @@
+.agentenblick-journey {
+    &__intro, &__hint { color: var(--agentenblick-muted, #526576); line-height: 1.6; margin: 0 0 16px; }
+    &__hint { font-size: 12px; }
+    &__counts { margin: 0 0 24px; font-size: 13px; }
+    &__proof-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 28px; }
+    &__proof-grid h3 { margin: 4px 0 12px; }
+    &__funnel { list-style: none; padding: 0; margin: 0; }
+    &__funnel li { display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; font-size: 13px; padding: 10px 0; }
+    &__bar { overflow: hidden; height: 7px; border-radius: 4px; background: #edf1f4; align-self: center; }
+    &__bar i { display: block; height: 100%; background: var(--agentenblick-accent, #147d75); border-radius: inherit; }
+    &__fraction { font-size: 11px; color: var(--agentenblick-muted, #526576); text-align: right; min-width: 48px; }
+    &__sessions { min-width: 1000px; }
+    &__list { margin: 0; padding-left: 16px; }
+    &__facts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+    &__facts dt { color: #526576; font-size: 12px; margin-bottom: 6px; }
+    &__facts dd { font-size: 13px; margin: 0; }
+    &__order { display: inline-block; margin-right: 12px; overflow-wrap: anywhere; }
+    &__timeline { list-style: none; margin: 24px 0 0 8px; padding-left: 24px; border-left: 2px solid #dfe5eb; }
+    &__timeline > li { position: relative; padding: 0 0 24px; font-size: 12px; line-height: 1.6; }
+    &__timeline > li::before { content: ''; position: absolute; left: -30px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: #147d75; }
+    &__timeline p { margin-top: 5px; color: #526576; }
+    &__event-head { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 8px; }
+    &__event-head time { color: #526576; }
+    &__route { display: block; overflow-wrap: anywhere; }
+    &__unknown { margin-top: 20px; font-size: 12px; color: #526576; line-height: 1.7; }
+    &__unknown summary { cursor: pointer; color: #147d75; }
+    &__unknown ul { padding: 16px 0 0 20px; }
+    @media (max-width: 700px) {
+        &__proof-grid, &__facts { grid-template-columns: 1fr; }
+    }
+}

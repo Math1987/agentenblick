@@ -20,7 +20,10 @@
     "tabs": {
       "overview": "Overview",
       "agents": "Agents",
-      "benchmark": "Benchmark"
+      "benchmark": "Benchmark",
+      "funnel": "Funnel",
+      "journeys": "Journeys",
+      "failures": "Failures"
     },
     "filters": {
       "period": "Period",
@@ -122,12 +125,13 @@
         "aggregate": "Only completed ISO-week aggregates are sent: percentage shares rounded to 0.1 point, broad segments and a random installation identifier. Sales-channel keys are pseudonymised in the transmitted payload.",
         "excluded": "No raw IP, visitor or session identifier, shop domain, request body, query string, order identifier or individual request is sent.",
         "threshold": "A denominator below 10 sessions suppresses that shop metric. A published benchmark metric requires at least 5 eligible installations; several channels from one shop count as one contributor.",
-        "retention": "Submissions are retained for 13 months. Participation can be withdrawn; this stops future submissions and requests deletion of that installation’s retained submissions."
+        "retention": "Submissions are retained for 13 months. Participation can be withdrawn; this stops future submissions and requests deletion of that installation’s retained submissions.",
+        "journey": "Version 2 adds independently observed journey-step shares and named failure shares, split by verified and declared agents. Only eligible sessions with known outcomes enter failure denominators; no missing step is inferred."
       },
       "methodology": "Read the public methodology and privacy rules",
       "installation": "Random installation ID",
       "consentAt": "Consent recorded (UTC)",
-      "consent": "I have reviewed the payload preview and the methodology. I agree to send the described weekly aggregates to the Aithos benchmark under consent version 1. I can withdraw participation at any time.",
+      "consent": "I have reviewed the payload preview and methodology. I agree to send the described weekly traffic, journey and failure aggregates to the Aithos benchmark under consent version 2. No individual request, session or order is sent. I can withdraw at any time.",
       "enable": "Enable weekly participation",
       "send": "Send pending weekly aggregates",
       "disable": "Withdraw participation",
@@ -166,7 +170,8 @@
         "ready": "Participation enabled",
         "disabled": "Participation disabled",
         "registration_pending": "Registration pending",
-        "test_identity_conflict": "Real identity blocked in test"
+        "test_identity_conflict": "Real identity blocked in test",
+        "consent_update_required": "Consent update required"
       },
       "submission": {
         "draft": "Local draft",
@@ -196,7 +201,118 @@
         "disabled": "Enable participation before fetching a comparison.",
         "withdrawal_pending": "A comparison is unavailable while the withdrawal request is pending."
       },
-      "identityConflict": "This test environment contains an existing real installation identity. Activation, submissions, comparisons and server deletion are blocked. Use a separate demonstration identity; do not reuse the production identity from a cloned database."
+      "identityConflict": "This test environment contains an existing real installation identity. Activation, submissions, comparisons and server deletion are blocked. Use a separate demonstration identity; do not reuse the production identity from a cloned database.",
+      "consentUpdate": "The benchmark now includes journey and failure shares. New submissions are paused until you explicitly accept consent version 2. Existing frozen documents remain unchanged; withdrawal is still available.",
+      "renewConsent": "Accept version 2 and resume participation"
+    },
+    "journey": {
+      "description": "Local journeys of observed crawlers and agents. No human request or session detail is shown. All dates use UTC.",
+      "unknown": "Unknown",
+      "unknownRoute": "Unresolved route",
+      "loadFailed": "The journeys could not be loaded for this selection. Please try again.",
+      "detailFailed": "This journey is unavailable, outside the selected period/channel, or no longer retained.",
+      "funnelHint": "Each step counts closed agent sessions with that step actually observed. Skipped or unknown steps are not filled in. Reaching a page does not prove that an action succeeded.",
+      "sessionCounts": "{closed} closed sessions · {open} open sessions",
+      "groupSessions": "{count} sessions in this evidence group",
+      "empty": "No agent journeys are available for this selection.",
+      "proofGroup": {
+        "verified": "Verified agents",
+        "declared": "Declared agents",
+        "other": "Other evidence"
+      },
+      "proofHint": {
+        "verified": "Identity confirmed by signature, IP range or reverse DNS. Each proof remains separate.",
+        "declared": "The agent announces an identity that has not been verified. This is not proof of impersonation.",
+        "other": "No confirmed operator identity. These sessions are excluded from verified-agent totals."
+      },
+      "stage": {
+        "discover": "Discovery",
+        "browse": "Browse",
+        "search": "Search",
+        "product": "Product",
+        "cart": "Cart",
+        "checkout": "Checkout",
+        "order": "Order placed"
+      },
+      "failure": "Observed failure",
+      "affected": "Affected sessions",
+      "eligible": "Sessions with known outcome",
+      "rate": "Share",
+      "allProofs": "All agent evidence",
+      "failuresCaption": "Named failures with their eligible session denominator",
+      "failuresHint": "Shares use only sessions for which the relevant outcome is known. Unknown outcomes, including cache hits without the corresponding event, are excluded. “—” means no valid denominator; it never means success. A session can have several failures.",
+      "noFailures": "No named failures are available. This does not establish that every action succeeded.",
+      "listHint": "The last observed step can differ from the furthest observed step. Open sessions can still change. Closure runs every 15 minutes after more than 30 minutes of inactivity; a closed session is not necessarily a conversion.",
+      "listCaption": "Minimized agent sessions with last and furthest observed steps",
+      "lastStage": "Last step",
+      "maxStage": "Furthest step",
+      "state": "Session state",
+      "timeline": "Session timeline",
+      "noneObserved": "None recorded",
+      "closed": "Closed",
+      "open": "Open",
+      "inspect": "View journey",
+      "pagination": "Page {page} of {pages} · {total} agent sessions",
+      "firstSeen": "First seen (UTC)",
+      "reason": "Classification reason",
+      "observedSteps": "Observed steps",
+      "orderIds": "Linked Shopware order IDs",
+      "orderId": "Linked Shopware order ID",
+      "timelineHint": "Only minimized retained requests are listed. Missing steps and business outcomes remain unknown. Order IDs appear only when a Shopware order event was linked to this agent session.",
+      "noTimeline": "No request details remain for this session.",
+      "close": "Close",
+      "linkage": {
+        "exact": "Exact linkage",
+        "probabilistic": "Probabilistic linkage"
+      },
+      "linkageHint": {
+        "exact": "Requests share an incoming context token or session cookie. This links observed requests; it does not identify a person.",
+        "probabilistic": "A shared provider key or request characteristics may group several visits. This journey is an estimate."
+      },
+      "failureCode": {
+        "search_empty": "Search returned no results",
+        "product_unavailable": "Product unavailable",
+        "product_out_of_stock": "Product out of stock",
+        "http_4xx": "HTTP client error (4xx)",
+        "http_5xx": "HTTP server error (5xx)",
+        "forbidden": "Access denied (403)",
+        "rate_limited": "Rate limited (429)",
+        "checkout_form": "Checkout form error",
+        "cart_error": "Cart error",
+        "payment_error": "Payment error",
+        "abandoned_cart": "Abandoned after cart",
+        "abandoned_checkout": "Abandoned after checkout"
+      },
+      "reasonCode": {
+        "no_evidence": "No identity evidence",
+        "ip_in_official_range": "Client IP belongs to an accepted operator range",
+        "identity_not_verified": "Declared identity without verified evidence",
+        "forward_confirmed_reverse_dns": "Reverse DNS confirmed by a forward lookup",
+        "valid_web_bot_auth": "Valid Web Bot Auth signature",
+        "bad_signature": "Signature could not be validated",
+        "unknown_key": "Verification key is unknown",
+        "expired": "Signature is outside its validity window",
+        "directory_unreachable": "Key directory unavailable",
+        "directory_retry_expired": "Key-directory retry window expired",
+        "invalid_replay_context": "Preserved context cannot be reverified"
+      },
+      "unknownFailures": "{count} failure/evidence combinations have no sessions with a known outcome",
+      "errorRoutes": "Routes with HTTP errors",
+      "errorRoutesHint": "The 20 most frequent error routes among retained agent requests, including open sessions. These are request counts, not failure rates.",
+      "route": "Route",
+      "step": "Step",
+      "noErrorRoutes": "No HTTP error route is retained for this selection.",
+      "truncated": "The first 500 retained requests are shown. This timeline is incomplete.",
+      "knownOutcomes": "Known outcomes",
+      "outcome": {
+        "search": "Search result count",
+        "product": "Product availability",
+        "cart": "Cart validation",
+        "checkout": "Checkout validation",
+        "order": "Order attempt/result",
+        "http": "HTTP response",
+        "payment": "Payment evaluation"
+      }
     }
   },
   "sw-privileges": {

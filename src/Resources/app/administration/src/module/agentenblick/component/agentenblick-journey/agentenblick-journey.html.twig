@@ -1,0 +1,126 @@
+<div class="agentenblick-journey">
+    <p class="agentenblick-journey__intro">{{ $t('agentenblick.journey.description') }}</p>
+    <mt-banner v-if="!canView" variant="critical">{{ $t('agentenblick.errors.permission') }}</mt-banner>
+    <div v-else-if="loading" class="agentenblick-index__loading" role="status">
+        <sw-loader /><span class="agentenblick-index__sr-only">{{ $t('agentenblick.general.loading') }}</span>
+    </div>
+    <mt-banner v-else-if="failed" variant="critical">
+        <p>{{ $t('agentenblick.journey.loadFailed') }}</p>
+        <mt-button @click="load">{{ $t('agentenblick.actions.retry') }}</mt-button>
+    </mt-banner>
+    <template v-else-if="canView">
+        <template v-if="mode === 'funnel' && summary">
+            <p class="agentenblick-journey__hint">{{ $t('agentenblick.journey.funnelHint') }}</p>
+            <p class="agentenblick-journey__counts">{{ $t('agentenblick.journey.sessionCounts', { closed: count(summary.closedSessions), open: count(summary.openSessions) }) }}</p>
+            <mt-card v-for="group in proofGroups" :key="group.key" :position-identifier="`agentenblick-funnel-${group.key}`" :title="label('journey.proofGroup', group.key)">
+                <p class="agentenblick-journey__hint">{{ label('journey.proofHint', group.key) }}</p>
+                <div class="agentenblick-journey__proof-grid">
+                    <section v-for="row in group.rows" :key="row.evidence">
+                        <h3><span class="agentenblick-proof" :class="group.key === 'verified' ? 'agentenblick-proof--verified' : 'agentenblick-proof--unverified'">{{ label('evidence', row.evidence) }}</span></h3>
+                        <p class="agentenblick-journey__hint">{{ $t('agentenblick.journey.groupSessions', { count: count(row.sessions) }) }}</p>
+                        <ol class="agentenblick-journey__funnel">
+                            <li v-for="step in stages" :key="step">
+                                <span>{{ stage(step) }}</span><strong>{{ count(row.steps?.[step]) }}</strong>
+                                <span class="agentenblick-journey__bar" aria-hidden="true"><i :style="{ width: `${barWidth(row.steps?.[step], row.sessions)}%` }"></i></span>
+                                <span class="agentenblick-journey__fraction">{{ percent(row.steps?.[step], row.sessions) }}</span>
+                            </li>
+                        </ol>
+                    </section>
+                </div>
+            </mt-card>
+            <p v-if="!proofGroups.length" class="agentenblick-index__empty">{{ $t('agentenblick.journey.empty') }}</p>
+        </template>
+
+        <mt-card v-if="mode === 'failures' && summary" position-identifier="agentenblick-failures" :title="$t('agentenblick.tabs.failures')">
+            <p class="agentenblick-journey__hint">{{ $t('agentenblick.journey.failuresHint') }}</p>
+            <div class="agentenblick-index__table-wrap">
+                <table class="agentenblick-index__table">
+                    <caption class="agentenblick-index__sr-only">{{ $t('agentenblick.journey.failuresCaption') }}</caption>
+                    <thead><tr><th scope="col">{{ $t('agentenblick.journey.failure') }}</th><th scope="col">{{ $t('agentenblick.table.evidence') }}</th><th scope="col">{{ $t('agentenblick.journey.affected') }}</th><th scope="col">{{ $t('agentenblick.journey.eligible') }}</th><th scope="col">{{ $t('agentenblick.journey.rate') }}</th></tr></thead>
+                    <tbody>
+                        <tr v-for="(row, index) in failures" :key="`${row.code}:${row.evidence || ''}:${index}`">
+                            <th scope="row">{{ label('journey.failureCode', row.code) }}<span v-if="row.stage" class="agentenblick-index__subline">{{ stage(row.stage) }}</span><code v-if="row.route" class="agentenblick-index__subline">{{ row.route }}</code></th>
+                            <td>{{ row.evidence ? label('evidence', row.evidence) : $t('agentenblick.journey.allProofs') }}</td>
+                            <td>{{ count(row.sessions) }}</td><td>{{ count(row.eligibleSessions) }}</td><td>{{ percent(row.sessions, row.eligibleSessions) }}</td>
+                        </tr>
+                        <tr v-if="!failures.length"><td colspan="5" class="agentenblick-index__empty">{{ $t('agentenblick.journey.noFailures') }}</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <details v-if="unknownFailures.length" class="agentenblick-journey__unknown">
+                <summary>{{ $t('agentenblick.journey.unknownFailures', { count: count(unknownFailures.length) }) }}</summary>
+                <ul><li v-for="row in unknownFailures" :key="`${row.code}:${row.evidence}`">{{ label('journey.failureCode', row.code) }} · {{ label('evidence', row.evidence) }}: —</li></ul>
+            </details>
+        </mt-card>
+
+        <mt-card v-if="mode === 'failures' && summary" position-identifier="agentenblick-error-routes" :title="$t('agentenblick.journey.errorRoutes')">
+            <p class="agentenblick-journey__hint">{{ $t('agentenblick.journey.errorRoutesHint') }}</p>
+            <div class="agentenblick-index__table-wrap"><table class="agentenblick-index__table">
+                <thead><tr><th scope="col">{{ $t('agentenblick.journey.route') }}</th><th scope="col">{{ $t('agentenblick.journey.step') }}</th><th scope="col">HTTP</th><th scope="col">{{ $t('agentenblick.table.evidence') }}</th><th scope="col">{{ $t('agentenblick.table.requests') }}</th></tr></thead>
+                <tbody><tr v-for="(row, index) in errorRoutes" :key="index"><th scope="row"><code>{{ row.route || $t('agentenblick.journey.unknownRoute') }}</code></th><td>{{ stage(row.stage) }}</td><td>{{ row.status }}</td><td>{{ label('evidence', row.evidence) }}</td><td>{{ count(row.requests) }}</td></tr>
+                    <tr v-if="!errorRoutes.length"><td colspan="5">{{ $t('agentenblick.journey.noErrorRoutes') }}</td></tr>
+                </tbody>
+            </table></div>
+        </mt-card>
+
+        <mt-card v-if="mode === 'journeys'" position-identifier="agentenblick-journeys" :title="$t('agentenblick.tabs.journeys')">
+            <p class="agentenblick-journey__hint">{{ $t('agentenblick.journey.listHint') }}</p>
+            <div class="agentenblick-index__table-wrap">
+                <table class="agentenblick-index__table agentenblick-journey__sessions">
+                    <caption class="agentenblick-index__sr-only">{{ $t('agentenblick.journey.listCaption') }}</caption>
+                    <thead><tr><th scope="col">{{ $t('agentenblick.table.agent') }}</th><th scope="col">{{ $t('agentenblick.table.evidence') }}</th><th scope="col">{{ $t('agentenblick.journey.lastStage') }}</th><th scope="col">{{ $t('agentenblick.journey.maxStage') }}</th><th scope="col">{{ $t('agentenblick.journey.failure') }}</th><th scope="col">{{ $t('agentenblick.journey.state') }}</th><th scope="col">{{ $t('agentenblick.journey.timeline') }}</th></tr></thead>
+                    <tbody>
+                        <tr v-for="session in sessions" :key="session.id">
+                            <th scope="row"><strong>{{ session.agent || session.operator }}</strong><span class="agentenblick-index__subline">{{ session.operator }} · {{ label('kind', session.kind) }}</span><span class="agentenblick-index__subline">{{ date(session.lastSeen) }}</span></th>
+                            <td><span class="agentenblick-proof" :class="proofGroup(session.evidence) === 'verified' ? 'agentenblick-proof--verified' : 'agentenblick-proof--unverified'">{{ label('evidence', session.evidence) }}</span><span class="agentenblick-index__subline">{{ label('journey.linkage', session.linkage) }}</span></td>
+                            <td>{{ stage(session.lastStage) }}</td><td>{{ stage(session.maxStage) }}</td>
+                            <td><ul v-if="failureCodes(session.failures).length" class="agentenblick-journey__list"><li v-for="code in failureCodes(session.failures)" :key="code">{{ label('journey.failureCode', code) }}</li></ul><span v-else>{{ $t('agentenblick.journey.noneObserved') }}</span></td>
+                            <td>{{ $t(session.closedAt ? 'agentenblick.journey.closed' : 'agentenblick.journey.open') }}</td>
+                            <td><mt-button size="small" @click="openDetail(session)">{{ $t('agentenblick.journey.inspect') }}</mt-button></td>
+                        </tr>
+                        <tr v-if="!sessions.length"><td colspan="7" class="agentenblick-index__empty">{{ $t('agentenblick.journey.empty') }}</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div v-if="total" class="agentenblick-index__pagination">
+                <span>{{ $t('agentenblick.journey.pagination', { page, pages: pageCount, total: count(total) }) }}</span>
+                <mt-button size="small" :disabled="page <= 1 || loading" @click="changePage(-1)">{{ $t('agentenblick.actions.previous') }}</mt-button>
+                <mt-button size="small" :disabled="page >= pageCount || loading" @click="changePage(1)">{{ $t('agentenblick.actions.next') }}</mt-button>
+            </div>
+        </mt-card>
+    </template>
+
+    <sw-modal v-if="selectedId && canView" class="agentenblick-journey__modal" variant="large" :title="$t('agentenblick.journey.timeline')" @modal-close="closeDetail">
+        <div v-if="detailLoading" class="agentenblick-index__loading" role="status"><sw-loader /><span class="agentenblick-index__sr-only">{{ $t('agentenblick.general.loading') }}</span></div>
+        <mt-banner v-else-if="detailFailed" variant="critical">{{ $t('agentenblick.journey.detailFailed') }}</mt-banner>
+        <template v-else-if="detail">
+            <h3>{{ detail.session.agent || detail.session.operator }}</h3>
+            <p class="agentenblick-journey__hint">{{ label('evidence', detail.session.evidence) }} · {{ label('journey.linkage', detail.session.linkage) }}</p>
+            <p class="agentenblick-journey__hint">{{ label('journey.linkageHint', detail.session.linkage) }}</p>
+            <dl class="agentenblick-journey__facts">
+                <div><dt>{{ $t('agentenblick.journey.firstSeen') }}</dt><dd>{{ date(detail.session.firstSeen) }}</dd></div>
+                <div><dt>{{ $t('agentenblick.table.lastSeen') }}</dt><dd>{{ date(detail.session.lastSeen) }}</dd></div>
+                <div><dt>{{ $t('agentenblick.journey.lastStage') }}</dt><dd>{{ stage(detail.session.lastStage) }}</dd></div>
+                <div><dt>{{ $t('agentenblick.journey.maxStage') }}</dt><dd>{{ stage(detail.session.maxStage) }}</dd></div>
+            </dl>
+            <p v-if="detail.session.reason" class="agentenblick-journey__hint">{{ $t('agentenblick.journey.reason') }}: {{ label('journey.reasonCode', detail.session.reason) }}</p>
+            <p v-if="stepNames(detail.session.steps).length" class="agentenblick-journey__hint">{{ $t('agentenblick.journey.observedSteps') }}: {{ stepNames(detail.session.steps).join(' · ') }}</p>
+            <p v-if="detail.session.orderIds?.length" class="agentenblick-journey__hint">{{ $t('agentenblick.journey.orderIds') }}: <code v-for="id in detail.session.orderIds" :key="id" class="agentenblick-journey__order">{{ id }}</code></p>
+            <p class="agentenblick-journey__hint">{{ $t('agentenblick.journey.timelineHint') }}</p>
+            <mt-banner v-if="detail.truncated" variant="attention">{{ $t('agentenblick.journey.truncated') }}</mt-banner>
+            <ol class="agentenblick-journey__timeline">
+                <li v-for="(item, index) in detail.items" :key="`${item.at}:${index}`">
+                    <div class="agentenblick-journey__event-head"><time>{{ date(item.at) }}</time><strong>{{ stage(item.stage) }}</strong><span>{{ item.method || '—' }} · {{ item.status || '—' }}</span></div>
+                    <code class="agentenblick-journey__route">{{ item.route || $t('agentenblick.journey.unknownRoute') }}</code>
+                    <p>{{ label('evidence', item.evidence) }}<template v-if="item.linkage"> · {{ label('journey.linkage', item.linkage) }}</template></p>
+                    <p v-if="item.reason">{{ $t('agentenblick.journey.reason') }}: {{ label('journey.reasonCode', item.reason) }}</p>
+                    <p>{{ $t('agentenblick.journey.knownOutcomes') }}: {{ (item.knownOutcomes || []).map((value) => label('journey.outcome', value)).join(' · ') || $t('agentenblick.journey.unknown') }}</p>
+                    <ul v-if="failureCodes(item.failures).length" class="agentenblick-journey__list"><li v-for="code in failureCodes(item.failures)" :key="code">{{ label('journey.failureCode', code) }}</li></ul>
+                    <p v-if="item.orderId">{{ $t('agentenblick.journey.orderId') }}: <code>{{ item.orderId }}</code></p>
+                </li>
+            </ol>
+            <p v-if="!detail.items?.length" class="agentenblick-index__empty">{{ $t('agentenblick.journey.noTimeline') }}</p>
+        </template>
+        <template #modal-footer><mt-button @click="closeDetail">{{ $t('agentenblick.journey.close') }}</mt-button></template>
+    </sw-modal>
+</div>

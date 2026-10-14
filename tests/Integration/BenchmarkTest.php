@@ -38,7 +38,7 @@ final class BenchmarkTest extends TestCase
         $this->connection = DriverManager::getConnection((new DsnParser(['mysql' => 'pdo_mysql']))->parse('mysql://root:root@127.0.0.1/shopware'));
         // MySQL temporary tables cannot declare the live system_config foreign key.
         $this->db()->executeStatement('CREATE TEMPORARY TABLE system_config (id BINARY(16) NOT NULL PRIMARY KEY, configuration_key VARCHAR(255) NOT NULL, configuration_value JSON NOT NULL, sales_channel_id BINARY(16) DEFAULT NULL, created_at DATETIME NOT NULL)');
-        foreach (['agentenblick_daily', 'agentenblick_benchmark_draft'] as $table) {
+        foreach (['agentenblick_daily', 'agentenblick_benchmark_draft', 'agentenblick_request', 'agentenblick_session', 'agentenblick_journey_daily'] as $table) {
             $definition = $this->db()->fetchAssociative('SHOW CREATE TABLE ' . $table);
             self::assertNotFalse($definition);
             $this->db()->executeStatement('CREATE TEMPORARY TABLE ' . substr($definition['Create Table'], strlen('CREATE TABLE ')));
@@ -52,6 +52,23 @@ final class BenchmarkTest extends TestCase
         foreach ([['human_or_unknown', 'none', 'unknown', 90], ['training_crawler', 'verified_ip', 'openai', 10]] as [$kind, $proof, $operator, $count]) {
             $this->db()->insert('agentenblick_daily', ['day' => $start, 'sales_channel_id' => self::CHANNEL, 'kind' => $kind, 'evidence' => $proof, 'operator' => $operator, 'agent' => 'test', 'requests' => $count, 'sessions' => $count]);
         }
+    }
+
+    public function testVersionOneConsentRequiresReviewBeforeAnyVersionTwoNetworkOperation(): void
+    {
+        $state = $this->state->prepare($this->state->read());
+        $state['enabled'] = true;
+        $state['registered'] = true;
+        $state['consentVersion'] = '1';
+        $state['consentAt'] = gmdate('c');
+        $this->state->save($state);
+        $manager = $this->manager(static function (): never {
+            self::fail('An expanded payload requires renewed consent before network.');
+        });
+        self::assertSame('consent_update_required', $manager->status()['reasonCode']);
+        self::assertSame('2', $manager->status()['requiredConsentVersion']);
+        self::assertSame('consent_update_required', $manager->send()['status']);
+        self::assertFalse($manager->comparison()['available']);
     }
 
     protected function tearDown(): void

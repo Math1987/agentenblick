@@ -13,7 +13,7 @@ runInNewContext(source, {
 
 function component({ editor = true, enabled = false, offline = false, pendingWithdrawal = false, reasonCode = 'disabled' } = {}) {
     const calls = [];
-    const status = { enabled, offline, pendingWithdrawal, reasonCode, consentVersion: '1' };
+    const status = { enabled, offline, pendingWithdrawal, reasonCode, consentVersion: '2' };
     const context = {
         ...definition.data(),
         acl: { can: () => editor },
@@ -57,7 +57,7 @@ test('enable needs editor privilege and explicit consent and is blocked offline 
     context.consent = true;
     context.$i18n.locale = 'de-DE';
     await context.update('enable');
-    assert.deepEqual(JSON.parse(JSON.stringify(calls[0])), { action: 'enable', body: { consent: true, consentVersion: '1', locale: 'de-DE' } });
+    assert.deepEqual(JSON.parse(JSON.stringify(calls[0])), { action: 'enable', body: { consent: true, consentVersion: '2', locale: 'de-DE' } });
     assert.equal(context.consent, false);
 });
 
@@ -138,4 +138,32 @@ test('a cloned real identity in test shows an explicit state and never previews,
 test('pending registration does not show a connected state', () => {
     const { context } = component({ enabled: true, reasonCode: 'registration_pending' });
     assert.equal(context.stateLabel, 'agentenblick.benchmark.state.registration_pending');
+});
+
+test('previous consent pauses submissions and comparison until version 2 is explicitly checked', async () => {
+    const { context, calls } = component({ enabled: true, reasonCode: 'consent_update_required' });
+    context.status.consentVersion = '1';
+    context.status.requiredConsentVersion = '2';
+    assert.equal(context.needsConsentUpdate, true);
+    assert.equal(context.stateLabel, 'agentenblick.benchmark.state.consent_update_required');
+    await context.update('send');
+    await context.compare();
+    await context.update('enable');
+    assert.equal(calls.length, 0);
+    context.consent = true;
+    await context.update('enable');
+    assert.equal(calls[0].action, 'enable');
+    assert.equal(calls[0].body.consentVersion, '2');
+});
+
+test('withdrawal stays available with outdated consent and an unsupported future consent cannot be accepted', async () => {
+    const { context, calls } = component({ enabled: true, reasonCode: 'consent_update_required' });
+    context.status.consentVersion = '1';
+    context.status.requiredConsentVersion = '3';
+    context.consent = true;
+    await context.update('enable');
+    await context.update('send');
+    assert.equal(calls.length, 0);
+    await context.update('disable');
+    assert.equal(calls[0].action, 'disable');
 });

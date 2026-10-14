@@ -11,10 +11,11 @@ final class Payload
     public const OPERATORS = ['openai', 'google', 'anthropic', 'perplexity', 'other'];
 
     /** @param list<array<string, mixed>> $groups
+     * @param list<array<string, mixed>> $journeys
      * @param array{country: string, shopware: string, plugin: string, trafficBucket: string, agenticCommerceExtension: bool} $segment
      * @return array<string, mixed>
      */
-    public static function document(string $installation, string $channel, string $period, bool $demo, array $segment, array $groups): array
+    public static function document(string $installation, string $channel, string $period, bool $demo, array $segment, array $groups, array $journeys = []): array
     {
         $total = 0;
         $agents = 0;
@@ -36,7 +37,7 @@ final class Payload
             $operators[$operator] += $count;
         }
         return [
-            'schema' => 'agentenblick.benchmark/1', 'installationId' => $installation, 'channelId' => $channel,
+            'schema' => 'agentenblick.benchmark/2', 'installationId' => $installation, 'channelId' => $channel,
             'period' => $period, 'demo' => $demo, 'segment' => $segment,
             'denominators' => ['sessions' => $total < 10 ? 'below_10' : 'at_least_10', 'agentSessions' => $agents < 10 ? 'below_10' : 'at_least_10'],
             'shares' => [
@@ -45,8 +46,7 @@ final class Payload
                 'byEvidence' => $agents < 10 ? 'suppressed' : self::distribution($evidence),
                 'byOperator' => $agents < 10 ? 'suppressed' : self::distribution($operators),
             ],
-            'funnel' => 'suppressed', 'failures' => 'suppressed',
-        ];
+        ] + JourneyPayload::reduce($journeys);
     }
 
     public static function bucket(int $sessions): string

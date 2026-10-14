@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Capture;
 
+use Aithos\Agentenblick\Journey\Signals;
 use Aithos\Agentenblick\Persistence\DailyKey;
 use Aithos\Agentenblick\Persistence\ObservationStore;
 use Aithos\Agentenblick\Persistence\ProxyDiagnostics;
@@ -56,6 +57,7 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
         $this->reset();
         try {
             if ((new ObservationScope())->accepts($request)) {
+                Signals::initialize($request);
                 $this->request = clone $request;
                 $this->at = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
             }
@@ -68,12 +70,25 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
     public function onResponse(ResponseEvent $event): void
     {
         if ($event->isMainRequest() && $this->request !== null) {
-            $this->status = $event->getResponse()->getStatusCode();
-            foreach (['_route', 'sw-sales-channel-id'] as $attribute) {
-                if ($event->getRequest()->attributes->has($attribute)) {
-                    $this->request->attributes->set($attribute, $event->getRequest()->attributes->get($attribute));
-                }
+            $this->complete($event->getRequest(), $event->getResponse()->getStatusCode());
+        }
+    }
+
+    public function complete(Request $request, int $status): void
+    {
+        $this->status = $status;
+        if ($this->request === null) {
+            return;
+        }
+        foreach (['_route', 'sw-sales-channel-id'] as $attribute) {
+            if ($request->attributes->has($attribute)) {
+                $this->request->attributes->set($attribute, $request->attributes->get($attribute));
             }
+        }
+        $signals = Signals::read($request);
+        if ($signals !== null) {
+            $target = Signals::read($this->request) ?? Signals::initialize($this->request);
+            $target->merge($signals);
         }
     }
 

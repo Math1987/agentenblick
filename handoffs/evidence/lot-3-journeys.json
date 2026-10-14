@@ -1,0 +1,46 @@
+{
+  "startedAt": "2026-10-14T11:38:55.811333+00:00",
+  "checks": {
+    "environment": {
+      "test": true,
+      "emailDeliveryDisabled": true,
+      "payment": "local_manual",
+      "externalPaymentCalls": 0
+    },
+    "orderedJourney": {
+      "requests": 5,
+      "proof": "verified_ip",
+      "steps": [
+        "search",
+        "product",
+        "product",
+        "cart",
+        "order"
+      ],
+      "zeroResults": true,
+      "outOfStock": true,
+      "orderLinked": true,
+      "paymentOutcome": "unknown"
+    },
+    "closure": {
+      "agedOnlyOwnSessionsMinutes": 31,
+      "sessions": 3,
+      "cartAbandoned": true,
+      "checkoutAbandoned": true,
+      "orderedNotAbandoned": true,
+      "idempotent": true
+    },
+    "privacy": {
+      "textColumnsScanned": 17,
+      "forbiddenMatches": 0,
+      "apiOnlyMinimizedFields": true,
+      "queryAndBodyTermsAbsent": true
+    }
+  },
+  "cleanup": {
+    "ownBusinessFixturesDeleted": true,
+    "configurationRestored": true
+  },
+  "passed": true,
+  "finishedAt": "2026-10-14T11:39:17.052797+00:00"
+}

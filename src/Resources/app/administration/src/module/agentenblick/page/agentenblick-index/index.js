@@ -29,6 +29,12 @@ Component.register('agentenblick-index', {
     },
 
     computed: {
+        tabs() {
+            return ['overview', 'agents', 'funnel', 'journeys', 'failures', 'benchmark'];
+        },
+        isJourneyTab() {
+            return ['funnel', 'journeys', 'failures'].includes(this.activeTab);
+        },
         canView() {
             return this.acl.can('agentenblick.viewer');
         },
@@ -142,10 +148,21 @@ Component.register('agentenblick-index', {
             this.loadData();
         },
         selectTab(tab, focus = false) {
+            if (!this.tabs.includes(tab)) return;
             this.activeTab = tab;
             if (focus) {
-                this.$nextTick(() => this.$refs[`${tab}Tab`]?.focus());
+                this.$nextTick(() => {
+                    const reference = this.$refs[`${tab}Tab`];
+                    (Array.isArray(reference) ? reference[0] : reference)?.focus();
+                });
             }
+        },
+        moveTab(delta) {
+            this.selectTab(this.tabs[(this.tabs.indexOf(this.activeTab) + delta + this.tabs.length) % this.tabs.length], true);
+        },
+        refreshVisible() {
+            if (this.isJourneyTab) this.$refs.journey?.load();
+            else this.loadData();
         },
         formatNumber(value) {
             return new Intl.NumberFormat(this.locale).format(Number(value) || 0);
