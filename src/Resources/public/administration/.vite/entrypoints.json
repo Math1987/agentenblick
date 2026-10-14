@@ -1,0 +1,25 @@
+{
+  "base": "/bundles/aithosagentenblick/administration/",
+  "entryPoints": {
+    "aithos-agentenblick": {
+      "css": [
+        "/bundles/aithosagentenblick/administration/css/aithos-agentenblick-RY3HVYWG.css"
+      ],
+      "dynamic": [],
+      "js": [
+        "/bundles/aithosagentenblick/administration/js/aithos-agentenblick-HA45BWSB.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.0.4",
+    7,
+    0,
+    4
+  ],
+  "viteServer": null
+}

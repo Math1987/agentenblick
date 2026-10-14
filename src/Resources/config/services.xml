@@ -4,6 +4,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <defaults autowire="true" autoconfigure="true" public="false"/>
+        <service id="Aithos\Agentenblick\Admin\AnalyticsReader"/>
+        <service id="Aithos\Agentenblick\Admin\RangeApprovals"/>
+        <service id="Aithos\Agentenblick\Admin\AclPrivilegesSubscriber"/>
+        <service id="Aithos\Agentenblick\Controller\AnalyticsController" public="true">
+            <tag name="controller.service_arguments"/>
+        </service>
         <service id="Aithos\Agentenblick\Persistence\DailyKey"/>
         <service id="Aithos\Agentenblick\Persistence\ObservationStore"/>
         <service id="Aithos\Agentenblick\Persistence\ProxyDiagnostics"/>

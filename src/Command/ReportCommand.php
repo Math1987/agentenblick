@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Command;
 
+use Aithos\Agentenblick\Admin\AnalyticsReader;
+use Aithos\Agentenblick\Admin\ReportFilter;
 use Aithos\Agentenblick\Persistence\ProxyDiagnostics;
-use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'agentenblick:report', description: 'Report locally observed agent traffic')]
 final class ReportCommand extends Command
 {
-    public function __construct(private readonly Connection $connection, private readonly ProxyDiagnostics $proxyDiagnostics)
+    public function __construct(private readonly AnalyticsReader $reader, private readonly ProxyDiagnostics $proxyDiagnostics)
     {
         parent::__construct();
     }
@@ -35,31 +36,19 @@ final class ReportCommand extends Command
             throw new \InvalidArgumentException('--days must be between 1 and 400');
         }
         $since = (new \DateTimeImmutable('today', new \DateTimeZone('UTC')))->modify('-' . ($days - 1) . ' days')->format('Y-m-d');
-        $parameters = [$since];
-        $where = 'day >= ?';
-        if ($input->getOption('sales-channel') !== null) {
-            $where .= ' AND sales_channel_id = ?';
-            $parameters[] = $input->getOption('sales-channel');
-        }
-        $rows = $this->connection->fetchAllAssociative('SELECT operator, agent, kind, evidence, SUM(requests) AS requests, SUM(sessions) AS sessions FROM agentenblick_daily WHERE ' . $where . ' GROUP BY operator, agent, kind, evidence ORDER BY requests DESC', $parameters);
-        $sessions = 0;
-        $nonHumanSessions = 0;
-        foreach ($rows as &$row) {
-            $row['sessions'] = (int) $row['sessions'];
-            $row['requests'] = (int) $row['requests'];
-            $sessions += $row['sessions'];
-            if ($row['kind'] !== 'human_or_unknown') {
-                $nonHumanSessions += $row['sessions'];
-            }
-        }
-        unset($row);
+        $channel = $input->getOption('sales-channel');
+        $filter = new ReportFilter($days, is_string($channel) ? $channel : null);
+        $rows = $this->reader->groups($filter);
+        $totals = AnalyticsReader::totals($rows);
+        $sessions = $totals['sessions'];
+        $nonHumanSessions = $totals['agentSessions'];
         $report = [
             'since' => $since, 'timezone' => 'UTC', 'sessions' => $sessions,
             'observed_agent_sessions' => $nonHumanSessions,
             'observed_agent_sessions_pct' => $sessions > 0 ? round(100 * $nonHumanSessions / $sessions, 1) : null,
             'scope' => 'PHP-visible main requests; identified crawler/agent traffic, not all AI usage',
             'agents' => $rows,
-            'human_browsers' => array_map(static fn (array $browser): array => ['browser_family' => $browser['browser_family'], 'requests' => (int) $browser['requests'], 'sessions' => (int) $browser['sessions']], $this->connection->fetchAllAssociative("SELECT browser_family, SUM(requests) AS requests, SUM(sessions) AS sessions FROM agentenblick_daily WHERE " . $where . " AND kind = 'human_or_unknown' GROUP BY browser_family", $parameters)),
+            'human_browsers' => $this->reader->humanBrowsers($filter),
             'proxy_diagnostics' => $this->proxyDiagnostics->report(),
         ];
         if ($input->getOption('json')) {
