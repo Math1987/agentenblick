@@ -234,6 +234,23 @@ final class HealthTest extends TestCase
         self::assertSame($before + 1, (int) $this->db->fetchOne('SELECT SUM(requests) FROM agentenblick_health_daily'));
     }
 
+    public function testLateFindingCannotRegressTheLatestMatchingSnapshotTime(): void
+    {
+        $this->policy("User-agent: GPTBot\nAllow: /\n");
+        $observer = new Observation($this->db, $this->domains, $this->snapshots, new CatalogueProvider('test'));
+        $newer = gmdate('Y-m-d H:i:s', time() - 5);
+        $older = gmdate('Y-m-d H:i:s', time() - 65);
+        $this->db->executeStatement('UPDATE agentenblick_health_snapshot SET checked_at = ?', [$newer]);
+        $observer->record(Request::create(self::URL . '/open'), $this->row(403));
+        // Simulate the old snapshot retained by a concurrent slow observer.
+        $this->db->executeStatement('UPDATE agentenblick_health_snapshot SET checked_at = ?', [$older]);
+        $observer->record(Request::create(self::URL . '/open'), $this->row(403));
+        $finding = $this->db->fetchAssociative('SELECT requests, snapshot_at FROM agentenblick_health_daily');
+        self::assertIsArray($finding);
+        self::assertSame(2, (int) $finding['requests']);
+        self::assertSame($newer, $finding['snapshot_at']);
+    }
+
     public function testFuturePoliciesAndAmbiguousDomainsNeverCreateContradictions(): void
     {
         $this->policy("User-agent: GPTBot\nDisallow: /\n");

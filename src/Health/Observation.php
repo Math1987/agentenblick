@@ -121,6 +121,6 @@ final class Observation
      */
     private function finding(string $domainId, array $row, string $code, array $decision = [], ?string $snapshotAt = null): void
     {
-        $this->connection->executeStatement('INSERT INTO agentenblick_health_daily (day, domain_id, sales_channel_id, agent, evidence, route, status, code, rule_hash, rule_text, reason_code, snapshot_at, requests) VALUES (?, UNHEX(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1) ON DUPLICATE KEY UPDATE requests = requests + 1, snapshot_at = VALUES(snapshot_at)', [$row['day'], $domainId, $row['sales_channel_id'], $row['agent'], $row['evidence'], $row['route'], $row['status'], $code, $decision['ruleHash'] ?? '', $decision['matchedRule'] ?? null, $decision['reasonCode'] ?? 'http_status', $snapshotAt]);
+        $this->connection->executeStatement('INSERT INTO agentenblick_health_daily (day, domain_id, sales_channel_id, agent, evidence, route, status, code, rule_hash, rule_text, reason_code, snapshot_at, requests) VALUES (?, UNHEX(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1) ON DUPLICATE KEY UPDATE requests = requests + 1, snapshot_at = GREATEST(COALESCE(snapshot_at, VALUES(snapshot_at)), COALESCE(VALUES(snapshot_at), snapshot_at))', [$row['day'], $domainId, $row['sales_channel_id'], $row['agent'], $row['evidence'], $row['route'], $row['status'], $code, $decision['ruleHash'] ?? '', $decision['matchedRule'] ?? null, $decision['reasonCode'] ?? 'http_status', $snapshotAt]);
     }
 }
