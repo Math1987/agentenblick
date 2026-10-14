@@ -1,0 +1,2 @@
+<mt-card v-if="meteorAvailable" v-bind="$attrs" :position-identifier="positionIdentifier" :title="title"><slot /></mt-card>
+<sw-card v-else v-bind="$attrs" :position-identifier="positionIdentifier" :title="title"><slot /></sw-card>

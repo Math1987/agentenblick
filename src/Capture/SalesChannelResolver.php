@@ -16,13 +16,17 @@ final class SalesChannelResolver
 
     public function resolve(Request $request): void
     {
-        if ($request->attributes->has('sw-sales-channel-id')) {
+        if ($request->attributes->has('sw-sales-channel-id') && $request->attributes->has('sw-domain-id')) {
             return;
         }
-        $domains = $this->connection->fetchAllAssociative('SELECT url, LOWER(HEX(sales_channel_id)) AS id FROM sales_channel_domain');
+        $domains = $this->connection->fetchAllAssociative('SELECT url, LOWER(HEX(sales_channel_id)) AS id, LOWER(HEX(id)) AS domain_id FROM sales_channel_domain');
         $id = self::match($request, $domains);
         if ($id !== null) {
             $request->attributes->set('sw-sales-channel-id', $id);
+        }
+        $domainId = self::match($request, array_map(static fn (array $domain): array => ['url' => $domain['url'], 'id' => $domain['domain_id']], $domains));
+        if ($domainId !== null) {
+            $request->attributes->set('sw-domain-id', $domainId);
         }
     }
 

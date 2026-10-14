@@ -19,8 +19,10 @@ final class ObservationStore
     {
     }
 
-    /** @param array<string, mixed> $row */
-    public function record(array $row, ?Candidate $candidate = null): void
+    /** @param array<string, mixed> $row
+     * @return array<string, mixed> The committed minimized observation, never raw input.
+     */
+    public function record(array $row, ?Candidate $candidate = null): array
     {
         if ($this->connection instanceof PrimaryReadReplicaConnection) {
             $this->connection->ensureConnectedToPrimary();
@@ -30,7 +32,7 @@ final class ObservationStore
             throw new \RuntimeException('session_lock_busy');
         }
         try {
-            $this->connection->transactional(function (Connection $connection) use ($row, $candidate): void {
+            return $this->connection->transactional(function (Connection $connection) use ($row, $candidate): array {
                 $observedAt = new \DateTimeImmutable($row['observed_at'], new \DateTimeZone('UTC'));
                 $cutoff = $observedAt->modify('-30 minutes')->format('Y-m-d H:i:s.v');
                 $upper = $observedAt->modify('+30 minutes')->format('Y-m-d H:i:s.v');
@@ -50,7 +52,7 @@ final class ObservationStore
                 $row['failure_mask'] = $human ? 0 : ((int) ($row['failure_mask'] ?? 0) & 4095);
                 $row['known_mask'] = $human ? 0 : ((int) ($row['known_mask'] ?? 0) & 127);
                 $row['order_id'] = !$human && is_string($row['order_id'] ?? null) && strlen($row['order_id']) === 16 ? $row['order_id'] : null;
-                $row += ['heuristic_score' => 0, 'heuristic_flags' => 0, 'heuristic_version' => '', 'heuristic_threshold' => 0, 'heuristic_epoch' => ''];
+                $row += ['discovery_resource' => '', 'heuristic_score' => 0, 'heuristic_flags' => 0, 'heuristic_version' => '', 'heuristic_threshold' => 0, 'heuristic_epoch' => ''];
                 if ($new) {
                     $connection->insert('agentenblick_session', [
                         'id' => $sessionId, 'session_key' => $row['session_key'], 'key_day' => $row['day'],
@@ -115,6 +117,7 @@ final class ObservationStore
                     'INSERT INTO agentenblick_daily (day, sales_channel_id, operator, agent, kind, evidence, browser_family, requests, sessions) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?) ON DUPLICATE KEY UPDATE requests = requests + 1, sessions = sessions + VALUES(sessions)',
                     [$row['day'], $row['sales_channel_id'], $row['operator'], $row['agent'], $row['kind'], $row['evidence'], $row['browser_family'] ?? '', $new ? 1 : 0],
                 );
+                return $row;
             });
         } finally {
             $this->connection->fetchOne('SELECT RELEASE_LOCK(?)', [$lock]);

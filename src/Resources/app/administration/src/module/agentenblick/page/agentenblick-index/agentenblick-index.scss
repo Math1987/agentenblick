@@ -68,7 +68,7 @@
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 16px;
 
-        .mt-card__title {
+        .mt-card__title, .sw-card__title {
             font-size: 14px;
         }
     }

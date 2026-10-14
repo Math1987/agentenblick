@@ -34,7 +34,7 @@ final class JourneyTest extends TestCase
             self::markTestSkipped('Requires the migrated disposable MySQL bench.');
         }
         $this->connection = $this->connect();
-        foreach (['request', 'session', 'daily', 'journey_daily', 'state', 'key_cache'] as $name) {
+        foreach (['health_snapshot', 'health_daily', 'request', 'session', 'daily', 'journey_daily', 'state', 'key_cache'] as $name) {
             $definition = $this->db()->fetchAssociative('SHOW CREATE TABLE agentenblick_' . $name);
             self::assertNotFalse($definition);
             $this->db()->executeStatement('CREATE TEMPORARY TABLE ' . substr($definition['Create Table'], strlen('CREATE TABLE ')));

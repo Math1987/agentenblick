@@ -1,0 +1,2 @@
+<mt-checkbox v-if="meteorAvailable" v-bind="$attrs" :model-value="modelValue" :label="label" :disabled="disabled" @update:model-value="updateValue" />
+<sw-checkbox-field v-else v-bind="$attrs" :value="modelValue" :label="label" :disabled="disabled" @update:value="updateValue" />

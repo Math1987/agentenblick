@@ -23,7 +23,8 @@
       "benchmark": "Benchmark",
       "funnel": "Funnel",
       "journeys": "Journeys",
-      "failures": "Failures"
+      "failures": "Failures",
+      "health": "Health"
     },
     "filters": {
       "period": "Period",
@@ -363,6 +364,108 @@
         "cookie_ignored": "Expected session cookie not returned across observations"
       },
       "appliedThreshold": "Applied threshold"
+    },
+    "health": {
+      "title": "AI access health",
+      "description": "Inspect stored public endpoint checks and compare them with locally observed requests. Opening or refreshing this page does not contact the shop’s public website.",
+      "offline": "Offline mode is active. Stored results remain available; public probes are disabled.",
+      "loadFailed": "Stored health results could not be loaded. Any results still shown belong to the previous successful load.",
+      "probeFailed": "The public check did not complete. Previously stored results do not confirm the shop’s current state.",
+      "loading": "Loading stored health results…",
+      "domain": "Configured public domain",
+      "refreshStored": "Refresh stored results",
+      "noDomain": "No eligible public HTTPS domain is configured for this selection.",
+      "lastChecked": "Last public check (UTC)",
+      "networkNotice": "This button makes bounded requests from this server to the selected public domain. Requests may pass through its CDN or firewall. No endpoint or shop configuration is changed.",
+      "autoTest": "Also test the homepage as GPTBot, ClaudeBot and ChatGPT-User",
+      "serverIpNotice": "These requests use this server’s IP address, not the operators’ IP addresses. They test responses to the declared User-Agent; they do not prove that a verified operator can access the shop.",
+      "probe": "Check public endpoints",
+      "probing": "Checking public endpoints…",
+      "editorRequired": "Editor permission is required to run public checks.",
+      "resources": "Public endpoint responses",
+      "resource": "Endpoint",
+      "stateLabel": "Observed state",
+      "detail": "Detail",
+      "unknown": "Unknown",
+      "noSnapshot": "No public check has been stored yet. Endpoint availability remains unknown.",
+      "resourceHint": "HTTP status reflects this probe at its recorded time. A missing optional endpoint is not a shop failure. An MCP OPTIONS response does not validate a complete MCP exchange.",
+      "resourceName": {
+        "robots": "robots.txt",
+        "llms": "llms.txt",
+        "llms_full": "llms-full.txt",
+        "agents_md": "agents.md",
+        "agents_md_upper": "AGENTS.md",
+        "ucp": "UCP discovery",
+        "agent_card": "Agent card",
+        "mcp": "MCP endpoint"
+      },
+      "state": {
+        "available": "Responded",
+        "missing": "Not found",
+        "blocked": "Access refused",
+        "error": "Error response",
+        "unknown": "Unknown"
+      },
+      "robotsTitle": "robots.txt policy",
+      "robotsHint": "Each decision applies only to its displayed path and the stored robots.txt snapshot. It is not a blanket permission for every URL. robots.txt is a declared policy, not access control.",
+      "robotsUnknown": "No usable policy decision is stored. Allowance and denial cannot be inferred from missing data.",
+      "path": "Evaluated path",
+      "decisionLabel": "Policy decision",
+      "decision": {
+        "allow": "Allowed for this path",
+        "disallow": "Disallowed for this path",
+        "unknown": "Unknown"
+      },
+      "rule": "Relevant rule",
+      "ruleSnapshot": "Latest matching policy snapshot (UTC)",
+      "findingsTitle": "Policy and observed behaviour",
+      "findingsHint": "Findings concern observed PHP requests evaluated against a stored policy. Older requests without that context remain unknown. Evidence labels distinguish verified identity from a declaration or a suspicion.",
+      "noFindings": "No contradiction is recorded for this selection. This does not establish unrestricted access or complete coverage.",
+      "finding": {
+        "ucp_error": "A UCP endpoint returned an error",
+        "mcp_error": "An MCP endpoint returned an error",
+        "allowed_but_blocked": "An allowed agent received HTTP 403 or 429",
+        "disallowed_but_observed": "Requests were observed despite a matching Disallow rule"
+      },
+      "action": {
+        "ucp_error": "Check the UCP endpoint configuration and its server logs for the recorded route and status.",
+        "mcp_error": "Check the MCP endpoint configuration and authentication requirements. An HTTP probe alone cannot establish protocol compatibility.",
+        "allowed_but_blocked": "Review the matching CDN or firewall rule and rate limits. Check the evidence level before adding an operator exception.",
+        "disallowed_but_observed": "Review the declared rule and the request evidence. robots.txt does not prevent requests; access restrictions require a server or firewall rule."
+      },
+      "reason": {
+        "http_status": "Recorded HTTP response",
+        "network_unreachable": "No network response",
+        "response_too_large": "Response exceeds the probe limit",
+        "redirect_limit": "Redirect limit reached",
+        "invalid_redirect": "Redirect target is invalid",
+        "public_https_required": "A public HTTPS address is required",
+        "budget_exhausted": "Probe budget exhausted",
+        "redirect_not_followed": "Redirect not followed; policy remains unknown",
+        "unexpected_content_type": "Unexpected content type; document format is not validated",
+        "robots_rule_match": "Matching robots.txt rule",
+        "robots_missing_allow": "No robots.txt returned (HTTP 4xx); RFC 9309 permits access",
+        "robots_unreachable_disallow": "robots.txt unreachable; RFC 9309 treats access as disallowed",
+        "robots_snapshot_stale": "Stored policy is too old to evaluate this request",
+        "robots_unavailable": "robots.txt could not be evaluated",
+        "robots_unsupported_document": "Document format cannot be evaluated",
+        "robots_policy_limit": "Policy exceeds the evaluation limit",
+        "robots_match_limit": "Rule matching limit reached",
+        "offline": "Offline mode; no request sent",
+        "robots_default_allow": "No matching restriction for this path",
+        "robots_implicit_allow": "Implicit allowance under robots.txt rules"
+      },
+      "afterLlmsTitle": "After a successful llms.txt / llms-full.txt request",
+      "afterLlmsHint": "Counts include classified sessions with a successful llms.txt / llms-full.txt request and later retained requests in that same session. They do not prove that the content was read or caused the later action. Missing steps remain unknown; session linkage may be probabilistic.",
+      "readLlms": "Sessions requesting llms.txt / llms-full.txt successfully",
+      "laterRequests": "Sessions with later observed requests",
+      "autoTestTitle": "Optional User-Agent test",
+      "ineligible": "Not publicly probeable",
+      "ineligibleDomain": "This configured domain cannot be probed from the public network.",
+      "robotsOnly": "Policy token only; not an observed agent identity",
+      "staleSnapshot": "This saved check is no longer current. It does not establish the present policy or endpoint availability.",
+      "findingsTruncated": "The 100 most frequent findings are shown. Narrow the period or sales channel to inspect a smaller selection.",
+      "publicRules": "Public robots.txt rules by group"
     }
   },
   "sw-privileges": {

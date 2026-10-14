@@ -1,8 +1,10 @@
 import './acl';
+import './component/agentenblick-ui';
 import './page/agentenblick-index';
 import './component/agentenblick-benchmark';
 import './component/agentenblick-journey';
 import './component/agentenblick-heuristics';
+import './component/agentenblick-health';
 import AgentenblickApiService from './service/agentenblick.api.service';
 import enGB from './snippet/en-GB.json';
 import deDE from './snippet/de-DE.json';

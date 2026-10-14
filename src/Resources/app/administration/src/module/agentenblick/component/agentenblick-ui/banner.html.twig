@@ -1,0 +1,2 @@
+<mt-banner v-if="meteorAvailable" v-bind="$attrs" :variant="variant"><slot /></mt-banner>
+<sw-alert v-else v-bind="$attrs" :variant="legacyVariant"><slot /></sw-alert>

@@ -3,11 +3,11 @@
   "entryPoints": {
     "aithos-agentenblick": {
       "css": [
-        "/bundles/aithosagentenblick/administration/css/aithos-agentenblick-KAMX4KHZ.css"
+        "/bundles/aithosagentenblick/administration/css/aithos-agentenblick-5S66YET6.css"
       ],
       "dynamic": [],
       "js": [
-        "/bundles/aithosagentenblick/administration/js/aithos-agentenblick-ZFZIUMCM.js"
+        "/bundles/aithosagentenblick/administration/js/aithos-agentenblick-674YY3DB.js"
       ],
       "legacy": false,
       "preload": []

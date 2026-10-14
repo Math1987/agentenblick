@@ -4,6 +4,17 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <defaults autowire="true" autoconfigure="true" public="false"/>
+        <service id="Aithos\Agentenblick\Health\Domains"/>
+        <service id="Aithos\Agentenblick\Health\ProbeTokens"/>
+        <service id="Aithos\Agentenblick\Health\ProbeTransport"/>
+        <service id="Aithos\Agentenblick\Health\SnapshotStore"/>
+        <service id="Aithos\Agentenblick\Health\ProbeService"/>
+        <service id="Aithos\Agentenblick\Health\Observation"/>
+        <service id="Aithos\Agentenblick\Health\HealthReader"/>
+        <service id="Aithos\Agentenblick\Controller\HealthController" public="true">
+            <tag name="controller.service_arguments"/>
+        </service>
+        <service id="Aithos\Agentenblick\Command\HealthCommand"/>
         <service id="Aithos\Agentenblick\Heuristics\Settings"/>
         <service id="Aithos\Agentenblick\Heuristics\HostingRanges"/>
         <service id="Aithos\Agentenblick\Heuristics\HeuristicSignals"/>

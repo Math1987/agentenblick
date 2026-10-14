@@ -1,0 +1,25 @@
+.agentenblick-health {
+    display: grid;
+    gap: 20px;
+    p { margin: 8px 0; line-height: 1.5; }
+    code { font-size: 12px; overflow-wrap: anywhere; }
+    td code { display: block; margin-top: 4px; }
+    &__hint { color: #526176; font-size: 13px; }
+    &__controls { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 20px 0 12px; }
+    select { max-width: 100%; min-width: 200px; padding: 10px 12px; border: 1px solid #b8c1cc; border-radius: 6px; background: #fff; color: #243247; }
+    select:focus-visible, input:focus-visible { outline: 3px solid #189eff; outline-offset: 2px; }
+    &__checkbox { display: flex; align-items: baseline; gap: 10px; margin: 16px 0 6px; }
+    &__probe { padding-top: 12px; border-top: 1px solid #dce2e9; }
+    &__table-scroll { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 12px; border-bottom: 1px solid #e2e8ef; vertical-align: top; }
+    th { color: #526176; font-weight: 600; }
+    &__state { display: inline-block; padding: 3px 8px; border-radius: 4px; background: #edf0f4; color: #4f5e73; white-space: nowrap; }
+    &__state--available { background: #def5e8; color: #155d39; }
+    &__state--blocked, &__state--missing { background: #fff0cf; color: #78551a; }
+    &__state--error { background: #fce3e4; color: #9c2531; }
+    &__policy { margin: 16px 0; summary { cursor: pointer; font-weight: 600; } pre { max-height: 360px; overflow: auto; margin-top: 12px; padding: 12px; background: #f4f6f8; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; } }
+    &__metrics { display: flex; flex-wrap: wrap; gap: 8px 28px; }
+    &__sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+    @media (max-width: 640px) { &__controls { align-items: stretch; flex-direction: column; } th, td { padding: 10px 8px; } }
+}
