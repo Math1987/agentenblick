@@ -5,10 +5,10 @@
     </template>
 
     <template #smart-bar-actions>
-        <mt-button :disabled="isLoading || !canView" @click="loadData">
+        <mt-button v-if="activeTab !== 'benchmark'" :disabled="isLoading || !canView" @click="loadData">
             {{ $t('agentenblick.actions.refresh') }}
         </mt-button>
-        <mt-button variant="primary" :disabled="isLoading || !canView || isExporting" :is-loading="isExporting" @click="exportCsv">
+        <mt-button v-if="activeTab !== 'benchmark'" variant="primary" :disabled="isLoading || !canView || isExporting" :is-loading="isExporting" @click="exportCsv">
             {{ $t('agentenblick.actions.export') }}
         </mt-button>
     </template>
@@ -22,7 +22,7 @@
             </mt-banner>
 
             <template v-else>
-                <div class="agentenblick-index__filters">
+                <div v-if="activeTab !== 'benchmark'" class="agentenblick-index__filters">
                     <mt-select
                         name="agentenblick-period"
                         :model-value="days"
@@ -54,7 +54,7 @@
                         :tabindex="activeTab === 'overview' ? 0 : -1"
                         @click="selectTab('overview')"
                         @keydown.right.prevent="selectTab('agents', true)"
-                        @keydown.left.prevent="selectTab('agents', true)"
+                        @keydown.left.prevent="selectTab('benchmark', true)"
                     >{{ $t('agentenblick.tabs.overview') }}</button>
                     <button
                         id="agentenblick-agents-tab"
@@ -65,12 +65,28 @@
                         :aria-selected="activeTab === 'agents'"
                         :tabindex="activeTab === 'agents' ? 0 : -1"
                         @click="selectTab('agents')"
-                        @keydown.right.prevent="selectTab('overview', true)"
+                        @keydown.right.prevent="selectTab('benchmark', true)"
                         @keydown.left.prevent="selectTab('overview', true)"
                     >{{ $t('agentenblick.tabs.agents') }}</button>
+                    <button
+                        id="agentenblick-benchmark-tab"
+                        ref="benchmarkTab"
+                        type="button"
+                        role="tab"
+                        aria-controls="agentenblick-benchmark-panel"
+                        :aria-selected="activeTab === 'benchmark'"
+                        :tabindex="activeTab === 'benchmark' ? 0 : -1"
+                        @click="selectTab('benchmark')"
+                        @keydown.right.prevent="selectTab('overview', true)"
+                        @keydown.left.prevent="selectTab('agents', true)"
+                    >{{ $t('agentenblick.tabs.benchmark') }}</button>
                 </div>
 
-                <div v-if="isLoading" class="agentenblick-index__loading" role="status">
+                <section v-if="activeTab === 'benchmark'" id="agentenblick-benchmark-panel" role="tabpanel" aria-labelledby="agentenblick-benchmark-tab">
+                    <agentenblick-benchmark />
+                </section>
+
+                <div v-else-if="isLoading" class="agentenblick-index__loading" role="status">
                     <sw-loader />
                     <span class="agentenblick-index__sr-only">{{ $t('agentenblick.general.loading') }}</span>
                 </div>

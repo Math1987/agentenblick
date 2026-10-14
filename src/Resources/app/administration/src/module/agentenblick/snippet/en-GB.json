@@ -17,7 +17,11 @@
       "next": "Next",
       "cancel": "Cancel"
     },
-    "tabs": { "overview": "Overview", "agents": "Agents" },
+    "tabs": {
+      "overview": "Overview",
+      "agents": "Agents",
+      "benchmark": "Benchmark"
+    },
     "filters": {
       "period": "Period",
       "lastDays": "Last {days} days",
@@ -106,7 +110,100 @@
       "export": "The CSV could not be downloaded. Try again or check your viewing permission.",
       "approve": "The IP ranges could not be approved. Check your editor permission and try again.",
       "permission": "You do not have permission to view Agentenblick."
+    },
+    "benchmark": {
+      "title": "Contribute to the Shopware benchmark",
+      "description": "Participation is optional and disabled by default. Review the exact weekly payload below before enabling automatic submission to the Aithos benchmark.",
+      "loading": "Loading local benchmark settings…",
+      "demo": "Demonstration mode: synthetic data is kept separate from merchant benchmark submissions.",
+      "offline": "Offline mode is active. No benchmark network requests are made. Previews and the local journal remain available.",
+      "withdrawalPending": "Participation has stopped locally. Server-side deletion is pending and will be retried when network access is available.",
+      "privacy": {
+        "aggregate": "Only completed ISO-week aggregates are sent: percentage shares rounded to 0.1 point, broad segments and a random installation identifier. Sales-channel keys are pseudonymised in the transmitted payload.",
+        "excluded": "No raw IP, visitor or session identifier, shop domain, request body, query string, order identifier or individual request is sent.",
+        "threshold": "A denominator below 10 sessions suppresses that shop metric. A published benchmark metric requires at least 5 eligible installations; several channels from one shop count as one contributor.",
+        "retention": "Submissions are retained for 13 months. Participation can be withdrawn; this stops future submissions and requests deletion of that installation’s retained submissions."
+      },
+      "methodology": "Read the public methodology and privacy rules",
+      "installation": "Random installation ID",
+      "consentAt": "Consent recorded (UTC)",
+      "consent": "I have reviewed the payload preview and the methodology. I agree to send the described weekly aggregates to the Aithos benchmark under consent version 1. I can withdraw participation at any time.",
+      "enable": "Enable weekly participation",
+      "send": "Send pending weekly aggregates",
+      "disable": "Withdraw participation",
+      "editorRequired": "Editor permission is required to enable participation, send aggregates or withdraw.",
+      "previewTitle": "Exact payload preview",
+      "previewHint": "This preview is generated locally. Opening or refreshing it does not send data to the benchmark.",
+      "previewPrivacy": "The JSON below shows the exact payload bytes, including suppressed values. Local channel identifiers shown in this interface are not transmitted as such.",
+      "period": "ISO week",
+      "noPreview": "There are no completed weeks available for a payload yet.",
+      "channel": "Local sales channel",
+      "exactJson": "Exact JSON payload",
+      "refreshLocal": "Refresh local preview and journal",
+      "historyTitle": "Submission journal",
+      "historyHint": "Inspect the exact payload and its hash for each local submission. Dates use UTC.",
+      "noHistory": "No submissions have been prepared or sent yet.",
+      "status": "Status",
+      "sentAt": "Sent (UTC)",
+      "inspect": "Inspect payload",
+      "comparisonTitle": "Compare with a published cohort",
+      "comparisonHint": "Published figures use comparable, disjoint cohorts. The median is an installation-level share; quartiles describe the middle half of published values.",
+      "comparisonNetwork": "Fetching the benchmark contacts shopware.aithos.app. This action requires participation to be enabled and offline mode to be off.",
+      "compare": "Fetch published benchmark",
+      "openDashboard": "Open the research dashboard",
+      "insufficient": "No comparable metric can be displayed. It may be unpublished, unavailable, or below the five-installation threshold.",
+      "cohort": "Published cohort",
+      "median": "Agent share: median",
+      "quartiles": "25th–75th percentile",
+      "installations": "Eligible installations",
+      "withdrawTitle": "Withdraw benchmark participation",
+      "withdrawText": "Stop future submissions and request deletion of retained submissions for this installation? Local traffic measurement continues.",
+      "withdrawOffline": "Offline mode prevents the deletion request from being sent now. The request will remain pending until network access is available.",
+      "confirmWithdrawal": "Stop participation and request deletion",
+      "state": {
+        "withdrawal_pending": "Deletion pending",
+        "offline": "Offline",
+        "ready": "Participation enabled",
+        "disabled": "Participation disabled",
+        "registration_pending": "Registration pending",
+        "test_identity_conflict": "Real identity blocked in test"
+      },
+      "submission": {
+        "draft": "Local draft",
+        "pending": "Awaiting submission",
+        "sent": "Sent",
+        "failed": "Failed; awaiting retry",
+        "unknown": "Unknown status",
+        "rejected": "Rejected; inspect the payload",
+        "expired": "Expired; outside the 13-week submission window",
+        "withdrawn": "Withdrawn; retained in local journal"
+      },
+      "success": {
+        "enable": "Weekly benchmark participation is enabled.",
+        "disable": "Participation is stopped. Check the status of the deletion request.",
+        "send": "Pending aggregates have been processed. Check the submission journal for each result."
+      },
+      "error": {
+        "load": "The local benchmark settings could not be loaded. Please try again.",
+        "update": "The action could not be confirmed. Refresh the local status and check your editor permission before trying again.",
+        "compare": "The benchmark could not be retrieved. Please try again later.",
+        "send": "The submission could not be completed. Inspect its status in the local journal."
+      },
+      "localShare": "This shop: agent share by channel",
+      "comparisonReason": {
+        "demo_dashboard_authentication_required": "Demonstration benchmarks require partner authentication. Open the research dashboard to view synthetic cohorts.",
+        "offline": "Offline mode prevents fetching the benchmark.",
+        "disabled": "Enable participation before fetching a comparison.",
+        "withdrawal_pending": "A comparison is unavailable while the withdrawal request is pending."
+      },
+      "identityConflict": "This test environment contains an existing real installation identity. Activation, submissions, comparisons and server deletion are blocked. Use a separate demonstration identity; do not reuse the production identity from a cloned database."
     }
   },
-  "sw-privileges": { "permissions": { "agentenblick": { "label": "Agentenblick" } } }
+  "sw-privileges": {
+    "permissions": {
+      "agentenblick": {
+        "label": "Agentenblick"
+      }
+    }
+  }
 }
