@@ -6,13 +6,14 @@
            data-success-message="{{ 'agentenblick.webMcp.success'|trans }}"
            data-error-message="{{ 'agentenblick.webMcp.error'|trans }}"
            data-invalid-message="{{ 'agentenblick.webMcp.invalid'|trans }}">
-        <details class="border rounded p-3">
-            <summary>{{ 'agentenblick.webMcp.title'|trans }}</summary>
-            <p class="mt-3" id="agentenblick-declaration-explanation">{{ 'agentenblick.webMcp.explanation'|trans }}</p>
+        <div class="border rounded p-3">
+            <h2 class="h5">{{ 'agentenblick.webMcp.title'|trans }}</h2>
+            <p class="mt-3" id="agentenblick-declaration-invitation">{{ 'agentenblick.webMcp.invitation'|trans }}</p>
+            <p id="agentenblick-declaration-explanation">{{ 'agentenblick.webMcp.explanation'|trans }}</p>
             <form action="{{ path('frontend.agentenblick.webmcp.declare') }}"
                   method="post"
                   data-agentenblick-declaration-form
-                  aria-describedby="agentenblick-declaration-explanation">
+                  aria-describedby="agentenblick-declaration-invitation agentenblick-declaration-explanation">
                 <div class="row g-3 align-items-end">
                     <div class="col-md-4">
                         <label class="form-label" for="agentenblick-declaration-service">{{ 'agentenblick.webMcp.service'|trans }}</label>
@@ -43,7 +44,7 @@
                 </div>
                 <noscript><p>{{ 'agentenblick.webMcp.noScript'|trans }}</p></noscript>
             </form>
-        </details>
+        </div>
         <p class="mt-2 mb-0" data-agentenblick-declaration-status role="status" aria-live="polite" hidden></p>
     </aside>
 {% endblock %}

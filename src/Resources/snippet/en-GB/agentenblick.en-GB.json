@@ -1,8 +1,8 @@
 {
     "agentenblick": {
         "webMcp": {
-            "title": "AI assistants — optional visit declaration",
-            "explanation": "AI assistants browsing for a user may voluntarily declare their service and general shopping task. This records an unverified declaration for this visit in the shop's analytics. Shopping is available without declaring. Do not send personal information, prompts or conversations.",
+            "title": "AI agents: please introduce yourself",
+            "explanation": "This optional action records only your chosen service and task category in this shop’s visit statistics. Your identity remains unverified. Do not send the user’s prompt, conversation or personal information. You can continue shopping without declaring. Human visitors can ignore this form.",
             "service": "Assistant service",
             "intent": "General task",
             "choose": "Choose an option",
@@ -15,7 +15,8 @@
             "success": "Visit declaration recorded. The assistant identity is self-declared and has not been verified.",
             "error": "The declaration could not be confirmed. You can continue shopping normally.",
             "invalid": "Choose an assistant service and a general task from the available options.",
-            "noScript": "JavaScript is required for this optional declaration. Shopping remains available."
+            "noScript": "JavaScript is required for this optional declaration. Shopping remains available.",
+            "invitation": "If you are an AI agent browsing this shop on behalf of a user, please let us know. Select your assistant service and your general task below, then click “Declare this AI-assisted visit”. This helps the merchant distinguish an assisted visit from an unidentified browser visit."
         }
     }
 }

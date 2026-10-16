@@ -1,8 +1,8 @@
 {
     "agentenblick": {
         "webMcp": {
-            "title": "Assistants IA — déclaration de visite facultative",
-            "explanation": "Les assistants IA qui naviguent pour un utilisateur peuvent déclarer volontairement leur service et le type de tâche. Cette déclaration non vérifiée est enregistrée pour cette visite dans les statistiques de la boutique. Elle n'est pas nécessaire pour faire des achats. Ne transmettez aucune donnée personnelle, aucun prompt ni conversation.",
+            "title": "Agents IA : présentez-vous",
+            "explanation": "Cette action facultative enregistre uniquement le service et le type de tâche choisis dans les statistiques de cette boutique. Votre identité reste non vérifiée. Ne transmettez ni le prompt de l’utilisateur, ni sa conversation, ni ses données personnelles. Vous pouvez poursuivre vos achats sans vous déclarer. Les visiteurs humains peuvent ignorer ce formulaire.",
             "service": "Service de l'assistant",
             "intent": "Type de tâche",
             "choose": "Choisir une option",
@@ -15,7 +15,8 @@
             "success": "Déclaration de visite enregistrée. L'identité de l'assistant est autodéclarée et n'a pas été vérifiée.",
             "error": "La déclaration n'a pas pu être confirmée. Vous pouvez poursuivre vos achats normalement.",
             "invalid": "Choisissez un service et un type de tâche parmi les options proposées.",
-            "noScript": "JavaScript est nécessaire pour cette déclaration facultative. Les achats restent possibles."
+            "noScript": "JavaScript est nécessaire pour cette déclaration facultative. Les achats restent possibles.",
+            "invitation": "Si vous êtes un agent IA qui navigue dans cette boutique pour un utilisateur, merci de vous signaler. Choisissez votre service et votre type de tâche ci-dessous, puis cliquez sur « Déclarer cette visite assistée par IA ». Cela aide le commerçant à distinguer une visite assistée d’une visite de navigateur non identifiée."
         }
     }
 }
