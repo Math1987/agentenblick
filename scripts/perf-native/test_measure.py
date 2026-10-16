@@ -1,0 +1,305 @@
+import contextlib
+import importlib.util
+import io
+import json
+import os
+from pathlib import Path
+import tempfile
+import types
+import unittest
+from unittest.mock import patch
+
+SPEC = importlib.util.spec_from_file_location('native_measure', Path(__file__).with_name('measure.py'))
+measure = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(measure)
+STOREFRONT = b'<html><div class="filter-range-dropdown filter-panel-item-dropdown dropdown-menu"\n id="filter-price-12345"><span>24.00 EUR</span><b id="other-7">Demo shirt</b></div></html>'
+
+
+@contextlib.contextmanager
+def restrictive_umask():
+    previous = os.umask(0o077)
+    try:
+        yield
+    finally:
+        os.umask(previous)
+
+
+class NativeHarnessTest(unittest.TestCase):
+    def test_nearest_rank_percentile(self):
+        result = measure.stats(list(range(100, 0, -1)))
+        self.assertEqual(result, {'count': 100, 'medianMs': 50.5, 'p95Ms': 95, 'maxMs': 100})
+        self.assertIsNone(measure.stats([]))
+
+    def test_request_is_pinned_to_loopback_with_validated_tls_and_no_redirect(self):
+        calls = []
+        def command(argv, **_kwargs):
+            calls.append(argv)
+            marker = argv[argv.index('--write-out') + 1].split('%{http_code}')[0]
+            return STOREFRONT + marker.encode() + b'200 0.012'
+        with patch.object(measure, 'command', command):
+            result = measure.request({'token': 'fixture-capability'}, 0, 2, 1, 4)
+        argv = calls[0]
+        self.assertEqual(argv[argv.index('--resolve') + 1], 'demo-shop.aithos.app:443:127.0.0.1')
+        self.assertEqual(argv[argv.index('--max-redirs') + 1], '0')
+        self.assertEqual(argv[-1], 'https://demo-shop.aithos.app/')
+        self.assertNotIn('--insecure', argv)
+        self.assertNotIn('--location', argv)
+        self.assertEqual(result['clientMs'], 12)
+        self.assertEqual(result['bodySha256'], measure.digest(STOREFRONT))
+        self.assertEqual(result['bodyBytes'], len(STOREFRONT))
+        self.assertEqual(result['bodyNormalizationCount'], 1)
+        self.assertNotIn('fixture-capability', json.dumps(result))
+
+    def test_neutral_probe_requires_a_matching_real_fpm_acknowledgement(self):
+        def command(argv, **_kwargs):
+            marker = argv[argv.index('--write-out') + 1].split('%{http_code}')[0]
+            body = json.dumps({'sample': 1, 'delayMs': 2000, 'fpm': False}).encode()
+            return body + marker.encode() + b'200 0.02'
+        with patch.object(measure, 'command', command), self.assertRaises(measure.Failure):
+            measure.request({'token': 'fixture', 'probePath': 'fixture'}, 0, 2, 0, 1, 2000)
+
+    def test_kernel_probe_uses_the_actual_storefront_not_the_neutral_endpoint(self):
+        def command(argv, **_kwargs):
+            self.assertEqual(argv[-1], 'https://demo-shop.aithos.app/')
+            self.assertIn('X-Agentenblick-Native-Delay: 2000', argv)
+            marker = argv[argv.index('--write-out') + 1].split('%{http_code}')[0]
+            return STOREFRONT + marker.encode() + b'200 0.02'
+        with patch.object(measure, 'command', command):
+            result = measure.request({'token': 'fixture'}, 0, 2, 0, 1, 2000, kernel=True)
+        self.assertEqual(result['status'], 200)
+
+    def test_canonicalization_only_masks_one_exact_random_price_filter_id(self):
+        expected, count = measure.canonical_storefront(STOREFRONT)
+        changed = STOREFRONT.replace(b'filter-price-12345', b'filter-price-9876543210')
+        self.assertNotEqual(measure.digest(STOREFRONT), measure.digest(changed))
+        self.assertEqual(measure.canonical_storefront(changed), (expected, count))
+        self.assertEqual(count, 1)
+        self.assertIn(b'id="other-7"', expected)
+        for original, replacement in [(b'24.00', b'25.00'), (b'Demo shirt', b'Another shirt'), (b'other-7', b'other-8')]:
+            canonical, count = measure.canonical_storefront(STOREFRONT.replace(original, replacement))
+            self.assertNotEqual(measure.digest(canonical), measure.digest(expected))
+            self.assertEqual(count, 1)
+
+    def test_canonicalization_rejects_missing_duplicate_or_changed_attribute_context(self):
+        for body in [b'<html>No filter</html>', STOREFRONT + STOREFRONT,
+                     STOREFRONT.replace(b'dropdown-menu', b'collapse'),
+                     STOREFRONT.replace(b'filter-price-12345', b'filter-price-secret'),
+                     STOREFRONT + b'<div id="filter-price-8">Unrelated</div>',
+                     STOREFRONT.replace(b'id="filter-price-12345">', b'id="filter-price-12345" data-other="x">')]:
+            with self.assertRaisesRegex(measure.Failure, 'normalization refused'):
+                measure.canonical_storefront(body)
+
+    def test_shutdown_wait_ignores_an_incomplete_final_line(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            row = {'sample': 1, 'fpm': 1, 'php_version_id': 80300, 'open_timers': 0, 'post_ns': 123}
+            output = root / 'samples.jsonl'
+            output.write_text(json.dumps(row)[:-1])
+            def finish(_seconds):
+                output.write_text(json.dumps(row) + '\n')
+            with patch.object(measure.time, 'sleep', finish):
+                self.assertEqual(measure.shutdown_row(root, 1), row)
+
+    def test_non_numeric_and_duplicate_shutdown_rows_fail_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / 'samples.jsonl'
+            row = {'sample': 1, 'fpm': 1, 'php_version_id': 80300, 'open_timers': 0}
+            for contents in [json.dumps({**row, 'visitor': 'forbidden'}) + '\n', (json.dumps(row) + '\n') * 2]:
+                output.write_text(contents)
+                with self.assertRaises(measure.Failure):
+                    measure.shutdown_row(root, 1)
+
+    def test_target_allowlist_rejects_escape_and_symlink(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with self.assertRaises(measure.Failure):
+                measure.target_path(root, '../another-shop/index.php')
+            (root / 'public').mkdir()
+            (root / 'outside.php').write_text('fixture')
+            (root / 'public/index.php').symlink_to(root / 'outside.php')
+            with self.assertRaises(measure.Failure):
+                measure.target_path(root, 'public/index.php')
+
+    def test_shared_plugin_layout_keeps_exact_physical_targets(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            root = base / 'releases/fixture'
+            shared = base / 'shared/custom/plugins'
+            (root / 'public').mkdir(parents=True)
+            (root / 'public/index.php').write_text('fixture')
+            (root / 'custom').mkdir()
+            (root / 'custom/plugins').symlink_to(shared)
+            relative = measure.PLUGIN + '/src/Capture/ObservationSubscriber.php'
+            target = base / 'shared' / relative
+            target.parent.mkdir(parents=True)
+            target.write_text('fixture')
+            with patch.object(measure, 'BASE', base):
+                self.assertEqual(measure.target_path(root, relative), target)
+                self.assertEqual(measure.target_path(root, 'public/index.php'), root / 'public/index.php')
+                replacement = base / 'unrelated/plugins'
+                outside = replacement / 'AithosAgentenblick/src/Capture/ObservationSubscriber.php'
+                outside.parent.mkdir(parents=True)
+                outside.write_text('another deployment')
+                (root / 'custom/plugins').unlink()
+                (root / 'custom/plugins').symlink_to(replacement)
+                with self.assertRaises(measure.Failure):
+                    measure.target_path(root, relative)
+
+    def test_changed_current_release_refuses_restoration_before_any_write(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, manifest, target = self.fixture_manifest(directory)
+            current = Path(directory) / 'current'
+            current.symlink_to(Path(directory))
+            manifest['appPath'] = str(current)
+            replacement = Path(directory) / 'another-release'
+            replacement.mkdir()
+            current.unlink()
+            current.symlink_to(replacement)
+            with patch.object(measure, 'atomic_write') as write, patch.object(measure, 'reload_fpm') as reload_fpm:
+                result = measure.restore(path, manifest, Path(directory))
+            self.assertFalse(result['sourceHashesMatch'])
+            self.assertEqual(target.read_bytes(), b'instrumented')
+            write.assert_not_called()
+            reload_fpm.assert_not_called()
+
+    def test_preparation_under_umask077_keeps_worker_access_and_private_backups(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve() / 'app'
+            root.mkdir()
+            (root / 'public').mkdir()
+            source = root / 'public/index.php'
+            original = b'<?php echo "fixture";'
+            source.write_bytes(original)
+            state = Path(directory) / 'state'
+            state.mkdir()
+            def command(argv, **_kwargs):
+                if str(argv[1]).endswith('instrument.php'):
+                    data = json.loads(Path(argv[2]).read_text())
+                    for target in data['targets']:
+                        Path(target['prepared']).write_bytes(original + b' // prepared')
+                return b''
+            args = types.SimpleNamespace(app_root=str(root), database='fixture_db', phase='terminate')
+            stream = io.StringIO()
+            with patch.object(measure, 'app_root', return_value=root), patch.object(measure, 'preflight', return_value={}), \
+                 patch.object(measure, 'STATE', state), patch.object(measure, 'command', command), \
+                 patch.object(measure.os, 'chown'), patch.object(measure.pwd, 'getpwnam', return_value=types.SimpleNamespace(pw_uid=33, pw_gid=33)), \
+                 contextlib.redirect_stdout(stream), restrictive_umask():
+                measure.prepare(args)
+            result = json.loads(stream.getvalue())
+            manifest = json.loads(Path(result['prepared']).read_text())
+            self.assertFalse(result['runtimeModified'])
+            self.assertEqual(source.read_bytes(), original)
+            self.assertEqual(manifest['state'], 'prepared')
+            self.assertEqual(Path(manifest['targets'][0]['backup']).read_bytes(), original)
+            self.assertNotIn(manifest['token'], stream.getvalue())
+            run = Path(result['prepared']).parent
+            for relative, mode in [('.', 0o710), ('backups', 0o700), ('prepared', 0o700),
+                                   ('manifest.json', 0o600), ('instrument-input.json', 0o600),
+                                   ('probe.php', 0o640), ('samples.jsonl', 0o600),
+                                   ('backups/0.php', 0o600), ('prepared/0.php', 0o600)]:
+                self.assertEqual((run / relative).stat().st_mode & 0o777, mode, relative)
+
+    def fixture_manifest(self, directory, current=b'instrumented'):
+        root = Path(directory).resolve()
+        (root / 'public').mkdir()
+        target = root / 'public/index.php'
+        backup = root / 'backup.php'
+        target.write_bytes(current)
+        backup.write_bytes(b'original')
+        entry = {'path': str(target), 'relative': 'public/index.php', 'backup': str(backup),
+                 'originalSha256': measure.digest(b'original'), 'instrumentedSha256': measure.digest(b'instrumented'),
+                 'mode': 0o644, 'uid': os.getuid(), 'gid': os.getgid()}
+        return root / 'manifest.json', {'targets': [entry], 'appPath': str(root), 'database': 'fixture_db', 'originalPluginActive': True}, target
+
+    def test_restoration_refuses_to_overwrite_an_external_deployment(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, manifest, target = self.fixture_manifest(directory, b'another-deployment')
+            with patch.object(measure, 'reload_fpm') as reload_fpm:
+                result = measure.restore(path, manifest, Path(directory))
+            self.assertFalse(result['sourceHashesMatch'])
+            self.assertEqual(target.read_bytes(), b'another-deployment')
+            reload_fpm.assert_not_called()
+            self.assertEqual(json.loads(path.read_text())['state'], 'restoration_incomplete')
+
+    def test_restoration_is_idempotent_and_preserves_original_activation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, manifest, target = self.fixture_manifest(directory)
+            with patch.object(measure, 'bridge', return_value={'pluginActive': True}), \
+                 patch.object(measure, 'reload_fpm'), patch.object(measure.os, 'chown'), \
+                 patch.object(measure, 'plugin_state') as plugin_state:
+                for _attempt in range(2):
+                    result = measure.restore(path, manifest, Path(directory))
+                    self.assertTrue(result['sourceHashesMatch'])
+                    self.assertTrue(result['pluginActiveRestored'])
+                    self.assertEqual(target.read_bytes(), b'original')
+                plugin_state.assert_not_called()
+
+    def test_kernel_gate_separates_worker_timing_from_required_canonical_body_equivalence(self):
+        for valid_delay, same_body in [(True, True), (False, True), (True, False)]:
+            with self.subTest(valid_delay=valid_delay, same_body=same_body), tempfile.TemporaryDirectory() as directory:
+                path, manifest, _target = self.fixture_manifest(directory, b'original')
+                manifest.update({'state': 'prepared', 'phase': 'kernel-terminate', 'token': 'fixture'})
+                prepared = Path(directory) / 'prepared.php'
+                prepared.write_bytes(b'instrumented')
+                manifest['targets'][0]['prepared'] = str(prepared)
+                def row(_directory, sample):
+                    delayed = sample >= 4 and sample % 2 == 1
+                    ns = 2000000000 if delayed and valid_delay else 0
+                    return {'post_calls': 1, 'post_ns': ns + 100, 'kernel_delay_ns': ns}
+                def request(_manifest, _stage, _temperature, _population, sample, _delay, **_kwargs):
+                    return {'status': 200, 'clientMs': 25, 'bodyBytes': 100, 'bodySha256': str(sample),
+                            'bodyCanonicalBytes': 100, 'bodyCanonicalSha256': 'fixture' if same_body else str(sample),
+                            'bodyNormalizationCount': 1}
+                with patch.object(measure, 'preflight', return_value={}), patch.object(measure, 'reload_fpm'), \
+                     patch.object(measure, 'bridge', side_effect=[{}, {'none': 14}]), \
+                     patch.object(measure, 'request', side_effect=request), \
+                     patch.object(measure, 'shutdown_row', side_effect=row), patch.object(measure.os, 'chown'), \
+                     patch.object(measure.time, 'sleep'), patch.object(measure.signal, 'signal'), \
+                     patch.object(measure, 'restore', return_value={'sourceHashesMatch': True, 'pluginActiveRestored': True, 'errors': []}), \
+                     contextlib.redirect_stdout(io.StringIO()):
+                    status = measure.measure(path, manifest, Path(directory))
+                report = json.loads((Path(directory) / 'report.json').read_text())
+                self.assertEqual(status, 0 if valid_delay and same_body else 1)
+                self.assertEqual(report['kernelTerminateReleasedClient'], valid_delay)
+                self.assertEqual(report['identicalCanonicalStatusBody'], same_body)
+                self.assertFalse(report['identicalMeasuredStatusBody'])
+                self.assertEqual(len(report['warmups']), 4)
+                self.assertEqual(len(report['samples']), 10)
+                self.assertFalse(report['qualifiedProductionBudgets'])
+
+    def test_no_execution_on_the_developer_mac(self):
+        with patch.object(measure.sys, 'platform', 'darwin'), patch.object(measure.sys, 'argv', ['measure.py', 'preflight', '--database=fixture_db']), self.assertRaises(measure.Failure):
+            measure.main()
+
+    def test_main_under_umask077_creates_traversable_state_before_preparation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory) / 'nested/private-state'
+            original_stat = Path.stat
+            def stat(path, **kwargs):
+                actual = original_stat(path, **kwargs)
+                if path == state:
+                    return types.SimpleNamespace(st_uid=0, st_mode=actual.st_mode)
+                return actual
+            def prepare(_args):
+                self.assertTrue(state.is_dir())
+                self.assertTrue((state / 'active.lock').exists())
+                self.assertEqual(state.stat().st_mode & 0o777, 0o711)
+            with patch.object(measure.sys, 'platform', 'linux'), patch.object(measure.os, 'geteuid', return_value=0), \
+                 patch.object(measure.sys, 'argv', ['measure.py', 'prepare', '--database=fixture_db', '--phase=terminate', '--ack-isolated-bench']), \
+                 patch.object(measure, 'STATE', state), patch.object(Path, 'stat', stat), \
+                 patch.object(measure, 'prepare', side_effect=prepare) as prepared, restrictive_umask():
+                self.assertEqual(measure.main(), 0)
+                prepared.assert_called_once()
+
+    def test_inaccessible_bridge_fails_before_php_or_database(self):
+        with patch.object(measure.subprocess, 'run', return_value=types.SimpleNamespace(returncode=1)) as read, \
+             patch.object(measure, 'command') as command:
+            with self.assertRaisesRegex(measure.Failure, 'www-data cannot read the native bridge'):
+                measure.bridge(Path('/fixture'), 'fixture_db')
+        self.assertEqual(read.call_args.args[0], ['runuser', '-u', 'www-data', '--', 'test', '-r', str(measure.HERE / 'bridge.php')])
+        command.assert_not_called()
+
+
+if __name__ == '__main__':
+    unittest.main()

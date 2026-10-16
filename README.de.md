@@ -1,6 +1,6 @@
 # Agentenblick
 
-Agentenblick misst serverseitig automatisierte Zugriffe auf selbst gehostete Shopware-Shops. Es ergänzt Agentic Commerce. Technischer Pluginname: **AithosAgentenblick**, Lizenz: MIT. Version 0.1.0 ist eine frühe Demoversion; eine Freigabe durch den Shopware Store liegt nicht vor. Die Produktionsqualifikation steht wegen des dokumentierten Leistungsziels nach der Antwort noch aus.
+Agentenblick misst serverseitig automatisierte Zugriffe auf selbst gehostete Shopware-Shops. Es ergänzt Agentic Commerce. Technischer Pluginname: **AithosAgentenblick**, Lizenz: MIT. Version 0.1.1 ist eine frühe Demoversion; eine Freigabe durch den Shopware Store liegt nicht vor. Die Produktionsqualifikation steht wegen des dokumentierten Leistungsziels nach der Antwort noch aus.
 
 ## Funktionen und Grenzen
 
@@ -43,7 +43,9 @@ Beobachtete Widersprüche zeigen Status, passende öffentliche Regel und Grund: 
 
 Die Teilnahme ist standardmäßig aus. Vor dem Aktivieren zeigt die Vorschau die exakten zu sendenden JSON-Daten. Einwilligungsversion 2 muss ausdrücklich bestätigt werden. Übermittelt werden gerundete Wochenanteile und grobe Shopmerkmale mit zufälligen Installations-/Kanal-IDs; keine Besucher-, Bestell-, Warenkorb-, Domain- oder URL-Daten und keine genauen Verkehrszahlen.
 
-Unter zehn lokalen Sitzungen wird die betreffende Kennzahl unterdrückt. Veröffentlichte Vergleiche benötigen fünf verschiedene geeignete Installationen je Kennzahl. Demodaten werden getrennt geführt. [Benchmark-Demo](https://shopware.aithos.app) — Anmeldung erforderlich.
+Unter zehn lokalen Sitzungen wird die betreffende Kennzahl unterdrückt. Veröffentlichte Vergleiche benötigen fünf verschiedene geeignete Installationen je Kennzahl. Demodaten nutzen ausschließlich [demo.shopware.aithos.app](https://demo.shopware.aithos.app) mit eigener Anmeldung; echte Beiträge bleiben auf `https://shopware.aithos.app`. Der bei der Vorbereitung gespeicherte Installationsmodus bestimmt Registrierung, Meldungen und Widerruf. Eine spätere Änderung von `benchmarkDemo` verschiebt keine Identität. Frei wählbare Ziele und Weiterleitungen sind ausgeschlossen.
+
+Alte Demoidentitäten ohne `transportVersion=2` werden mit `transport_migration_required` für Netzwerkaufrufe gesperrt. Lokales Stoppen bleibt möglich; ausstehender Widerruf und Schlüssel bleiben erhalten. Administration oder Support müssen die Daten beim bisherigen Dienst ausdrücklich klären, da dessen Produktions-API Demozugriffe ablehnen kann. Erst danach dürfen alte Identität und Entwürfe stillgelegt und eine neue Demoidentität mit erneuter Einwilligung vorbereitet werden. Keine automatische Übertragung; Modus oder Marker nicht manuell ändern. Bestehende echte Identitäten bleiben unverändert.
 
 Widerruf stoppt neue Übermittlungen sofort. Bei fehlender Verbindung bleibt die entfernte Löschung ausstehend. Eine vollständige lokale Löschung ist dann blockiert, um den nötigen Schlüssel zu erhalten. Nach einer Deinstallation mit Datenerhalt müssen Plugin und Aufgaben für einen erneuten Löschversuch wieder installiert/aktiviert werden. Dieses Verhalten muss vor einer Store-Einreichung angepasst werden.
 

@@ -15,6 +15,7 @@ use Aithos\Agentenblick\Benchmark\Transport;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Tools\DsnParser;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpClient\MockHttpClient;
@@ -134,8 +135,10 @@ final class BenchmarkTest extends TestCase
         self::assertSame('withdrawn', $manager->history()['items'][0]['status']);
     }
 
-    public function testOfflineMakesNoRequestsIncludingConsentAndPendingWithdrawal(): void
+    #[DataProvider('modes')]
+    public function testOfflineMakesNoRequestsIncludingConsentAndPendingWithdrawal(bool $demo): void
     {
+        $this->config('AithosAgentenblick.config.benchmarkDemo', $demo);
         $manager = $this->manager(static function (): never {
             self::fail('Offline mode must make zero network requests.');
         });
@@ -148,6 +151,157 @@ final class BenchmarkTest extends TestCase
         self::assertTrue($manager->disable()['pendingWithdrawal']);
         self::assertSame('offline', $manager->run()['status']);
         self::assertNotSame('', $this->state->read()['secretCipher']);
+    }
+
+    #[DataProvider('modes')]
+    public function testEveryOperationUsesThePreparedModeDespiteConfigurationChanges(bool $demo): void
+    {
+        $this->config('AithosAgentenblick.config.benchmarkDemo', $demo);
+        $origin = $demo ? 'https://demo.shopware.aithos.app' : 'https://shopware.aithos.app';
+        $calls = [];
+        $deleteAttempts = 0;
+        $manager = $this->manager(static function (string $method, string $url, array $options) use ($demo, $origin, &$calls, &$deleteAttempts): MockResponse {
+            self::assertStringStartsWith($origin . '/v1/', $url);
+            $calls[] = [$method, $url];
+            if ($method === 'DELETE') {
+                return new MockResponse('', ['http_code' => ++$deleteAttempts === 1 ? 503 : 204]);
+            }
+            $body = json_decode($options['body'], true, 32, JSON_THROW_ON_ERROR);
+            if (str_ends_with($url, '/installations')) {
+                self::assertSame($demo, $body['demo']);
+                return new MockResponse(json_encode(['installationId' => $body['installationId']], JSON_THROW_ON_ERROR), ['http_code' => 201]);
+            }
+            return new MockResponse('{"accepted":true}', ['http_code' => 201]);
+        });
+        $preview = $manager->preview();
+        $identity = $this->state->read();
+        $this->config('AithosAgentenblick.config.benchmarkDemo', !$demo);
+        self::assertTrue($manager->enable('en-GB')['registered']);
+        self::assertSame('sent', $manager->send()['status']);
+        self::assertSame($preview['items'][0]['json'], $manager->history()['items'][0]['json']);
+        if ($demo) {
+            self::assertSame(['available' => false, 'reason' => 'demo_dashboard_authentication_required'], $manager->comparison());
+            self::assertCount(2, $calls);
+        }
+        self::assertTrue($manager->disable()['pendingWithdrawal']);
+        self::assertSame($identity['secretCipher'], $this->state->read()['secretCipher']);
+        self::assertSame('withdrawn', $manager->send()['status']);
+        self::assertSame([
+            ['POST', $origin . '/v1/installations'],
+            ['POST', $origin . '/v1/submissions'],
+            ['DELETE', $origin . '/v1/installations/' . $identity['installationId']],
+            ['DELETE', $origin . '/v1/installations/' . $identity['installationId']],
+        ], $calls);
+    }
+
+    #[DataProvider('modes')]
+    public function testSuccessfulWithdrawalAllowsNewConsentInTheCurrentlyConfiguredMode(bool $demo): void
+    {
+        $this->config('AithosAgentenblick.config.benchmarkDemo', $demo);
+        $oldOrigin = $demo ? Transport::DEMO_ORIGIN : Transport::ORIGIN;
+        $newOrigin = $demo ? Transport::ORIGIN : Transport::DEMO_ORIGIN;
+        $calls = [];
+        $manager = $this->manager(static function (string $method, string $url, array $options) use (&$calls): MockResponse {
+            $body = $method === 'DELETE' ? null : json_decode($options['body'], true, 32, JSON_THROW_ON_ERROR);
+            $calls[] = [$method, $url, $body];
+            if ($method === 'DELETE') {
+                return new MockResponse('', ['http_code' => 204]);
+            }
+            if (str_ends_with($url, '/installations')) {
+                return new MockResponse(json_encode(['installationId' => $body['installationId']], JSON_THROW_ON_ERROR), ['http_code' => 201]);
+            }
+            return new MockResponse('{"accepted":true}', ['http_code' => 201]);
+        });
+        $manager->preview();
+        $original = $this->state->read();
+        self::assertTrue($manager->enable('en-GB')['registered']);
+        $this->config('AithosAgentenblick.config.benchmarkDemo', !$demo);
+        self::assertFalse($manager->disable()['pendingWithdrawal']);
+        self::assertSame('', $this->state->read()['installationId']);
+        self::assertSame('', $this->state->read()['secretCipher']);
+        self::assertSame(!$demo, $manager->status()['demo']);
+        $preview = $manager->preview();
+        $replacement = $this->state->read();
+        self::assertCount(2, $calls, 'Preview of the new identity still requires consent before network.');
+        self::assertNotSame($original['installationId'], $replacement['installationId']);
+        self::assertNotSame($original['secretCipher'], $replacement['secretCipher']);
+        self::assertSame(!$demo, $preview['items'][0]['payload']['demo']);
+        self::assertTrue($manager->enable('de-DE')['registered']);
+        self::assertSame('sent', $manager->send()['status']);
+        self::assertSame([
+            ['POST', $oldOrigin . '/v1/installations'],
+            ['DELETE', $oldOrigin . '/v1/installations/' . $original['installationId']],
+            ['POST', $newOrigin . '/v1/installations'],
+            ['POST', $newOrigin . '/v1/submissions'],
+        ], array_map(static fn (array $call): array => [$call[0], $call[1]], $calls));
+        self::assertSame($demo, $calls[0][2]['demo']);
+        self::assertSame(!$demo, $calls[2][2]['demo']);
+        self::assertSame(!$demo, $calls[3][2]['demo']);
+    }
+
+    public function testLegacyDemoIsStoppedWithoutSendingCredentialsToEitherService(): void
+    {
+        $legacy = $this->state->prepare($this->state->read());
+        $legacy['demo'] = true;
+        $legacy['enabled'] = true;
+        $legacy['registered'] = true;
+        $legacy['consentAt'] = gmdate('c');
+        $legacy['consentVersion'] = Manager::CONSENT_VERSION;
+        unset($legacy['transportVersion']);
+        $this->config(State::KEY, $legacy);
+        $manager = $this->manager(static function (): never {
+            self::fail('Legacy demo credentials must not be sent to either service.');
+        });
+        self::assertSame('transport_migration_required', $manager->status()['reasonCode']);
+        self::assertSame('transport_migration_required', $manager->send()['status']);
+        self::assertFalse($manager->comparison()['available']);
+        foreach ([fn () => $manager->preview(), fn () => $manager->enable('en-GB')] as $operation) {
+            try {
+                $operation();
+                self::fail('Legacy demo state requires an explicit migration.');
+            } catch (\RuntimeException $error) {
+                self::assertSame('benchmark_transport_migration_required', $error->getMessage());
+            }
+        }
+        $disabled = $manager->disable();
+        self::assertFalse($disabled['enabled']);
+        self::assertTrue($disabled['pendingWithdrawal']);
+        self::assertSame('transport_migration_required', $disabled['reasonCode']);
+        self::assertSame($legacy['installationId'], $this->state->read()['installationId']);
+        self::assertSame($legacy['secretCipher'], $this->state->read()['secretCipher']);
+        self::assertSame('transport_migration_required', $manager->run()['status']);
+        $this->config('AithosAgentenblick.config.offline', true);
+        self::assertSame('offline', $manager->send()['status']);
+    }
+
+    public function testLegacyRealIdentityCanStillSubmitAndWithdrawAtItsOriginalOrigin(): void
+    {
+        $legacy = $this->state->prepare($this->state->read());
+        $legacy['enabled'] = true;
+        $legacy['registered'] = true;
+        $legacy['consentAt'] = gmdate('c');
+        $legacy['consentVersion'] = Manager::CONSENT_VERSION;
+        unset($legacy['transportVersion']);
+        $this->config(State::KEY, $legacy);
+        $this->config('AithosAgentenblick.config.benchmarkDemo', true);
+        $calls = [];
+        $manager = $this->manager(static function (string $method, string $url) use (&$calls): MockResponse {
+            self::assertStringStartsWith('https://shopware.aithos.app/v1/', $url);
+            $calls[] = $method;
+            return new MockResponse($method === 'DELETE' ? '' : '{"accepted":true}', ['http_code' => $method === 'DELETE' ? 204 : 201]);
+        });
+        self::assertFalse($manager->status()['demo']);
+        self::assertSame('ready', $manager->status()['reasonCode']);
+        self::assertSame('sent', $manager->send()['status']);
+        self::assertFalse($manager->disable()['pendingWithdrawal']);
+        self::assertSame(['POST', 'DELETE'], $calls);
+    }
+
+    /** @return iterable<string, array{bool}> */
+    public static function modes(): iterable
+    {
+        yield 'production' => [false];
+        yield 'demo' => [true];
     }
 
     public function testRegistrationRetryKeepsPreallocatedIdSecretAndReviewedBytes(): void

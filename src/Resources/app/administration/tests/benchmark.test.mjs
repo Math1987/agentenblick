@@ -140,6 +140,32 @@ test('pending registration does not show a connected state', () => {
     assert.equal(context.stateLabel, 'agentenblick.benchmark.state.registration_pending');
 });
 
+test('a legacy demo shows migration instructions without preview or network actions while local stop remains available', async () => {
+    const { context, calls } = component({ enabled: true, reasonCode: 'transport_migration_required' });
+    await context.load();
+    assert.deepEqual(calls.sort(), ['history', 'status']);
+    assert.equal(context.loadFailed, false);
+    assert.equal(context.stateLabel, 'agentenblick.benchmark.state.transport_migration_required');
+    context.consent = true;
+    calls.length = 0;
+    await context.update('enable');
+    await context.update('send');
+    await context.compare();
+    assert.deepEqual(calls, []);
+    await context.update('disable');
+    assert.equal(calls[0].action, 'disable');
+});
+
+test('dashboard links use only the persisted mode and the two fixed origins', () => {
+    const { context } = component();
+    context.status.demo = false;
+    assert.equal(context.dashboardUrl, 'https://shopware.aithos.app');
+    context.status.demo = true;
+    assert.equal(context.dashboardUrl, 'https://demo.shopware.aithos.app');
+    context.status.demo = 'https://attacker.example';
+    assert.equal(context.dashboardUrl, 'https://shopware.aithos.app');
+});
+
 test('previous consent pauses submissions and comparison until version 2 is explicitly checked', async () => {
     const { context, calls } = component({ enabled: true, reasonCode: 'consent_update_required' });
     context.status.consentVersion = '1';

@@ -174,6 +174,7 @@
         "disabled": "Teilnahme deaktiviert",
         "registration_pending": "Registrierung ausstehend",
         "test_identity_conflict": "Echte Identität im Test gesperrt",
+        "transport_migration_required": "Benchmark-Migration erforderlich",
         "consent_update_required": "Neue Einwilligung erforderlich"
       },
       "submission": {
@@ -205,6 +206,7 @@
         "withdrawal_pending": "Während der ausstehenden Löschanfrage ist kein Vergleich verfügbar."
       },
       "identityConflict": "Diese Testumgebung enthält eine bestehende echte Installationsidentität. Aktivierung, Meldungen, Vergleiche und serverseitige Löschung sind gesperrt. Verwenden Sie eine separate Demonstrationsidentität und nicht die Produktionsidentität einer geklonten Datenbank.",
+      "transportMigrationRequired": "Diese Installationsidentität kann das aktuelle Benchmark-Ziel nicht verwenden. Es werden keine Zugangsdaten oder Meldungen gesendet. Sie können die Teilnahme lokal stoppen. Administration oder Support müssen Daten und ausstehende Löschungen beim bisherigen Dienst klären, bevor die Identität ausdrücklich zurückgesetzt und eine neue Einwilligung geprüft wird. Ändern Sie weder den Modus noch verwenden Sie den bisherigen Schlüssel beim neuen Dienst.",
       "consentUpdate": "Der Benchmark enthält jetzt Verlaufs- und Fehleranteile. Neue Übermittlungen sind bis zur ausdrücklichen Zustimmung zu Einwilligungsversion 2 pausiert. Bereits festgeschriebene Dokumente bleiben unverändert; ein Widerruf ist weiterhin möglich.",
       "renewConsent": "Version 2 akzeptieren und Teilnahme fortsetzen"
     },

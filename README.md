@@ -1,13 +1,13 @@
 # Agentenblick
 
 Server-side AI traffic measurement for self-hosted Shopware. Complements
-Shopware Agentic Commerce. Version 0.1.0 is an early demonstration release.
+Shopware Agentic Commerce. Version 0.1.1 is an early demonstration release.
 
 Technical plugin name: `AithosAgentenblick`. License: MIT.
 
 **Current status:** CLI, native administration, identity checks, journeys, Health
 diagnostics and the opt-in benchmark are implemented on the isolated Shopware bench.
-The benchmark demo is deployed at [shopware.aithos.app](https://shopware.aithos.app).
+The benchmark demonstration uses the dedicated [demo.shopware.aithos.app](https://demo.shopware.aithos.app) service; [shopware.aithos.app](https://shopware.aithos.app) is reserved for real contributions.
 Experimental undeclared-automation detection is disabled by default: the frozen
 evaluation found 11 of 13 scripted profiles, below the 90% target, and no real
 human reference set is available. See the [lot 4 report](https://github.com/Math1987/agentenblick/blob/v0.1.0/handoffs/2026-10-14-lot-4-acceptance.md).
@@ -187,9 +187,26 @@ demo setting `AithosAgentenblick.config.benchmarkDemo=true`, or the explicit
 Set this before the first preview/registration; test catalogues do not enable it.
 An existing real identity is blocked in the test environment, including deletion,
 so a cloned database cannot mutate real contributions. Demo data never enter real comparisons;
-their dashboard requires Cognito sign-in. The fixed destination is
-`https://shopware.aithos.app`, redirects are disabled, each request is bounded to
+their dedicated dashboard requires Cognito sign-in; the plugin does not fetch demo comparisons.
+The installation's persisted mode selects one of two fixed destinations:
+`https://shopware.aithos.app` for real contributions or
+`https://demo.shopware.aithos.app` for demonstrations. Registration, submissions
+and withdrawal all use that same destination. Changing `benchmarkDemo` after an
+identity is prepared does not move it. Arbitrary URLs are not configurable,
+redirects are disabled, each request is bounded to
 six seconds and each response to 64 KiB. No capture subscriber calls this client.
+
+**Legacy demo identities:** identities prepared before the two services were
+separated have no `transportVersion=2` marker. They report
+`transport_migration_required`; no registration, submission, comparison or
+withdrawal request is sent. Disabling still stops participation locally and
+preserves the ID, encrypted secret and pending withdrawal. An administrator or
+support must resolve their contributions on the former shared service first;
+the production API may now refuse demo credentials. Only after that explicit
+resolution may the old local identity and its drafts be retired and a fresh demo
+identity prepared with renewed consent. There is no automatic reset or transfer
+of credentials. Do not manually flip its mode or add the marker to bypass this
+guard. Existing real identities keep their original production destination.
 
 ## Health diagnostics
 

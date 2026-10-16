@@ -33,6 +33,7 @@ Shopware.Component.register('agentenblick-benchmark', {
         },
         stateLabel() {
             if (this.identityConflict) return this.$t('agentenblick.benchmark.state.test_identity_conflict');
+            if (this.transportMigrationRequired) return this.$t('agentenblick.benchmark.state.transport_migration_required');
             if (this.status?.pendingWithdrawal) return this.$t('agentenblick.benchmark.state.withdrawal_pending');
             if (this.status?.offline) return this.$t('agentenblick.benchmark.state.offline');
             if (this.needsConsentUpdate) return this.$t('agentenblick.benchmark.state.consent_update_required');
@@ -42,6 +43,12 @@ Shopware.Component.register('agentenblick-benchmark', {
         identityConflict() {
             return this.status?.reasonCode === 'test_identity_conflict';
         },
+        transportMigrationRequired() {
+            return this.status?.reasonCode === 'transport_migration_required';
+        },
+        dashboardUrl() {
+            return this.status?.demo === true ? 'https://demo.shopware.aithos.app' : 'https://shopware.aithos.app';
+        },
         requiredConsentVersion() { return String(this.status?.requiredConsentVersion || '2'); },
         needsConsentUpdate() {
             return Boolean(this.status?.enabled && (this.status.reasonCode === 'consent_update_required'
@@ -49,13 +56,13 @@ Shopware.Component.register('agentenblick-benchmark', {
         },
         canEnable() {
             return this.canEdit && this.consent && !this.busy && !this.status?.offline
-                && !this.status?.pendingWithdrawal && !this.identityConflict && this.requiredConsentVersion === '2';
+                && !this.status?.pendingWithdrawal && !this.identityConflict && !this.transportMigrationRequired && this.requiredConsentVersion === '2';
         },
         canTransmit() {
-            return this.canEdit && this.status?.enabled && !this.status?.offline && !this.status?.pendingWithdrawal && !this.identityConflict && !this.needsConsentUpdate && !this.busy;
+            return this.canEdit && this.status?.enabled && !this.status?.offline && !this.status?.pendingWithdrawal && !this.identityConflict && !this.transportMigrationRequired && !this.needsConsentUpdate && !this.busy;
         },
         canCompare() {
-            return this.status?.enabled && !this.status?.offline && !this.status?.pendingWithdrawal && !this.identityConflict && !this.needsConsentUpdate && !this.comparing && !this.busy;
+            return this.status?.enabled && !this.status?.offline && !this.status?.pendingWithdrawal && !this.identityConflict && !this.transportMigrationRequired && !this.needsConsentUpdate && !this.comparing && !this.busy;
         },
         comparisonCells() {
             const report = this.comparison?.report;
@@ -89,7 +96,7 @@ Shopware.Component.register('agentenblick-benchmark', {
             try {
                 const status = await this.agentenblickApiService.getBenchmarkStatus();
                 const [preview, history] = await Promise.all([
-                    status.reasonCode === 'test_identity_conflict' ? Promise.resolve(null) : this.agentenblickApiService.getBenchmarkPreview(),
+                    ['test_identity_conflict', 'transport_migration_required'].includes(status.reasonCode) ? Promise.resolve(null) : this.agentenblickApiService.getBenchmarkPreview(),
                     this.agentenblickApiService.getBenchmarkHistory(),
                 ]);
                 if (sequence !== this.sequence) return;
@@ -115,7 +122,7 @@ Shopware.Component.register('agentenblick-benchmark', {
                 this.comparison = null;
                 await this.load();
                 if (this.loadFailed) throw new Error('Reload failed');
-                if (action === 'send' && ['failed', 'registration_pending', 'consent_update_required'].includes(result?.status)) {
+                if (action === 'send' && ['failed', 'registration_pending', 'consent_update_required', 'transport_migration_required'].includes(result?.status)) {
                     this.createNotificationError({ message: this.$t('agentenblick.benchmark.error.send') });
                     return;
                 }
