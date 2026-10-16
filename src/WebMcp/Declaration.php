@@ -24,7 +24,7 @@ final readonly class Declaration
     public static function fromRequest(Request $request): self
     {
         if ($request->getMethod() !== 'POST'
-            || strtolower(trim(explode(';', $request->headers->get('Content-Type', ''))[0])) !== 'application/json'
+            || strtolower(trim(explode(';', $request->headers->get('Content-Type') ?? '')[0])) !== 'application/json'
             || $request->headers->get('X-Requested-With') !== 'XMLHttpRequest'
             || $request->headers->get('Origin') !== $request->getSchemeAndHttpHost()
             || !in_array($request->headers->get('Sec-Fetch-Site', 'same-origin'), ['same-origin', 'none'], true)) {

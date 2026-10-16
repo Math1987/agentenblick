@@ -55,13 +55,13 @@ final class WebMcpPersistenceTest extends TestCase
         $store->record($this->row($request, $at->modify('+1 second')));
         self::assertSame(1, $this->aggregate('sessions', 'none'));
         self::assertSame('', $this->db()->fetchOne('SELECT browser_family FROM agentenblick_daily'));
-        self::assertSame(0, $this->count('request'));
+        self::assertSame(0, $this->countRows('request'));
         $service = $this->declarations();
         $declaration = new Declaration('codex', 'product_search');
         $service->declare($request, $declaration);
         $service->declare($request, $declaration);
-        self::assertSame(1, $this->count('session'));
-        self::assertSame(0, $this->count('request'));
+        self::assertSame(1, $this->countRows('session'));
+        self::assertSame(0, $this->countRows('request'));
         self::assertSame(0, $this->aggregate('sessions', 'none'));
         self::assertSame(1, $this->aggregate('sessions', 'declared_unverified'));
         self::assertSame(2, $this->aggregate('requests', 'none'));
@@ -71,8 +71,8 @@ final class WebMcpPersistenceTest extends TestCase
         $classification = $service->classify($request, new Classification(), $key, $later);
         self::assertSame('Codex', $classification->agent);
         $store->record($this->row($request, $later, $classification));
-        self::assertSame(1, $this->count('session'));
-        self::assertSame(1, $this->count('request'));
+        self::assertSame(1, $this->countRows('session'));
+        self::assertSame(1, $this->countRows('request'));
         self::assertSame(1, $this->aggregate('requests', 'declared_unverified'));
         self::assertSame('', $this->db()->fetchOne('SELECT user_agent FROM agentenblick_request'));
         $session = (new JourneyReader($this->db()))->sessions(new ReportFilter())['items'][0];
@@ -94,7 +94,7 @@ final class WebMcpPersistenceTest extends TestCase
         $legacy = $this->request('');
         $store->record($this->row($legacy, $at));
         $this->declarations()->declare($first, new Declaration('claude', 'product_comparison'));
-        self::assertSame(3, $this->count('session'));
+        self::assertSame(3, $this->countRows('session'));
         self::assertSame(2, $this->aggregate('sessions', 'none'));
         self::assertSame(1, $this->aggregate('sessions', 'declared_unverified'));
         $this->expectExceptionMessage('session_unavailable');
@@ -124,7 +124,7 @@ final class WebMcpPersistenceTest extends TestCase
         $this->declarations()->declare($request, new Declaration('codex', 'other'));
         $verified = new Classification('test', 'Verified fixture', Kind::BrowsingAgent, Evidence::Signature, 'verified_fixture');
         $store->record($this->row($request, $this->now()->modify('+1 second'), $verified));
-        self::assertSame(1, $this->count('session'));
+        self::assertSame(1, $this->countRows('session'));
         self::assertSame(1, $this->aggregate('sessions', 'verified_signature'));
         self::assertSame(0, $this->aggregate('sessions', 'declared_unverified'));
         self::assertSame('Verified fixture', $this->db()->fetchOne('SELECT agent FROM agentenblick_session'));
@@ -158,8 +158,8 @@ final class WebMcpPersistenceTest extends TestCase
         $classification = $this->declarations()->classify($request, new Classification(), $key, $at->modify('+1 second'));
         self::assertSame(Kind::HumanOrUnknown, $classification->kind);
         $store->record($this->row($request, $at->modify('+1 second'), $classification));
-        self::assertSame(1, $this->count('session'));
-        self::assertSame(0, $this->count('request'));
+        self::assertSame(1, $this->countRows('session'));
+        self::assertSame(0, $this->countRows('request'));
         self::assertSame(1, $this->aggregate('sessions', 'declared_unverified'));
         self::assertSame(2, $this->aggregate('requests', 'none'));
     }
@@ -203,7 +203,7 @@ final class WebMcpPersistenceTest extends TestCase
         return (int) $this->db()->fetchOne('SELECT COALESCE(SUM(' . $counter . '), 0) FROM agentenblick_daily WHERE evidence = ?', [$evidence]);
     }
 
-    private function count(string $table): int
+    private function countRows(string $table): int
     {
         return (int) $this->db()->fetchOne('SELECT COUNT(*) FROM agentenblick_' . $table);
     }

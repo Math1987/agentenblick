@@ -31,7 +31,7 @@ final class ObservedKernel implements HttpKernelInterface, TerminableInterface
             --$this->depth;
         }
         if ($main) {
-            if ($this->webMcp !== null && (new ObservationScope())->accepts($request) && str_contains($response->headers->get('Content-Type', ''), 'text/html')) {
+            if ($this->webMcp !== null && (new ObservationScope())->accepts($request) && str_contains($response->headers->get('Content-Type') ?? '', 'text/html')) {
                 try {
                     $this->webMcp->prepare($request, $response);
                 } catch (\Throwable) {
