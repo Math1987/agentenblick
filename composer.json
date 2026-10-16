@@ -2,7 +2,7 @@
   "name": "aithos/agentenblick",
   "description": "Server-side AI traffic measurement for Shopware",
   "type": "shopware-platform-plugin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "require": {
     "php": "^8.2",
@@ -33,7 +33,7 @@
     },
     "description": {
       "en-GB": "Understand AI crawlers and agents visiting your Shopware shop: identity evidence, minimized journeys, local diagnostics and an optional aggregate benchmark with explicit consent.",
-      "de-DE": "KI-Crawler und Agenten in Shopware verstehen: Identitätsnachweise, minimierte Besuchsverläufe, lokale Diagnosen und ein optionaler aggregierter Benchmark nach Zustimmung."
+      "de-DE": "KI-Crawler und Agenten in Shopware verstehen: Identit\u00e4tsnachweise, minimierte Besuchsverl\u00e4ufe, lokale Diagnosen und ein optionaler aggregierter Benchmark nach Zustimmung."
     },
     "manufacturerLink": {
       "en-GB": "https://aithos.app",

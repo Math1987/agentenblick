@@ -1,0 +1,39 @@
+name: Package demonstration plugin
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/production-demo-isolation]
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962
+        with:
+          php-version: '8.3'
+          extensions: bcmath, curl, dom, gd, intl, mbstring, pdo_mysql, sodium, xml, zip
+          tools: composer:2.8.12
+          coverage: none
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22'
+      - uses: shopware/shopware-cli-action@72d5fa2c934424f3b1360ccae288aa304b91a4c9
+        with:
+          version: 'v0.18.5'
+      - name: Build both supported administration asset formats
+        run: shopware-cli extension package . --disable-git --filename AithosAgentenblick-0.1.1.zip --output-directory releases --no-interaction --no-update-hint
+      - name: Verify distributable
+        run: |
+          python3 scripts/verify-release.py releases/AithosAgentenblick-0.1.1.zip > releases/verification.json
+          shopware-cli extension validate releases/AithosAgentenblick-0.1.1.zip --store-compliance --format=json --no-interaction --no-update-hint > releases/metadata-validation.json
+          cd releases
+          sha256sum AithosAgentenblick-0.1.1.zip > AithosAgentenblick-0.1.1.zip.sha256
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: plugin-demo-0.1.1-${{ github.sha }}
+          path: releases/*
+          if-no-files-found: error
+          retention-days: 30

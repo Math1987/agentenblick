@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 — isolated demonstration
+
+- Route benchmark traffic to separate fixed production and demonstration services using the persisted identity mode.
+- Block legacy demonstration credentials until an explicit migration, preserving local reporting and opt-out.
+- Show the matching dashboard link and migration instructions in English and German.
+- Production performance qualification remains pending; this is a demonstration prerelease.
+
 ## 0.1.0 — demonstration
 
 - Server-side request measurement and CLI reports, trusted-proxy diagnostics and minimized storage.

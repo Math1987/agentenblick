@@ -1,6 +1,6 @@
 # Agentenblick
 
-Agentenblick misst serverseitig automatisierte Zugriffe auf selbst gehostete Shopware-Shops. Es ergänzt Agentic Commerce. Technischer Pluginname: **AithosAgentenblick**, Lizenz: MIT. Version 0.1.0 ist eine frühe Demoversion; eine Freigabe durch den Shopware Store liegt nicht vor. Die Produktionsqualifikation steht wegen des dokumentierten Leistungsziels nach der Antwort noch aus.
+Agentenblick misst serverseitig automatisierte Zugriffe auf selbst gehostete Shopware-Shops. Es ergänzt Agentic Commerce. Technischer Pluginname: **AithosAgentenblick**, Lizenz: MIT. Version 0.1.1 ist eine frühe Demoversion; eine Freigabe durch den Shopware Store liegt nicht vor. Die Produktionsqualifikation steht wegen des dokumentierten Leistungsziels nach der Antwort noch aus.
 
 ## Funktionen und Grenzen
 

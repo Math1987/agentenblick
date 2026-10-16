@@ -1,7 +1,7 @@
 # Agentenblick
 
 Server-side AI traffic measurement for self-hosted Shopware. Complements
-Shopware Agentic Commerce. Version 0.1.0 is an early demonstration release.
+Shopware Agentic Commerce. Version 0.1.1 is an early demonstration release.
 
 Technical plugin name: `AithosAgentenblick`. License: MIT.
 
