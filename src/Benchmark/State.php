@@ -7,10 +7,11 @@ namespace Aithos\Agentenblick\Benchmark;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
-/** @phpstan-type Settings array{enabled: bool, installationId: string, secretCipher: string, registered: bool, pendingWithdrawal: bool, demo: bool, channels: array<string, string>, consentAt: ?string, locale: ?string, consentVersion: ?string} */
+/** @phpstan-type Settings array{enabled: bool, installationId: string, secretCipher: string, registered: bool, pendingWithdrawal: bool, demo: bool, transportVersion: int, channels: array<string, string>, consentAt: ?string, locale: ?string, consentVersion: ?string} */
 final class State
 {
     public const KEY = 'AithosAgentenblick.internal.benchmark';
+    public const TRANSPORT_VERSION = 2;
 
     public function __construct(private readonly Connection $connection, private readonly SystemConfigService $config, private readonly SecretVault $vault, private readonly string $environment = 'prod')
     {
@@ -23,6 +24,13 @@ final class State
     {
         $raw = $this->value(self::KEY);
         $raw = is_array($raw) ? $raw : [];
+        $installationId = is_string($raw['installationId'] ?? null) ? $raw['installationId'] : '';
+        // Existing identities must not derive their destination from mutable config.
+        $demo = is_bool($raw['demo'] ?? null) ? $raw['demo'] : ($installationId === '' && ($this->environment === 'test' || $this->value('AithosAgentenblick.config.benchmarkDemo') === true || $this->config->getBool('AithosAgentenblick.config.benchmarkDemo')));
+        $transportVersion = is_int($raw['transportVersion'] ?? null) ? $raw['transportVersion'] : 1;
+        if ($installationId !== '' && !is_bool($raw['demo'] ?? null)) {
+            $transportVersion = 0;
+        }
         $channels = [];
         foreach (is_array($raw['channels'] ?? null) ? $raw['channels'] : [] as $key => $value) {
             if (is_string($key) && is_string($value)) {
@@ -31,11 +39,12 @@ final class State
         }
         return [
             'enabled' => ($raw['enabled'] ?? false) === true,
-            'installationId' => is_string($raw['installationId'] ?? null) ? $raw['installationId'] : '',
+            'installationId' => $installationId,
             'secretCipher' => is_string($raw['secretCipher'] ?? null) ? $raw['secretCipher'] : '',
             'registered' => ($raw['registered'] ?? false) === true,
             'pendingWithdrawal' => ($raw['pendingWithdrawal'] ?? false) === true,
-            'demo' => ($raw['demo'] ?? ($this->environment === 'test' || $this->value('AithosAgentenblick.config.benchmarkDemo') === true || $this->config->getBool('AithosAgentenblick.config.benchmarkDemo'))) === true,
+            'demo' => $demo,
+            'transportVersion' => $transportVersion,
             'channels' => $channels,
             'consentAt' => is_string($raw['consentAt'] ?? null) ? $raw['consentAt'] : null,
             'locale' => is_string($raw['locale'] ?? null) ? $raw['locale'] : null,
@@ -57,9 +66,13 @@ final class State
         if ($this->testIdentityConflict($state)) {
             throw new \RuntimeException('benchmark_test_identity_conflict');
         }
+        if ($this->transportMigrationRequired($state)) {
+            throw new \RuntimeException('benchmark_transport_migration_required');
+        }
         if ($state['installationId'] === '') {
             $state['installationId'] = Payload::uuid();
             $state['secretCipher'] = $this->vault->encrypt(rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '='));
+            $state['transportVersion'] = self::TRANSPORT_VERSION;
             $this->save($state);
         }
         return $state;
@@ -84,6 +97,14 @@ final class State
     public function testIdentityConflict(array $state): bool
     {
         return $this->environment === 'test' && !$state['demo'];
+    }
+
+    /** Legacy demo credentials belong to the former shared service, not the new one.
+     * @param Settings $state
+     */
+    public function transportMigrationRequired(array $state): bool
+    {
+        return $state['installationId'] !== '' && (!in_array($state['transportVersion'], [1, self::TRANSPORT_VERSION], true) || ($state['demo'] && $state['transportVersion'] !== self::TRANSPORT_VERSION));
     }
 
     private function value(string $key): mixed

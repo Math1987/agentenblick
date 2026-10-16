@@ -174,6 +174,7 @@
         "disabled": "Participation disabled",
         "registration_pending": "Registration pending",
         "test_identity_conflict": "Real identity blocked in test",
+        "transport_migration_required": "Benchmark migration required",
         "consent_update_required": "Consent update required"
       },
       "submission": {
@@ -205,6 +206,7 @@
         "withdrawal_pending": "A comparison is unavailable while the withdrawal request is pending."
       },
       "identityConflict": "This test environment contains an existing real installation identity. Activation, submissions, comparisons and server deletion are blocked. Use a separate demonstration identity; do not reuse the production identity from a cloned database.",
+      "transportMigrationRequired": "This installation identity cannot use the current benchmark destination. No credentials or submissions will be sent. You can stop participation locally. An administrator or support must resolve any data and pending withdrawal on the previous service before explicitly resetting the identity and reviewing a new consent. Do not change its mode or reuse its secret on the new service.",
       "consentUpdate": "The benchmark now includes journey and failure shares. New submissions are paused until you explicitly accept consent version 2. Existing frozen documents remain unchanged; withdrawal is still available.",
       "renewConsent": "Accept version 2 and resume participation"
     },

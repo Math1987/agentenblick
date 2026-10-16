@@ -6,20 +6,22 @@ namespace Aithos\Agentenblick\Tests\Unit\Benchmark;
 
 use Aithos\Agentenblick\Benchmark\Comparison;
 use Aithos\Agentenblick\Benchmark\Transport;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
 use Symfony\Component\HttpClient\Response\MockResponse;
 
 final class TransportTest extends TestCase
 {
-    public function testSendsTheExactReviewedBytesWithBoundedTransportAndHmac(): void
+    #[DataProvider('modes')]
+    public function testSendsTheExactReviewedBytesWithBoundedTransportAndHmac(bool $demo, string $origin): void
     {
         $bytes = '{"shares":{"aiSessionsPct":10.0},"unicode":"é"}';
         $secret = 'client-secret-kept-as-utf8-not-base64-decoded';
         $id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
-        $client = new MockHttpClient(static function (string $method, string $url, array $options) use ($bytes, $secret, $id): MockResponse {
+        $client = new MockHttpClient(static function (string $method, string $url, array $options) use ($bytes, $secret, $id, $origin): MockResponse {
             self::assertSame('POST', $method);
-            self::assertSame('https://shopware.aithos.app/v1/submissions', $url);
+            self::assertSame($origin . '/v1/submissions', $url);
             self::assertSame($bytes, $options['body']);
             self::assertSame(0, $options['max_redirects']);
             self::assertSame(6.0, $options['max_duration']);
@@ -32,7 +34,30 @@ final class TransportTest extends TestCase
             self::assertSame(hash_hmac('sha256', $headers['x-agentenblick-timestamp'] . "\nPOST\n/v1/submissions\n" . $bytes, $secret), $headers['x-agentenblick-signature']);
             return new MockResponse('{"accepted":true}', ['http_code' => 201]);
         });
-        self::assertSame(201, (new Transport($client))->request('POST', '/v1/submissions', $bytes, $id, $secret)['status']);
+        self::assertSame(201, (new Transport($client))->request('POST', '/v1/submissions', $bytes, $id, $secret, $demo)['status']);
+    }
+
+    #[DataProvider('modes')]
+    public function testRegistrationAndWithdrawalStayOnTheSelectedFixedOrigin(bool $demo, string $origin): void
+    {
+        $id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+        $calls = [];
+        $transport = new Transport(new MockHttpClient(static function (string $method, string $url, array $options) use (&$calls, $origin): MockResponse {
+            self::assertStringStartsWith($origin . '/v1/installations', $url);
+            self::assertSame(0, $options['max_redirects']);
+            $calls[] = [$method, $url];
+            return new MockResponse('{}', ['http_code' => $method === 'DELETE' ? 204 : 201]);
+        }));
+        $transport->request('POST', '/v1/installations', '{}', demo: $demo);
+        $transport->request('DELETE', '/v1/installations/' . $id, '', $id, 'fixture-secret', $demo);
+        self::assertSame([['POST', $origin . '/v1/installations'], ['DELETE', $origin . '/v1/installations/' . $id]], $calls);
+    }
+
+    /** @return iterable<string, array{bool, string}> */
+    public static function modes(): iterable
+    {
+        yield 'production' => [false, 'https://shopware.aithos.app'];
+        yield 'demo' => [true, 'https://demo.shopware.aithos.app'];
     }
 
     public function testResponseIsCappedAndArbitraryOriginsAreRejected(): void
@@ -42,13 +67,14 @@ final class TransportTest extends TestCase
         $transport->request('GET', '/v1/benchmarks');
     }
 
-    public function testUntrustedRouteCannotOverrideFixedHttpsDestination(): void
+    #[DataProvider('modes')]
+    public function testUntrustedRouteCannotOverrideFixedHttpsDestination(bool $demo, string $origin): void
     {
         $transport = new Transport(new MockHttpClient(static function (): never {
             self::fail('No network request expected.');
         }));
         $this->expectException(\InvalidArgumentException::class);
-        $transport->request('GET', '//attacker.example/v1/benchmarks');
+        $transport->request('GET', '//attacker.example/v1/benchmarks', demo: $demo);
     }
 
     public function testComparisonDropsUndersizedCellsAndUnexpectedFields(): void

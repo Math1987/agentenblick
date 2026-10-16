@@ -26,7 +26,7 @@ final class Manager
             'demo' => $state['demo'], 'installationId' => $state['installationId'] === '' ? null : $state['installationId'],
             'consentAt' => $state['consentAt'], 'locale' => $state['locale'], 'consentVersion' => $state['consentVersion'],
             'requiredConsentVersion' => self::CONSENT_VERSION,
-            'reasonCode' => $this->settings->testIdentityConflict($state) ? 'test_identity_conflict' : ($state['pendingWithdrawal'] ? 'withdrawal_pending' : ($offline ? 'offline' : (!$state['enabled'] ? 'disabled' : ($state['consentVersion'] !== self::CONSENT_VERSION ? 'consent_update_required' : (!$state['registered'] ? 'registration_pending' : 'ready'))))),
+            'reasonCode' => $this->settings->testIdentityConflict($state) ? 'test_identity_conflict' : ($this->settings->transportMigrationRequired($state) ? 'transport_migration_required' : ($state['pendingWithdrawal'] ? 'withdrawal_pending' : ($offline ? 'offline' : (!$state['enabled'] ? 'disabled' : ($state['consentVersion'] !== self::CONSENT_VERSION ? 'consent_update_required' : (!$state['registered'] ? 'registration_pending' : 'ready')))))),
         ];
     }
 
@@ -80,7 +80,7 @@ final class Manager
             $state['enabled'] = false;
             $state['pendingWithdrawal'] = $state['installationId'] !== '' && $state['consentAt'] !== null;
             $this->settings->save($state);
-            if ($state['pendingWithdrawal'] && !$this->settings->offline() && !$this->settings->testIdentityConflict($state)) {
+            if ($state['pendingWithdrawal'] && !$this->settings->offline() && !$this->settings->testIdentityConflict($state) && !$this->settings->transportMigrationRequired($state)) {
                 $this->withdraw($state);
             }
             return $this->status();
@@ -99,6 +99,9 @@ final class Manager
             }
             if ($this->settings->testIdentityConflict($state)) {
                 return ['status' => 'test_identity_conflict'];
+            }
+            if ($this->settings->transportMigrationRequired($state)) {
+                return ['status' => 'transport_migration_required'];
             }
             if ($state['pendingWithdrawal']) {
                 $this->withdraw($state);
@@ -125,7 +128,7 @@ final class Manager
             $this->drafts->result($state['installationId'], $row, 'pending', 'sending');
             $secret = $this->settings->secret($state);
             try {
-                $response = $this->transport->request('POST', '/v1/submissions', $row['json'], $state['installationId'], $secret);
+                $response = $this->transport->request('POST', '/v1/submissions', $row['json'], $state['installationId'], $secret, $state['demo']);
                 $sent = in_array($response['status'], [200, 201], true) && ($response['body']['accepted'] ?? false) === true;
                 $code = $sent ? 'accepted' : 'http_' . $response['status'];
                 if ($response['status'] === 429 && ($response['body']['error'] ?? null) === 'weekly_channel_limit') {
@@ -148,7 +151,7 @@ final class Manager
     {
         return $this->locked(function (): array {
             $state = $this->settings->read();
-            if (!$state['enabled'] || $state['consentVersion'] !== self::CONSENT_VERSION || $state['pendingWithdrawal'] || $this->settings->offline() || $this->settings->testIdentityConflict($state)) {
+            if (!$state['enabled'] || $state['consentVersion'] !== self::CONSENT_VERSION || $state['pendingWithdrawal'] || $this->settings->offline() || $this->settings->testIdentityConflict($state) || $this->settings->transportMigrationRequired($state)) {
                 return ['available' => false, 'reason' => 'benchmark_not_connected'];
             }
             if ($state['demo']) {
@@ -166,7 +169,7 @@ final class Manager
             $segment = $first['segment'];
             $cohort = implode('|', [(string) $segment['country'], (string) $segment['shopware'], (string) $segment['trafficBucket'], $segment['agenticCommerceExtension'] ? '1' : '0']);
             try {
-                $response = $this->transport->request('GET', '/v1/benchmarks?' . http_build_query(['period' => $period, 'segment' => $cohort], '', '&', PHP_QUERY_RFC3986));
+                $response = $this->transport->request('GET', '/v1/benchmarks?' . http_build_query(['period' => $period, 'segment' => $cohort], '', '&', PHP_QUERY_RFC3986), demo: $state['demo']);
                 if ($response['status'] !== 200 || ($response['body']['demo'] ?? null) !== false) {
                     return ['available' => false, 'reason' => 'benchmark_unavailable'];
                 }
@@ -206,7 +209,7 @@ final class Manager
     {
         $secret = $this->settings->secret($state);
         try {
-            $response = $this->transport->request('POST', '/v1/installations', Payload::bytes(['installationId' => $state['installationId'], 'secret' => $secret, 'demo' => $state['demo']]));
+            $response = $this->transport->request('POST', '/v1/installations', Payload::bytes(['installationId' => $state['installationId'], 'secret' => $secret, 'demo' => $state['demo']]), demo: $state['demo']);
             if (in_array($response['status'], [200, 201], true) && ($response['body']['installationId'] ?? null) === $state['installationId']) {
                 $state['registered'] = true;
                 $this->settings->save($state);
@@ -223,7 +226,7 @@ final class Manager
     {
         $secret = $this->settings->secret($state);
         try {
-            $response = $this->transport->request('DELETE', '/v1/installations/' . $state['installationId'], '', $state['installationId'], $secret);
+            $response = $this->transport->request('DELETE', '/v1/installations/' . $state['installationId'], '', $state['installationId'], $secret, $state['demo']);
             if ($response['status'] === 204) {
                 $this->drafts->withdrawn($state['installationId']);
                 $state['pendingWithdrawal'] = false;

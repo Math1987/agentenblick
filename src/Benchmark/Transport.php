@@ -11,6 +11,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 final class Transport
 {
     public const ORIGIN = 'https://shopware.aithos.app';
+    public const DEMO_ORIGIN = 'https://demo.shopware.aithos.app';
     private readonly HttpClientInterface $client;
 
     public function __construct(?HttpClientInterface $client = null)
@@ -19,7 +20,7 @@ final class Transport
     }
 
     /** @return array{status: int, body: array<string, mixed>} */
-    public function request(string $method, string $path, string $body = '', ?string $installation = null, ?string $secret = null): array
+    public function request(string $method, string $path, string $body = '', ?string $installation = null, ?string $secret = null, bool $demo = false): array
     {
         if (!preg_match('#^/v1/(?:installations(?:/[a-f0-9-]{36})?|submissions|benchmarks(?:\?[A-Za-z0-9%=&._~-]*)?)$#D', $path) || strlen($body) > 16384) {
             throw new \InvalidArgumentException('Invalid benchmark request.');
@@ -29,7 +30,7 @@ final class Transport
             $timestamp = (string) time();
             $headers += ['X-Agentenblick-Installation' => $installation, 'X-Agentenblick-Timestamp' => $timestamp, 'X-Agentenblick-Signature' => self::signature($secret, $timestamp, $method, $path, $body)];
         }
-        $response = $this->client->request($method, self::ORIGIN . $path, [
+        $response = $this->client->request($method, ($demo ? self::DEMO_ORIGIN : self::ORIGIN) . $path, [
             'headers' => $headers, 'body' => $body, 'max_redirects' => 0, 'timeout' => 6.0, 'max_duration' => 6.0, 'buffer' => false,
         ]);
         try {

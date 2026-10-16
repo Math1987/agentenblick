@@ -11,13 +11,16 @@
         <agentenblick-banner v-if="identityConflict" variant="critical">
             {{ $t('agentenblick.benchmark.identityConflict') }}
         </agentenblick-banner>
+        <agentenblick-banner v-if="transportMigrationRequired" variant="critical">
+            {{ $t('agentenblick.benchmark.transportMigrationRequired') }}
+        </agentenblick-banner>
         <agentenblick-banner v-if="status.demo" variant="attention">
             {{ $t('agentenblick.benchmark.demo') }}
         </agentenblick-banner>
         <agentenblick-banner v-if="status.offline" variant="attention">
             {{ $t('agentenblick.benchmark.offline') }}
         </agentenblick-banner>
-        <agentenblick-banner v-if="status.pendingWithdrawal" variant="attention">
+        <agentenblick-banner v-if="status.pendingWithdrawal && !transportMigrationRequired" variant="attention">
             {{ $t('agentenblick.benchmark.withdrawalPending') }}
         </agentenblick-banner>
         <agentenblick-banner v-if="needsConsentUpdate" variant="attention">{{ $t('agentenblick.benchmark.consentUpdate') }}</agentenblick-banner>
@@ -34,13 +37,13 @@
                 <li>{{ $t('agentenblick.benchmark.privacy.threshold') }}</li>
                 <li>{{ $t('agentenblick.benchmark.privacy.retention') }}</li>
             </ul>
-            <p class="agentenblick-index__hint"><a href="https://shopware.aithos.app/methodology" target="_blank" rel="noopener noreferrer">{{ $t('agentenblick.benchmark.methodology') }}</a></p>
+            <p class="agentenblick-index__hint"><a :href="`${dashboardUrl}/methodology`" target="_blank" rel="noopener noreferrer">{{ $t('agentenblick.benchmark.methodology') }}</a></p>
             <dl class="agentenblick-benchmark__metadata">
                 <dt>{{ $t('agentenblick.benchmark.installation') }}</dt><dd><code>{{ status.installationId }}</code></dd>
                 <template v-if="status.consentAt"><dt>{{ $t('agentenblick.benchmark.consentAt') }}</dt><dd>{{ date(status.consentAt) }} · {{ status.locale }} · v{{ status.consentVersion }}</dd></template>
             </dl>
             <div v-if="(!status.enabled || needsConsentUpdate) && !status.pendingWithdrawal && canEdit" class="agentenblick-benchmark__consent">
-                <label><input v-model="consent" type="checkbox" :disabled="busy || status.offline || identityConflict" /> <span>{{ $t('agentenblick.benchmark.consent') }}</span></label>
+                <label><input v-model="consent" type="checkbox" :disabled="busy || status.offline || identityConflict || transportMigrationRequired" /> <span>{{ $t('agentenblick.benchmark.consent') }}</span></label>
                 <agentenblick-button variant="primary" :disabled="!canEnable" :is-loading="busy" @click="update('enable')">{{ $t(needsConsentUpdate ? 'agentenblick.benchmark.renewConsent' : 'agentenblick.benchmark.enable') }}</agentenblick-button>
             </div>
             <div v-if="status.enabled && canEdit" class="agentenblick-benchmark__actions">
@@ -80,7 +83,7 @@
         <agentenblick-card position-identifier="agentenblick-benchmark-comparison" :title="$t('agentenblick.benchmark.comparisonTitle')">
             <p>{{ $t('agentenblick.benchmark.comparisonHint') }}</p>
             <p class="agentenblick-index__hint">{{ $t('agentenblick.benchmark.comparisonNetwork') }}</p>
-            <div class="agentenblick-benchmark__actions"><agentenblick-button :disabled="!canCompare" :is-loading="comparing" @click="compare">{{ $t('agentenblick.benchmark.compare') }}</agentenblick-button><a href="https://shopware.aithos.app" target="_blank" rel="noopener noreferrer">{{ $t('agentenblick.benchmark.openDashboard') }}</a></div>
+            <div class="agentenblick-benchmark__actions"><agentenblick-button :disabled="!canCompare" :is-loading="comparing" @click="compare">{{ $t('agentenblick.benchmark.compare') }}</agentenblick-button><a :href="dashboardUrl" target="_blank" rel="noopener noreferrer">{{ $t('agentenblick.benchmark.openDashboard') }}</a></div>
             <template v-if="comparison">
                 <agentenblick-banner v-if="comparison.report && comparison.report.demo" variant="attention">{{ $t('agentenblick.benchmark.demo') }}</agentenblick-banner>
                 <p v-if="!comparisonCells.length" class="agentenblick-index__hint">{{ comparisonMessage }}</p>
