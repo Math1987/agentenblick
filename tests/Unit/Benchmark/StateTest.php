@@ -29,6 +29,30 @@ final class StateTest extends TestCase
         self::assertFalse($state->transportMigrationRequired($state->read()));
     }
 
+    #[DataProvider('modes')]
+    public function testEmptyIdentityDiscardsItsFormerModeBeforePreparation(bool $demo): void
+    {
+        $this->stored[State::KEY] = ['installationId' => '', 'demo' => !$demo, 'transportVersion' => 1];
+        $this->stored['AithosAgentenblick.config.benchmarkDemo'] = $demo;
+        $state = $this->state();
+        self::assertSame($demo, $state->read()['demo']);
+        $prepared = $state->prepare($state->read());
+        self::assertSame($demo, $prepared['demo']);
+        self::assertSame(State::TRANSPORT_VERSION, $prepared['transportVersion']);
+        self::assertNotSame('', $prepared['installationId']);
+        self::assertNotSame('', $prepared['secretCipher']);
+        $this->stored['AithosAgentenblick.config.benchmarkDemo'] = !$demo;
+        self::assertSame($prepared, $state->prepare($state->read()));
+    }
+
+    public function testEmptyFormerRealIdentityUsesDemoInTestEnvironment(): void
+    {
+        $this->stored[State::KEY] = ['installationId' => '', 'demo' => false];
+        $state = $this->state('test');
+        self::assertTrue($state->prepare($state->read())['demo']);
+        self::assertFalse($state->testIdentityConflict($state->read()));
+    }
+
     public function testLegacyDemoCannotBePreparedForTheNewService(): void
     {
         $state = $this->state();

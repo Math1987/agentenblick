@@ -25,8 +25,8 @@ final class State
         $raw = $this->value(self::KEY);
         $raw = is_array($raw) ? $raw : [];
         $installationId = is_string($raw['installationId'] ?? null) ? $raw['installationId'] : '';
-        // Existing identities must not derive their destination from mutable config.
-        $demo = is_bool($raw['demo'] ?? null) ? $raw['demo'] : ($installationId === '' && ($this->environment === 'test' || $this->value('AithosAgentenblick.config.benchmarkDemo') === true || $this->config->getBool('AithosAgentenblick.config.benchmarkDemo')));
+        // Pin an existing identity; a new one follows current configuration after withdrawal.
+        $demo = $installationId !== '' ? ($raw['demo'] ?? null) === true : ($this->environment === 'test' || $this->value('AithosAgentenblick.config.benchmarkDemo') === true || $this->config->getBool('AithosAgentenblick.config.benchmarkDemo'));
         $transportVersion = is_int($raw['transportVersion'] ?? null) ? $raw['transportVersion'] : 1;
         if ($installationId !== '' && !is_bool($raw['demo'] ?? null)) {
             $transportVersion = 0;

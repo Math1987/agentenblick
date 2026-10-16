@@ -194,6 +194,51 @@ final class BenchmarkTest extends TestCase
         ], $calls);
     }
 
+    #[DataProvider('modes')]
+    public function testSuccessfulWithdrawalAllowsNewConsentInTheCurrentlyConfiguredMode(bool $demo): void
+    {
+        $this->config('AithosAgentenblick.config.benchmarkDemo', $demo);
+        $oldOrigin = $demo ? Transport::DEMO_ORIGIN : Transport::ORIGIN;
+        $newOrigin = $demo ? Transport::ORIGIN : Transport::DEMO_ORIGIN;
+        $calls = [];
+        $manager = $this->manager(static function (string $method, string $url, array $options) use (&$calls): MockResponse {
+            $body = $method === 'DELETE' ? null : json_decode($options['body'], true, 32, JSON_THROW_ON_ERROR);
+            $calls[] = [$method, $url, $body];
+            if ($method === 'DELETE') {
+                return new MockResponse('', ['http_code' => 204]);
+            }
+            if (str_ends_with($url, '/installations')) {
+                return new MockResponse(json_encode(['installationId' => $body['installationId']], JSON_THROW_ON_ERROR), ['http_code' => 201]);
+            }
+            return new MockResponse('{"accepted":true}', ['http_code' => 201]);
+        });
+        $manager->preview();
+        $original = $this->state->read();
+        self::assertTrue($manager->enable('en-GB')['registered']);
+        $this->config('AithosAgentenblick.config.benchmarkDemo', !$demo);
+        self::assertFalse($manager->disable()['pendingWithdrawal']);
+        self::assertSame('', $this->state->read()['installationId']);
+        self::assertSame('', $this->state->read()['secretCipher']);
+        self::assertSame(!$demo, $manager->status()['demo']);
+        $preview = $manager->preview();
+        $replacement = $this->state->read();
+        self::assertCount(2, $calls, 'Preview of the new identity still requires consent before network.');
+        self::assertNotSame($original['installationId'], $replacement['installationId']);
+        self::assertNotSame($original['secretCipher'], $replacement['secretCipher']);
+        self::assertSame(!$demo, $preview['items'][0]['payload']['demo']);
+        self::assertTrue($manager->enable('de-DE')['registered']);
+        self::assertSame('sent', $manager->send()['status']);
+        self::assertSame([
+            ['POST', $oldOrigin . '/v1/installations'],
+            ['DELETE', $oldOrigin . '/v1/installations/' . $original['installationId']],
+            ['POST', $newOrigin . '/v1/installations'],
+            ['POST', $newOrigin . '/v1/submissions'],
+        ], array_map(static fn (array $call): array => [$call[0], $call[1]], $calls));
+        self::assertSame($demo, $calls[0][2]['demo']);
+        self::assertSame(!$demo, $calls[2][2]['demo']);
+        self::assertSame(!$demo, $calls[3][2]['demo']);
+    }
+
     public function testLegacyDemoIsStoppedWithoutSendingCredentialsToEitherService(): void
     {
         $legacy = $this->state->prepare($this->state->read());
