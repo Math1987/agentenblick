@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+    <card>
+        <title>Voluntary agent disclosure (experimental)</title>
+        <title lang="de-DE">Freiwillige Agentenmeldung (experimentell)</title>
+        <input-field type="bool">
+            <name>webMcpEnabled</name>
+            <label>Offer a WebMCP introduction and an optional storefront form</label>
+            <label lang="de-DE">WebMCP-Vorstellung und optionales Storefront-Formular anbieten</label>
+            <helpText>Records only a voluntary declaration, with unverified identity. Uses the existing Shopware session and adds no cookie. Browser support and spontaneous participation vary. Off by default.</helpText>
+            <helpText lang="de-DE">Erfasst nur freiwillige Angaben mit ungeprüfter Identität. Nutzt die bestehende Shopware-Sitzung ohne zusätzliches Cookie. Browser-Unterstützung und freiwillige Teilnahme variieren. Standardmäßig deaktiviert.</helpText>
+            <defaultValue>false</defaultValue>
+        </input-field>
+    </card>
+</config>

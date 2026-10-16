@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2 — experimental voluntary disclosure
+
+- Add an opt-in native WebMCP introduction and an accessible first-party form, with no automatic declaration or additional cookie.
+- Accept only a service and coarse task category; attach unverified declarations to the existing native Shopware session without adding a second session or a fake navigation request.
+- Preserve stronger identity evidence and pre-declaration minimization; keep browser support and spontaneous participation distinct from technical contract tests.
+- Production performance qualification and Shopware Store submission remain pending.
+
 ## 0.1.1 — isolated demonstration
 
 - Route benchmark traffic to separate fixed production and demonstration services using the persisted identity mode.

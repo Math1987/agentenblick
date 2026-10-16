@@ -11,6 +11,9 @@ final class ObservationScope
     public function accepts(Request $request): bool
     {
         $path = $request->getPathInfo();
+        if (str_ends_with($path, '/agentenblick/webmcp/declare')) {
+            return false;
+        }
         return !preg_match('~^/(?:admin|api|_profiler|_wdt|bundles|theme|media|thumbnail|assets)(?:/|$)~i', $path)
             && !preg_match('~\.(?:css|js|map|png|jpe?g|gif|webp|avif|ico|svg|woff2?|ttf|eot|mp4|pdf)$~i', $path);
     }

@@ -98,6 +98,15 @@
             <h3>{{ agentName(detail.session) }}</h3>
             <p class="agentenblick-journey__hint"><span class="agentenblick-proof" :class="proofClass(detail.session.evidence)">{{ label('evidence', detail.session.evidence) }}</span> · {{ label('journey.linkage', detail.session.linkage) }}</p>
             <p class="agentenblick-journey__hint">{{ label('journey.linkageHint', detail.session.linkage) }}</p>
+            <section v-if="detail.session.declaration" class="agentenblick-journey__declaration">
+                <h4>{{ $t('agentenblick.journey.declaration.title') }}</h4>
+                <p class="agentenblick-journey__hint">{{ $t('agentenblick.journey.declaration.hint') }}</p>
+                <dl class="agentenblick-journey__facts">
+                    <div><dt>{{ $t('agentenblick.journey.declaration.service') }}</dt><dd>{{ label('journey.declaration.serviceName', detail.session.declaration.service) }}</dd></div>
+                    <div><dt>{{ $t('agentenblick.journey.declaration.intent') }}</dt><dd>{{ label('journey.declaration.intentName', detail.session.declaration.intent) }}</dd></div>
+                    <div><dt>{{ $t('agentenblick.journey.declaration.at') }}</dt><dd>{{ date(detail.session.declaration.at) }}</dd></div>
+                </dl>
+            </section>
             <agentenblick-banner v-if="isSuspected(detail.session)" variant="attention">
                 <strong>{{ $t('agentenblick.heuristics.notProof') }}</strong>
                 <p>{{ $t('agentenblick.heuristics.timelineStartsAtDetection') }}</p>

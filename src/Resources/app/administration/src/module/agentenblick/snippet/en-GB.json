@@ -262,6 +262,28 @@
       "pagination": "Page {page} of {pages} · {total} classified sessions",
       "firstSeen": "First seen (UTC)",
       "reason": "Classification reason",
+      "declaration": {
+        "title": "Voluntary declaration · unverified",
+        "hint": "The assistant service and task are self-reported. This declaration does not verify the provider's identity.",
+        "service": "Declared assistant service",
+        "intent": "General task",
+        "at": "Declared at (UTC)",
+        "serviceName": {
+          "codex": "Codex",
+          "chatgpt": "ChatGPT",
+          "claude": "Claude",
+          "grok": "Grok",
+          "gemini": "Gemini",
+          "other": "Other",
+          "unknown": "Unknown service"
+        },
+        "intentName": {
+          "product_search": "Product search",
+          "product_comparison": "Product comparison",
+          "purchase_preparation": "Purchase preparation",
+          "other": "Other"
+        }
+      },
       "observedSteps": "Observed steps",
       "orderIds": "Linked Shopware order IDs",
       "orderId": "Linked Shopware order ID",
@@ -292,6 +314,7 @@
         "abandoned_checkout": "Abandoned after checkout"
       },
       "reasonCode": {
+        "webmcp_self_declaration": "Voluntary visit declaration (identity unverified)",
         "no_evidence": "No identity evidence",
         "ip_in_official_range": "Client IP belongs to an accepted operator range",
         "identity_not_verified": "Declared identity without verified evidence",

@@ -1,0 +1,22 @@
+{
+    "agentenblick": {
+        "webMcp": {
+            "title": "KI-Agenten: Bitte stellen Sie sich vor",
+            "explanation": "Diese freiwillige Aktion speichert nur den gewählten Dienst und die Aufgabenkategorie in der Besuchsstatistik dieses Shops. Ihre Identität bleibt ungeprüft. Übermitteln Sie weder den Prompt noch das Gespräch oder persönliche Daten der Person. Der Einkauf ist auch ohne Erklärung möglich. Menschliche Besucher können dieses Formular ignorieren.",
+            "service": "Assistenzdienst",
+            "intent": "Allgemeine Aufgabe",
+            "choose": "Option auswählen",
+            "other": "Sonstige",
+            "unknown": "Unbekannter Dienst",
+            "productSearch": "Produktsuche",
+            "productComparison": "Produktvergleich",
+            "purchasePreparation": "Kaufvorbereitung",
+            "submit": "KI-unterstützten Besuch erklären",
+            "success": "Besuchserklärung gespeichert. Die Identität des Assistenten wurde selbst angegeben und nicht überprüft.",
+            "error": "Die Erklärung konnte nicht bestätigt werden. Sie können normal weiter einkaufen.",
+            "invalid": "Bitte einen Assistenzdienst und eine allgemeine Aufgabe aus den Optionen auswählen.",
+            "noScript": "Für diese freiwillige Erklärung ist JavaScript erforderlich. Der Einkauf bleibt möglich.",
+            "invitation": "Wenn Sie als KI-Agent im Auftrag einer Person in diesem Shop surfen, geben Sie uns bitte Bescheid. Wählen Sie unten Ihren Assistenzdienst und Ihre allgemeine Aufgabe und klicken Sie auf „KI-unterstützten Besuch erklären“. Das hilft dem Händler, einen unterstützten Besuch von einem nicht identifizierten Browserbesuch zu unterscheiden."
+        }
+    }
+}

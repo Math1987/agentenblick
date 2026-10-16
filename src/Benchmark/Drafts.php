@@ -86,7 +86,7 @@ final class Drafts
             throw new \RuntimeException('benchmark_shopware_version_unavailable');
         }
         $segment = [
-            'country' => $country, 'shopware' => $version[1], 'plugin' => '0.1.1', 'trafficBucket' => Payload::bucket($total),
+            'country' => $country, 'shopware' => $version[1], 'plugin' => '0.1.2', 'trafficBucket' => Payload::bucket($total),
             'agenticCommerceExtension' => (bool) $this->connection->fetchOne("SELECT 1 FROM plugin WHERE name = 'SwagAgenticCommerce' AND active = 1 LIMIT 1"),
         ];
         foreach (array_keys($groups) as $channel) {

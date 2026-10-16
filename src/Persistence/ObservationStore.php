@@ -37,8 +37,8 @@ final class ObservationStore
                 $cutoff = $observedAt->modify('-30 minutes')->format('Y-m-d H:i:s.v');
                 $upper = $observedAt->modify('+30 minutes')->format('Y-m-d H:i:s.v');
                 $session = $connection->fetchAssociative(
-                    'SELECT * FROM agentenblick_session WHERE session_key = ? AND sales_channel_id = ? AND agent = ? AND last_seen >= ? AND first_seen <= ? ORDER BY last_seen DESC LIMIT 1 FOR UPDATE',
-                    [$row['session_key'], $row['sales_channel_id'], $row['agent'], $cutoff, $upper],
+                    'SELECT * FROM agentenblick_session WHERE session_key = ? AND sales_channel_id = ? AND (agent = ? OR (webmcp_scope = 1 AND ? = 1)) AND last_seen >= ? AND first_seen <= ? ORDER BY last_seen DESC LIMIT 1 FOR UPDATE',
+                    [$row['session_key'], $row['sales_channel_id'], $row['agent'], (int) ($row['webmcp_scope'] ?? 0), $cutoff, $upper],
                 );
                 $new = $session === false;
                 $sessionId = $new ? random_bytes(16) : $session['id'];
@@ -64,7 +64,7 @@ final class ObservationStore
                         'heuristic_score' => $row['heuristic_score'], 'heuristic_flags' => $row['heuristic_flags'], 'heuristic_version' => $row['heuristic_version'],
                         'heuristic_threshold' => $row['heuristic_threshold'], 'heuristic_epoch' => $row['heuristic_epoch'],
                         'detected_at' => $row['evidence'] === 'suspected' ? $row['observed_at'] : null,
-                        'journey_partial' => 0,
+                        'journey_partial' => 0, 'webmcp_scope' => (int) ($row['webmcp_scope'] ?? 0),
                     ]);
                 } else {
                     $ranks = ['none' => 0, 'suspected' => 1, 'declared_unverified' => 2, 'verified_rdns' => 3, 'verified_ip' => 4, 'verified_signature' => 5];
@@ -79,6 +79,9 @@ final class ObservationStore
                         'failures_mask' => (int) $session['failures_mask'] | $row['failure_mask'],
                         'known_mask' => (int) $session['known_mask'] | $row['known_mask'],
                     ];
+                    if ((int) ($session['webmcp_scope'] ?? 0) === 1 && ($ranks[$row['evidence']] ?? 0) > ($ranks[$session['evidence']] ?? 0)) {
+                        $changes += ['operator' => $row['operator'], 'agent' => $row['agent'], 'kind' => $row['kind']];
+                    }
                     $promoted = $session['kind'] === Kind::HumanOrUnknown->value && $row['evidence'] === 'suspected';
                     if ($promoted) {
                         $changes += ['kind' => Kind::AutomationUnknown->value, 'detected_at' => $row['observed_at'], 'journey_partial' => 1];
@@ -101,7 +104,7 @@ final class ObservationStore
                     // Sessions use their strongest synchronous proof, while each request
                     // keeps its own evidence. A session is moved, never counted again.
                     $from = $session + ['day' => substr($session['first_seen'], 0, 10)];
-                    if ($session['kind'] !== Kind::HumanOrUnknown->value || $session['heuristic_epoch'] !== '') {
+                    if ($session['kind'] !== Kind::HumanOrUnknown->value || $session['heuristic_epoch'] !== '' || (int) ($session['webmcp_scope'] ?? 0) === 1) {
                         AggregateCorrection::move($connection, 'sessions', $from, array_replace($from, ['day' => substr($firstSeen, 0, 10), 'evidence' => $evidence], $changes));
                     }
                     // Dimension corrections can reconcile an existing closed
@@ -116,7 +119,7 @@ final class ObservationStore
                 }
                 if ($row['kind'] !== Kind::HumanOrUnknown->value) {
                     $request = $row;
-                    unset($request['day'], $request['session_key'], $request['linkage'], $request['browser_family']);
+                    unset($request['day'], $request['session_key'], $request['linkage'], $request['browser_family'], $request['webmcp_scope']);
                     $request['id'] = random_bytes(16);
                     $request['session_id'] = $sessionId;
                     $connection->insert('agentenblick_request', $request);

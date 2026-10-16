@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Aithos\Agentenblick\Capture;
 
+use Aithos\Agentenblick\WebMcp\Scope;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -13,7 +14,7 @@ use Symfony\Component\HttpKernel\TerminableInterface;
 final class ObservedKernel implements HttpKernelInterface, TerminableInterface
 {
     private int $depth = 0;
-    public function __construct(private readonly HttpKernelInterface $inner, private readonly ObservationSubscriber $observer)
+    public function __construct(private readonly HttpKernelInterface $inner, private readonly ObservationSubscriber $observer, private readonly ?Scope $webMcp = null)
     {
     }
 
@@ -30,6 +31,13 @@ final class ObservedKernel implements HttpKernelInterface, TerminableInterface
             --$this->depth;
         }
         if ($main) {
+            if ($this->webMcp !== null && (new ObservationScope())->accepts($request) && str_contains($response->headers->get('Content-Type') ?? '', 'text/html')) {
+                try {
+                    $this->webMcp->prepare($request, $response);
+                } catch (\Throwable) {
+                    // Optional declaration support must never interrupt the storefront.
+                }
+            }
             $this->observer->complete($request, $response->getStatusCode(), ObservationSubscriber::offersSessionCookie($response));
         }
         return $response;

@@ -1,0 +1,50 @@
+{% block agentenblick_voluntary_declaration %}
+    <aside class="container my-3"
+           aria-label="{{ 'agentenblick.webMcp.title'|trans }}"
+           data-agentenblick-declaration
+           data-endpoint="{{ path('frontend.agentenblick.webmcp.declare') }}"
+           data-success-message="{{ 'agentenblick.webMcp.success'|trans }}"
+           data-error-message="{{ 'agentenblick.webMcp.error'|trans }}"
+           data-invalid-message="{{ 'agentenblick.webMcp.invalid'|trans }}">
+        <div class="border rounded p-3">
+            <h2 class="h5">{{ 'agentenblick.webMcp.title'|trans }}</h2>
+            <p class="mt-3" id="agentenblick-declaration-invitation">{{ 'agentenblick.webMcp.invitation'|trans }}</p>
+            <p id="agentenblick-declaration-explanation">{{ 'agentenblick.webMcp.explanation'|trans }}</p>
+            <form action="{{ path('frontend.agentenblick.webmcp.declare') }}"
+                  method="post"
+                  data-agentenblick-declaration-form
+                  aria-describedby="agentenblick-declaration-invitation agentenblick-declaration-explanation">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label" for="agentenblick-declaration-service">{{ 'agentenblick.webMcp.service'|trans }}</label>
+                        <select class="form-select" name="service" id="agentenblick-declaration-service" required>
+                            <option value="">{{ 'agentenblick.webMcp.choose'|trans }}</option>
+                            <option value="codex">Codex</option>
+                            <option value="chatgpt">ChatGPT</option>
+                            <option value="claude">Claude</option>
+                            <option value="grok">Grok</option>
+                            <option value="gemini">Gemini</option>
+                            <option value="other">{{ 'agentenblick.webMcp.other'|trans }}</option>
+                            <option value="unknown">{{ 'agentenblick.webMcp.unknown'|trans }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="agentenblick-declaration-intent">{{ 'agentenblick.webMcp.intent'|trans }}</label>
+                        <select class="form-select" name="intent" id="agentenblick-declaration-intent" required>
+                            <option value="">{{ 'agentenblick.webMcp.choose'|trans }}</option>
+                            <option value="product_search">{{ 'agentenblick.webMcp.productSearch'|trans }}</option>
+                            <option value="product_comparison">{{ 'agentenblick.webMcp.productComparison'|trans }}</option>
+                            <option value="purchase_preparation">{{ 'agentenblick.webMcp.purchasePreparation'|trans }}</option>
+                            <option value="other">{{ 'agentenblick.webMcp.other'|trans }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-outline-primary" type="submit" disabled>{{ 'agentenblick.webMcp.submit'|trans }}</button>
+                    </div>
+                </div>
+                <noscript><p>{{ 'agentenblick.webMcp.noScript'|trans }}</p></noscript>
+            </form>
+        </div>
+        <p class="mt-2 mb-0" data-agentenblick-declaration-status role="status" aria-live="polite" hidden></p>
+    </aside>
+{% endblock %}

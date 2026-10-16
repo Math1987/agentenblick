@@ -8,6 +8,7 @@ use Aithos\Agentenblick\Domain\Classification;
 use Aithos\Agentenblick\Domain\Evidence;
 use Aithos\Agentenblick\Journey\Signals;
 use Aithos\Agentenblick\Health\Observation;
+use Aithos\Agentenblick\WebMcp\Scope;
 use Symfony\Component\HttpFoundation\Request;
 
 final class Minimizer
@@ -49,17 +50,21 @@ final class Minimizer
         $resource = $classification->isNonHuman() ? Observation::resource($request) : '';
         $completed = $request->attributes->get('_agentenblick_completed_at');
         $completed = in_array($resource, ['llms', 'llms_full'], true) && $status >= 200 && $status < 300 && is_string($completed) ? $completed : null;
-        $sessionKey = $hmac('session', $identity . "\0" . $channel);
+        $webMcpKey = Scope::sessionKey($request, $key);
+        $sessionKey = $webMcpKey ?? $hmac('session', $identity . "\0" . $channel);
+        if ($webMcpKey !== null) {
+            $linkage = 'exact';
+        }
         $row = [
             'observed_at' => $at->format('Y-m-d H:i:s.v'), 'day' => $at->format('Y-m-d'),
-            'sales_channel_id' => $channel, 'session_key' => $sessionKey, 'linkage' => $linkage,
+            'sales_channel_id' => $channel, 'session_key' => $sessionKey, 'linkage' => $linkage, 'webmcp_scope' => $webMcpKey === null ? 0 : 1,
             'operator' => $classification->operator, 'agent' => $classification->agent,
             'kind' => $classification->kind->value, 'evidence' => $classification->evidence->value,
             'reason' => $classification->reason, 'status' => $status,
             'route' => (new ObservationScope())->route($request),
             'method' => substr($request->getMethod(), 0, 10), 'ip_hmac' => $ipHash,
-            'user_agent' => $classification->isNonHuman() ? $userAgent : '',
-            'browser_family' => $classification->isNonHuman() ? '' : BrowserFamily::fromUserAgent($userAgent),
+            'user_agent' => $classification->isNonHuman() && $classification->reason !== 'webmcp_self_declaration' ? $userAgent : '',
+            'browser_family' => $classification->isNonHuman() || $webMcpKey !== null ? '' : BrowserFamily::fromUserAgent($userAgent),
             'domain_id' => $domain,
             'discovery_resource' => $resource, 'discovery_completed_at' => $completed,
             'network_prefix' => null, 'signature_input' => null,
