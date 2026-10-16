@@ -1,6 +1,6 @@
 # Agentenblick
 
-Agentenblick misst serverseitig automatisierte Zugriffe auf selbst gehostete Shopware-Shops. Es ergänzt Agentic Commerce. Technischer Pluginname: **AithosAgentenblick**, Lizenz: MIT. Version 0.1.1 ist eine frühe Demoversion; eine Freigabe durch den Shopware Store liegt nicht vor. Die Produktionsqualifikation steht wegen des dokumentierten Leistungsziels nach der Antwort noch aus.
+Agentenblick misst serverseitig automatisierte Zugriffe auf selbst gehostete Shopware-Shops. Es ergänzt Agentic Commerce. Technischer Pluginname: **AithosAgentenblick**, Lizenz: MIT. Version 0.1.2 ist eine frühe Demoversion; eine Freigabe durch den Shopware Store liegt nicht vor. Die Produktionsqualifikation steht wegen des dokumentierten Leistungsziels nach der Antwort noch aus.
 
 ## Funktionen und Grenzen
 
@@ -25,7 +25,7 @@ bin/console agentenblick:report --days=7
 
 PHP 8.2+, Sodium und OpenSSL werden benötigt. Shopware löst die deklarierten Composer-Abhängigkeiten bei der Installation auf. Die geprüften Zielversionen sind **6.6.10.29** und **6.7.15.0**. Scheduler und Message-Consumer müssen laufen. Nach Updates `agentenblick:selftest` wiederholen. `AithosAgentenblick.config.offline=true` verhindert ausgehende Verifikation, Health-Prüfungen und sämtliche Benchmark-Aufrufe.
 
-Kein zusätzliches Besucher-JavaScript oder Cookie. Menschliche Anfragen erzeugen keine detaillierte Anfragehistorie. Rohe IP-Adressen, Cookie-Werte, Token, Bodies, Query-Strings und Referer werden nicht gespeichert. Vorläufige Kennungen verwenden täglich wechselnde lokale HMAC-Schlüssel.
+Standardmäßig kein zusätzliches Besucher-JavaScript; auch bei optionaler WebMCP-Meldung kein zusätzliches Cookie. Menschliche Anfragen erzeugen keine detaillierte Anfragehistorie. Rohe IP-Adressen, Cookie-Werte, Token, Bodies, Query-Strings und Referer werden nicht gespeichert. Vorläufige Kennungen verwenden täglich wechselnde lokale HMAC-Schlüssel.
 
 Standardaufbewahrung: menschliche/unbekannte Sitzungen 48 Stunden, automatisierte Details 90 Tage, Aggregate 13 Monate. Shopware-Aufgaben und Queue-Verarbeitung müssen laufen, damit Bereinigung und Wartung erfolgen. Die [Datenschutzvorlage](docs/PRIVACY.de-DE.md) muss für den konkreten Shop ergänzt werden.
 
@@ -56,3 +56,7 @@ Der isolierte Teststand verwendet dockware/shopware:6.7.15.0 und ist nur über 1
 - [Englische Installations- und Betriebsanleitung](README.md)
 - [Lot 1a](https://github.com/Math1987/agentenblick/blob/v0.1.0/handoffs/2026-10-14-lot-1a-acceptance.md), [Lot 3](https://github.com/Math1987/agentenblick/blob/v0.1.0/handoffs/2026-10-14-lot-3-acceptance.md), [experimenteller Lot 4](https://github.com/Math1987/agentenblick/blob/v0.1.0/handoffs/2026-10-14-lot-4-acceptance.md)
 - [Beiträge](CONTRIBUTING.md), [Sicherheitsmeldungen](SECURITY.md), [Änderungen](CHANGELOG.md)
+
+## Freiwillige WebMCP-Meldung (experimentell)
+
+Unter Erweiterungen > Meine Erweiterungen > Agentenblick > Konfigurieren kann `webMcpEnabled` aktiviert werden (Standard: aus). Ein lokales Skript bietet ein natives WebMCP-Werkzeug und ein optionales Formular an. Nur eine ausdrückliche Meldung mit Assistenzdienst und grober Aufgabe wird erfasst. Vorhandene Shopware-Sitzungen werden ohne Doppelzählung zugeordnet; kein zusätzliches Cookie und keine nachträgliche Rekonstruktion menschlicher Anfragen. Die Identität bleibt ungeprüft. Unterstützte Browser und freiwillige Teilnahme müssen getrennt getestet werden; siehe die englische README.

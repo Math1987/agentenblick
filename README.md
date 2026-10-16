@@ -1,7 +1,7 @@
 # Agentenblick
 
 Server-side AI traffic measurement for self-hosted Shopware. Complements
-Shopware Agentic Commerce. Version 0.1.1 is an early demonstration release.
+Shopware Agentic Commerce. Version 0.1.2 is an early demonstration release.
 
 Technical plugin name: `AithosAgentenblick`. License: MIT.
 
@@ -253,11 +253,49 @@ bin/console agentenblick:health --probe=<configured-domain-id> --auto-test
 
 ## Current implementation details
 
+### Optional voluntary WebMCP disclosure
+
+Version 0.1.2 adds an experimental, **default-off** storefront option in
+**Extensions > My extensions > Agentenblick > Configure**:
+`AithosAgentenblick.config.webMcpEnabled`. It serves one local JavaScript file,
+registers `agentenblick_declare_visit` through the native
+`document.modelContext.registerTool` API when available, and offers an accessible
+optional form. No shim, third-party service, background declaration, browser
+storage or new cookie is used. Installing the plugin alone does not enable it.
+
+An explicit call submits only two closed-vocabulary values: the assistant service
+(`codex`, `chatgpt`, `claude`, `grok`, `gemini`, `other`, `unknown`) and task category
+(`product_search`, `product_comparison`, `purchase_preparation`, `other`). No prompt,
+conversation, personal information, URL or free text is accepted. The same-origin
+JSON endpoint requires an existing native Shopware session and moves its session
+counter to **declared, unverified**; the declaration is not a navigation request.
+It never promotes a shared-IP fingerprint or overrides stronger identity evidence.
+Historical human request details are not reconstructed. Repeating the same
+declaration is idempotent; a conflicting declaration is rejected.
+
+While enabled, visits associated with the native session use an unsegmented
+unknown-browser aggregate bucket so a later declaration can be corrected without
+storing a browser family on each person. The existing daily HMAC rotation,
+30-minute inactivity rule and retention apply. Self-declaration does not cause
+raw browser user-agent retention. Turning the option off stops new declarations
+and recognition through this mechanism; it does not erase earlier counters.
+
+WebMCP support varies by browser and agent. A published tool is not automatically
+invoked, and an invocation does not authenticate its claimed operator. See
+[OpenAI Site tools](https://learn.chatgpt.com/docs/webmcp) and
+[Chrome WebMCP](https://developer.chrome.com/docs/ai/webmcp).
+The fallback form requires JavaScript and HTTPS. Unit/contract tests or a forced
+tool invocation are not evidence of spontaneous participation: acceptance requires
+a fresh agent to perform an ordinary shopping task and independently observed
+declaration evidence in the shop's metrics.
+
+### Capture and session boundaries
+
 The plugin retains the incoming request metadata before Shopware can inject a
 context token. Classification, HMAC generation and database writes happen after
 the response. Human visits create provisional session rows and aggregate counters,
 never detailed request rows. Human browser families use a closed vocabulary in
-daily counters; full human user-agents are not persisted. Bodies are not read;
+daily counters; full human user-agents are not persisted. Ordinary traffic bodies are not read;
 paths are stored as route names or generic templates without query strings.
 HMAC keys are installation-local, rotate on the UTC day boundary, and overwrite
 the previous key. A daily purge
@@ -276,7 +314,8 @@ last-seen timestamp or the HMAC key backward.
 Known-agent user-agents without proof are `declared_unverified`, never described
 as proven impersonators. Reports count observed crawler/agent sessions; they do
 not claim to identify all AI use. Browser agents that look like ordinary browsers
-are outside lot 1a's detection scope.
+are outside lot 1a's detection scope. The optional WebMCP mechanism above covers
+only browsers that explicitly self-declare.
 
 Shopware's internal HTTP cache deliberately skips the inner `kernel.terminate`
 event on fresh hits. `ObservedKernel` decorates the outside of that cache and

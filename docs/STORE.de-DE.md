@@ -2,7 +2,7 @@
 
 **Agentenblick — KI-Zugriffe auf Ihren Shop verstehen**
 
-Erkennen Sie, welche Crawler und Agenten Ihren Shopware-Shop besuchen und welche Nachweise ihre angegebenen Identitäten stützen. Agentenblick beobachtet serverseitig, ohne zusätzliches Besucher-JavaScript oder Cookies.
+Erkennen Sie, welche Crawler und Agenten Ihren Shopware-Shop besuchen und welche Nachweise ihre angegebenen Identitäten stützen. Agentenblick beobachtet serverseitig. Standardmäßig wird kein Besucher-JavaScript geladen; eine optionale experimentelle WebMCP-Vorstellung verwendet ein lokales Skript. Es wird kein zusätzliches Cookie gesetzt.
 
 Die native Administration bietet Übersicht, Agentenliste, CSV-Export, beobachtete Besuchsschritte und ausgewertete Fehler. Signaturprüfung, offizielle IP-Bereiche, bestätigtes Reverse-DNS und reine Selbstauskünfte bleiben klar getrennt. Fehlende Schritte werden nicht ergänzt; eine Bestellung beweist keine erfolgreiche Zahlung.
 

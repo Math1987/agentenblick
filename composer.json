@@ -2,7 +2,7 @@
   "name": "aithos/agentenblick",
   "description": "Server-side AI traffic measurement for Shopware",
   "type": "shopware-platform-plugin",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "require": {
     "php": "^8.2",

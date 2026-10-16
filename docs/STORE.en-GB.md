@@ -2,7 +2,7 @@
 
 **Agentenblick — understand AI traffic reaching your shop**
 
-See which crawlers and agents visit your Shopware shop and what supports their claimed identities. Agentenblick records server-side observations without adding visitor JavaScript or cookies.
+See which crawlers and agents visit your Shopware shop and what supports their claimed identities. Agentenblick records server-side observations. By default it adds no visitor JavaScript; an optional experimental WebMCP introduction uses a local script. It adds no cookie.
 
 The native administration combines an overview, agent list, CSV export, observed journey steps and evaluated failures. Signature verification, official IP ranges, confirmed reverse DNS and declared identities remain visibly distinct. Missing steps are not invented and an order is not treated as proof of payment.
 

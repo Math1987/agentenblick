@@ -1,0 +1,21 @@
+{
+    "agentenblick": {
+        "webMcp": {
+            "title": "Assistants IA — déclaration de visite facultative",
+            "explanation": "Les assistants IA qui naviguent pour un utilisateur peuvent déclarer volontairement leur service et le type de tâche. Cette déclaration non vérifiée est enregistrée pour cette visite dans les statistiques de la boutique. Elle n'est pas nécessaire pour faire des achats. Ne transmettez aucune donnée personnelle, aucun prompt ni conversation.",
+            "service": "Service de l'assistant",
+            "intent": "Type de tâche",
+            "choose": "Choisir une option",
+            "other": "Autre",
+            "unknown": "Service inconnu",
+            "productSearch": "Recherche de produit",
+            "productComparison": "Comparaison de produits",
+            "purchasePreparation": "Préparation d'achat",
+            "submit": "Déclarer cette visite assistée par IA",
+            "success": "Déclaration de visite enregistrée. L'identité de l'assistant est autodéclarée et n'a pas été vérifiée.",
+            "error": "La déclaration n'a pas pu être confirmée. Vous pouvez poursuivre vos achats normalement.",
+            "invalid": "Choisissez un service et un type de tâche parmi les options proposées.",
+            "noScript": "JavaScript est nécessaire pour cette déclaration facultative. Les achats restent possibles."
+        }
+    }
+}

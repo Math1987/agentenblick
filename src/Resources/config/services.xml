@@ -4,6 +4,14 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <defaults autowire="true" autoconfigure="true" public="false"/>
+        <service id="Aithos\Agentenblick\WebMcp\Settings"/>
+        <service id="Aithos\Agentenblick\WebMcp\Scope">
+            <argument key="$sessionOptions">%session.storage.options%</argument>
+        </service>
+        <service id="Aithos\Agentenblick\WebMcp\Declarations"/>
+        <service id="Aithos\Agentenblick\Controller\WebMcpController" public="true">
+            <tag name="controller.service_arguments"/>
+        </service>
         <service id="Aithos\Agentenblick\Health\Domains"/>
         <service id="Aithos\Agentenblick\Health\ProbeTokens"/>
         <service id="Aithos\Agentenblick\Health\ProbeTransport"/>

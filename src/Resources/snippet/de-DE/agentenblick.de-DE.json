@@ -1,0 +1,21 @@
+{
+    "agentenblick": {
+        "webMcp": {
+            "title": "KI-Assistenten — freiwillige Besuchserklärung",
+            "explanation": "KI-Assistenten, die im Auftrag einer Person einkaufen, können ihren Dienst und die allgemeine Aufgabe freiwillig angeben. Diese ungeprüfte Erklärung wird für diesen Besuch in der Shop-Statistik gespeichert. Der Einkauf ist auch ohne Erklärung möglich. Keine persönlichen Daten, Prompts oder Gespräche übermitteln.",
+            "service": "Assistenzdienst",
+            "intent": "Allgemeine Aufgabe",
+            "choose": "Option auswählen",
+            "other": "Sonstige",
+            "unknown": "Unbekannter Dienst",
+            "productSearch": "Produktsuche",
+            "productComparison": "Produktvergleich",
+            "purchasePreparation": "Kaufvorbereitung",
+            "submit": "KI-unterstützten Besuch erklären",
+            "success": "Besuchserklärung gespeichert. Die Identität des Assistenten wurde selbst angegeben und nicht überprüft.",
+            "error": "Die Erklärung konnte nicht bestätigt werden. Sie können normal weiter einkaufen.",
+            "invalid": "Bitte einen Assistenzdienst und eine allgemeine Aufgabe aus den Optionen auswählen.",
+            "noScript": "Für diese freiwillige Erklärung ist JavaScript erforderlich. Der Einkauf bleibt möglich."
+        }
+    }
+}

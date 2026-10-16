@@ -1,0 +1,15 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_main %}
+    {% if config('AithosAgentenblick.config.webMcpEnabled') %}
+        {% sw_include '@AithosAgentenblick/storefront/component/agentenblick/voluntary-declaration.html.twig' %}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block base_body_script %}
+    {{ parent() }}
+    {% if config('AithosAgentenblick.config.webMcpEnabled') %}
+        <script src="{{ asset('bundles/aithosagentenblick/webmcp.js') }}" defer></script>
+    {% endif %}
+{% endblock %}

@@ -1,5 +1,6 @@
 name: Validate plugin
 on:
+  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
@@ -11,6 +12,17 @@ concurrency:
 jobs:
   php:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: shopware
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s --health-timeout=5s --health-retries=10
     strategy:
       fail-fast: false
       matrix:
@@ -36,6 +48,13 @@ jobs:
         env:
           SHOPWARE_AUTOLOAD: ${{ github.workspace }}/dev/ci/vendor/autoload.php
         run: php .tools/vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress --memory-limit=1G
+      - name: WebMCP transactional integration tests
+        env:
+          SHOPWARE_AUTOLOAD: ${{ github.workspace }}/dev/ci/vendor/autoload.php
+          AGENTENBLICK_DB_TEST: '1'
+        run: |
+          php scripts/setup-integration-schema.php
+          php dev/ci/vendor/bin/phpunit --configuration phpunit.xml tests/Integration/WebMcpPersistenceTest.php
       - name: PHP formatting
         run: php .tools/vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff
   administration:
@@ -47,4 +66,5 @@ jobs:
           node-version: '24'
       - run: npm ci --prefix src/Resources/app/administration --ignore-scripts --no-audit --no-fund
       - run: node --test src/Resources/app/administration/tests/*.test.mjs
+      - run: node --test scripts/test-webmcp.mjs
       - run: python3 -c 'from pathlib import Path; [compile(p.read_bytes(), str(p), "exec") for p in Path("scripts").glob("*.py")]'

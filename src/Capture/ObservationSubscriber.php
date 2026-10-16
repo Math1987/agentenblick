@@ -19,6 +19,8 @@ use Aithos\Agentenblick\Persistence\ProxyDiagnostics;
 use Aithos\Agentenblick\Verification\CatalogueProvider;
 use Aithos\Agentenblick\Verification\Classifier;
 use Aithos\Agentenblick\Verification\SafeSignatureContext;
+use Aithos\Agentenblick\WebMcp\Declarations;
+use Aithos\Agentenblick\WebMcp\Scope;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -47,6 +49,8 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
         private readonly HeuristicSignals $heuristicSignals,
         private readonly ProbeTokens $probeTokens,
         private readonly Observation $health,
+        private readonly ?Scope $webMcp = null,
+        private readonly ?Declarations $declarations = null,
     ) {
     }
 
@@ -103,7 +107,7 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
         }
         $this->status = $status;
         $this->sessionCookieOffered = $sessionCookieOffered;
-        foreach (['_route', 'sw-sales-channel-id', 'sw-domain-id'] as $attribute) {
+        foreach (['_route', 'sw-sales-channel-id', 'sw-domain-id', Scope::ATTRIBUTE] as $attribute) {
             if ($request->attributes->has($attribute)) {
                 $this->request->attributes->set($attribute, $request->attributes->get($attribute));
             }
@@ -141,9 +145,13 @@ final class ObservationSubscriber implements EventSubscriberInterface, ResetInte
         try {
             $catalogue = $this->catalogues->load();
             $this->salesChannels->resolve($request);
+            if ($this->webMcp !== null && !$request->attributes->has(Scope::ATTRIBUTE)) {
+                $this->webMcp->prepare($request);
+            }
             $key = $this->dailyKey->current($at->format('Y-m-d'));
             try {
                 $classification = $this->classifier->classify($request, $catalogue, hash_hmac('sha256', "ip\0" . ($request->getClientIp() ?? ''), $key), $at->getTimestamp());
+                $classification = $this->declarations?->classify($request, $classification, $key, $at) ?? $classification;
                 if ($classification->isNonHuman()) {
                     $this->health->prepare($request);
                 }
