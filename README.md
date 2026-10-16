@@ -289,6 +289,13 @@ tool invocation are not evidence of spontaneous participation: acceptance requir
 a fresh agent to perform an ordinary shopping task and independently observed
 declaration evidence in the shop's metrics.
 
+**Live result, 2026-10-16:** the native WebMCP call, session correction and
+administration display worked on the demo. Two fresh agents given an ordinary
+shopping request (Codex in-app browser and Chrome extension) did **not** voluntarily
+declare. Spontaneous participation is therefore **not validated**. The successful
+explicit control call is separate from those trials; see the
+[acceptance report](docs/acceptance/2026-10-16-webmcp.md).
+
 ### Capture and session boundaries
 
 The plugin retains the incoming request metadata before Shopware can inject a
