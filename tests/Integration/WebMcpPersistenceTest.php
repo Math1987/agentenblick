@@ -116,6 +116,21 @@ final class WebMcpPersistenceTest extends TestCase
         self::assertSame($verified, $this->declarations()->classify($request, $verified, $key, $this->now()));
     }
 
+    public function testLaterStrongerProofMovesTheSessionWithoutCountingItAgain(): void
+    {
+        $request = $this->request('upgraded-native');
+        $store = new ObservationStore($this->db());
+        $store->record($this->row($request, $this->now()->modify('-1 second')));
+        $this->declarations()->declare($request, new Declaration('codex', 'other'));
+        $verified = new Classification('test', 'Verified fixture', Kind::BrowsingAgent, Evidence::Signature, 'verified_fixture');
+        $store->record($this->row($request, $this->now()->modify('+1 second'), $verified));
+        self::assertSame(1, $this->count('session'));
+        self::assertSame(1, $this->aggregate('sessions', 'verified_signature'));
+        self::assertSame(0, $this->aggregate('sessions', 'declared_unverified'));
+        self::assertSame('Verified fixture', $this->db()->fetchOne('SELECT agent FROM agentenblick_session'));
+        self::assertSame('codex', $this->db()->fetchOne('SELECT declared_service FROM agentenblick_session'));
+    }
+
     public function testConflictingRepeatIsRejectedAndExpiredSessionCannotBeReused(): void
     {
         $request = $this->request('repeat-native');

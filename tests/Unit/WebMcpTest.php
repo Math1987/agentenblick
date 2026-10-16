@@ -18,6 +18,7 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 final class WebMcpTest extends TestCase
 {
@@ -88,6 +89,23 @@ final class WebMcpTest extends TestCase
         self::assertSame(Scope::sessionKey($request, str_repeat('a', 32)), Scope::sessionKey($other, str_repeat('a', 32)));
     }
 
+    public function testConfiguredOrAlreadyAttachedNativeSessionNameIsRespected(): void
+    {
+        $config = $this->createStub(SystemConfigService::class);
+        $config->method('getBool')->willReturn(true);
+        $scope = new Scope(new Settings($config), new SalesChannelResolver($this->createStub(Connection::class)), ['name' => 'custom-shop-session']);
+        $request = $this->page(['session-' => 'ignored-default', 'custom-shop-session' => 'native-custom-value']);
+        self::assertTrue($scope->prepare($request));
+        $key = Scope::sessionKey($request, str_repeat('a', 32));
+        $native = $this->createMock(SessionInterface::class);
+        $native->method('getName')->willReturn('custom-shop-session');
+        $native->expects(self::never())->method('start');
+        $next = $this->page(['custom-shop-session' => 'native-custom-value']);
+        $next->setSession($native);
+        self::assertTrue($this->scope(true)->prepare($next));
+        self::assertSame($key, Scope::sessionKey($next, str_repeat('a', 32)));
+    }
+
     public function testScopeIsOptInAndBoundToDomainChannelCookieAndDailyKey(): void
     {
         $request = $this->page(['session-' => 'private-native-cookie']);
@@ -124,9 +142,11 @@ final class WebMcpTest extends TestCase
         self::assertSame($human['session_key'], $agent['session_key']);
         self::assertSame('', $agent['user_agent']);
         self::assertSame('declared_unverified', $agent['evidence']);
-        $json = json_encode([$human, $agent], JSON_THROW_ON_ERROR);
+        // Database rows include a binary domain ID; inspect every field without
+        // requiring those bytes to be UTF-8 or discarding them from the check.
+        $serialized = serialize([$human, $agent]);
         foreach (['private-native-cookie', 'private-browser', 'secret-query'] as $forbidden) {
-            self::assertStringNotContainsString($forbidden, $json);
+            self::assertStringNotContainsString($forbidden, $serialized);
         }
     }
 
