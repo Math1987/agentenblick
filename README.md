@@ -260,7 +260,9 @@ Version 0.1.2 adds an experimental, **default-off** storefront option in
 `AithosAgentenblick.config.webMcpEnabled`. It serves one local JavaScript file,
 registers `agentenblick_declare_visit` through the native
 `document.modelContext.registerTool` API when available, and offers an accessible
-optional form. No shim, third-party service, background declaration, browser
+optional form. The experimental invitation and form are directly visible in the
+storefront template, with a request addressed to visiting AI agents. No shim,
+third-party service, background declaration, browser
 storage or new cookie is used. Installing the plugin alone does not enable it.
 
 An explicit call submits only two closed-vocabulary values: the assistant service
@@ -295,6 +297,12 @@ shopping request (Codex in-app browser and Chrome extension) did **not** volunta
 declare. Spontaneous participation is therefore **not validated**. The successful
 explicit control call is separate from those trials; see the
 [acceptance report](docs/acceptance/2026-10-16-webmcp.md).
+
+A subsequent trial replaced the collapsed invitation with a directly visible,
+explicit HTML request and form. Two further fresh Codex agents (in-app browser
+and Chrome extension) both reported seeing it, but neither submitted a declaration.
+The server confirmed no new declaration and two new unidentified sessions. See
+the [HTML invitation trial](docs/acceptance/2026-10-16-template-invitation.md).
 
 ### Capture and session boundaries
 
