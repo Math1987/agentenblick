@@ -262,6 +262,28 @@
       "pagination": "Seite {page} von {pages} · {total} klassifizierte Sitzungen",
       "firstSeen": "Erstmals gesehen (UTC)",
       "reason": "Klassifizierungsgrund",
+      "declaration": {
+        "title": "Freiwillige Erklärung · nicht verifiziert",
+        "hint": "Assistenzdienst und Aufgabe wurden selbst angegeben. Diese Erklärung bestätigt nicht die Identität des Anbieters.",
+        "service": "Angegebener Assistenzdienst",
+        "intent": "Allgemeine Aufgabe",
+        "at": "Erklärt am (UTC)",
+        "serviceName": {
+          "codex": "Codex",
+          "chatgpt": "ChatGPT",
+          "claude": "Claude",
+          "grok": "Grok",
+          "gemini": "Gemini",
+          "other": "Sonstige",
+          "unknown": "Unbekannter Dienst"
+        },
+        "intentName": {
+          "product_search": "Produktsuche",
+          "product_comparison": "Produktvergleich",
+          "purchase_preparation": "Kaufvorbereitung",
+          "other": "Sonstige"
+        }
+      },
       "observedSteps": "Beobachtete Schritte",
       "orderIds": "Verknüpfte Shopware-Bestell-IDs",
       "orderId": "Verknüpfte Shopware-Bestell-ID",
@@ -292,6 +314,7 @@
         "abandoned_checkout": "Abbruch nach Checkout"
       },
       "reasonCode": {
+        "webmcp_self_declaration": "Freiwillige Besuchserklärung (Identität nicht verifiziert)",
         "no_evidence": "Kein Identitätsnachweis",
         "ip_in_official_range": "Client-IP gehört zu einem akzeptierten Betreiberbereich",
         "identity_not_verified": "Deklarierte Identität ohne verifizierten Nachweis",
