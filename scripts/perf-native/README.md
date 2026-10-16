@@ -6,7 +6,13 @@ reset a database, install dependencies, change consent, or modify a catalogue.
 Nothing runs on import. It is excluded from the distributed plugin ZIP.
 
 The allowed app is a resolved directory below `/srv/agentenblick-demo`, normally
-`/srv/agentenblick-demo/current`. All HTTP calls use
+`/srv/agentenblick-demo/current` pointing at `releases/<release>`. The front
+controller must remain in that exact release. Plugin files must resolve to the
+exact shared directory `/srv/agentenblick-demo/shared/custom/plugins/AithosAgentenblick`;
+other symlink targets are refused. The manifest retains both the selected app
+link and exact physical files. A deployment/link change stops the run and
+requires manual reconciliation before restoration; reserve the deployment window.
+All HTTP calls use
 `https://demo-shop.aithos.app` with curl resolving the connection to **127.0.0.1**;
 TLS certificate validation remains enabled, and redirects are not followed.
 Instrumentation accepts only the loopback peer and an ephemeral capability.
@@ -44,7 +50,8 @@ sudo python3 scripts/perf-native/measure.py preflight --database=EXACT_DEMO_DB
 Preparation saves the source bytes, ownership, permissions and SHA-256 hashes,
 generates instrumented candidates, and PHP-lints every candidate. It does **not**
 install them or reload workers. It prints a private manifest path under
-`/var/lib/agentenblick-perf-native/`. Review that preparation before running it:
+`/var/lib/agentenblick-perf-native/`, creating this root-owned state directory if
+it does not exist. Review that preparation before running it:
 
 ```sh
 sudo python3 scripts/perf-native/measure.py prepare --database=EXACT_DEMO_DB \

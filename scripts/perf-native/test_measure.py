@@ -88,6 +88,48 @@ class NativeHarnessTest(unittest.TestCase):
             with self.assertRaises(measure.Failure):
                 measure.target_path(root, 'public/index.php')
 
+    def test_shared_plugin_layout_keeps_exact_physical_targets(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory).resolve()
+            root = base / 'releases/fixture'
+            shared = base / 'shared/custom/plugins'
+            (root / 'public').mkdir(parents=True)
+            (root / 'public/index.php').write_text('fixture')
+            (root / 'custom').mkdir()
+            (root / 'custom/plugins').symlink_to(shared)
+            relative = measure.PLUGIN + '/src/Capture/ObservationSubscriber.php'
+            target = base / 'shared' / relative
+            target.parent.mkdir(parents=True)
+            target.write_text('fixture')
+            with patch.object(measure, 'BASE', base):
+                self.assertEqual(measure.target_path(root, relative), target)
+                self.assertEqual(measure.target_path(root, 'public/index.php'), root / 'public/index.php')
+                replacement = base / 'unrelated/plugins'
+                outside = replacement / 'AithosAgentenblick/src/Capture/ObservationSubscriber.php'
+                outside.parent.mkdir(parents=True)
+                outside.write_text('another deployment')
+                (root / 'custom/plugins').unlink()
+                (root / 'custom/plugins').symlink_to(replacement)
+                with self.assertRaises(measure.Failure):
+                    measure.target_path(root, relative)
+
+    def test_changed_current_release_refuses_restoration_before_any_write(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path, manifest, target = self.fixture_manifest(directory)
+            current = Path(directory) / 'current'
+            current.symlink_to(Path(directory))
+            manifest['appPath'] = str(current)
+            replacement = Path(directory) / 'another-release'
+            replacement.mkdir()
+            current.unlink()
+            current.symlink_to(replacement)
+            with patch.object(measure, 'atomic_write') as write, patch.object(measure, 'reload_fpm') as reload_fpm:
+                result = measure.restore(path, manifest, Path(directory))
+            self.assertFalse(result['sourceHashesMatch'])
+            self.assertEqual(target.read_bytes(), b'instrumented')
+            write.assert_not_called()
+            reload_fpm.assert_not_called()
+
     def test_preparation_saves_candidates_without_touching_runtime(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve() / 'app'
@@ -120,15 +162,16 @@ class NativeHarnessTest(unittest.TestCase):
             self.assertNotIn(manifest['token'], stream.getvalue())
 
     def fixture_manifest(self, directory, current=b'instrumented'):
-        root = Path(directory)
-        target = root / 'index.php'
+        root = Path(directory).resolve()
+        (root / 'public').mkdir()
+        target = root / 'public/index.php'
         backup = root / 'backup.php'
         target.write_bytes(current)
         backup.write_bytes(b'original')
         entry = {'path': str(target), 'relative': 'public/index.php', 'backup': str(backup),
                  'originalSha256': measure.digest(b'original'), 'instrumentedSha256': measure.digest(b'instrumented'),
                  'mode': 0o644, 'uid': os.getuid(), 'gid': os.getgid()}
-        return root / 'manifest.json', {'targets': [entry], 'database': 'fixture_db', 'originalPluginActive': True}, target
+        return root / 'manifest.json', {'targets': [entry], 'appPath': str(root), 'database': 'fixture_db', 'originalPluginActive': True}, target
 
     def test_restoration_refuses_to_overwrite_an_external_deployment(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -183,6 +226,25 @@ class NativeHarnessTest(unittest.TestCase):
     def test_no_execution_on_the_developer_mac(self):
         with patch.object(measure.sys, 'platform', 'darwin'), patch.object(measure.sys, 'argv', ['measure.py', 'preflight', '--database=fixture_db']), self.assertRaises(measure.Failure):
             measure.main()
+
+    def test_main_creates_state_parent_before_preparation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            state = Path(directory) / 'nested/private-state'
+            original_stat = Path.stat
+            def stat(path, **kwargs):
+                actual = original_stat(path, **kwargs)
+                if path == state:
+                    return types.SimpleNamespace(st_uid=0, st_mode=actual.st_mode)
+                return actual
+            def prepare(_args):
+                self.assertTrue(state.is_dir())
+                self.assertTrue((state / 'active.lock').exists())
+            with patch.object(measure.sys, 'platform', 'linux'), patch.object(measure.os, 'geteuid', return_value=0), \
+                 patch.object(measure.sys, 'argv', ['measure.py', 'prepare', '--database=fixture_db', '--phase=terminate', '--ack-isolated-bench']), \
+                 patch.object(measure, 'STATE', state), patch.object(Path, 'stat', stat), \
+                 patch.object(measure, 'prepare', side_effect=prepare) as prepared:
+                self.assertEqual(measure.main(), 0)
+                prepared.assert_called_once()
 
 
 if __name__ == '__main__':

@@ -120,10 +120,27 @@ def preflight(root, database):
 def target_path(root, relative):
     if relative not in METHODS:
         raise Failure('Manifest target is not allowlisted.')
+    root = root.resolve(strict=True)
     target = root / relative
-    if target.is_symlink() or not target.resolve().is_relative_to(root):
-        raise Failure('Refusing a symlinked or out-of-root instrumentation target.')
-    return target
+    if relative == 'public/index.php':
+        expected = root / relative
+    else:
+        # Atomic deployments share precisely this plugin directory between releases.
+        # Do not extend this exception to arbitrary shared files or symlink targets.
+        expected = BASE.resolve() / 'shared' / PLUGIN / Path(relative).relative_to(PLUGIN)
+    resolved = target.resolve(strict=True)
+    if resolved != expected or target.is_symlink():
+        raise Failure('Instrumentation target does not match its exact release/shared allowlist.')
+    return resolved
+
+
+def assert_layout(manifest, root):
+    root = root.resolve(strict=True)
+    if Path(manifest['appPath']).resolve(strict=True) != root:
+        raise Failure('The application deployment changed; refusing to modify or measure another release.')
+    for target in manifest['targets']:
+        if target_path(root, target['relative']) != Path(target['path']):
+            raise Failure('The resolved instrumentation target changed since preparation.')
 
 
 def atomic_write(path, content, mode, uid, gid):
@@ -183,8 +200,9 @@ def prepare(args):
         candidate.chmod(0o600)
         command(['php', '-l', candidate])
         target['instrumentedSha256'] = digest(candidate.read_bytes())
-    manifest = {'version': 1, 'phase': args.phase, 'preparedAt': now(), 'state': 'prepared',
-                'appRoot': str(root), 'database': args.database, 'token': token, 'probePath': probe_path,
+    manifest = {'version': 2, 'phase': args.phase, 'preparedAt': now(), 'state': 'prepared',
+                'appRoot': str(root), 'appPath': str(Path(args.app_root).absolute()),
+                'database': args.database, 'token': token, 'probePath': probe_path,
                 'originalPluginActive': True, 'preflight': info, 'targets': targets}
     write_json(directory / 'manifest.json', manifest)
     print(json.dumps({'prepared': str(directory / 'manifest.json'), 'runtimeModified': False, 'phase': args.phase}))
@@ -196,8 +214,9 @@ def load_manifest(value):
         raise Failure('Require a root-owned private manifest from this kit.')
     data = json.loads(path.read_text())
     root = app_root(data['appRoot'])
-    if data.get('version') != 1 or data.get('phase') not in ['terminate', 'kernel-terminate', 'diagnostic', 'abab']:
+    if data.get('version') != 2 or data.get('phase') not in ['terminate', 'kernel-terminate', 'diagnostic', 'abab']:
         raise Failure('Unsupported manifest.')
+    assert_layout(data, root)
     for target in data['targets']:
         if str(target_path(root, target['relative'])) != target['path']:
             raise Failure('Manifest target differs from the allowed native root.')
@@ -220,6 +239,14 @@ def plugin_state(root, active):
 
 def restore(path, manifest, root):
     errors = []
+    try:
+        assert_layout(manifest, root)
+    except (Failure, OSError):
+        manifest['state'] = 'restoration_incomplete'
+        manifest['restoredAt'] = now()
+        write_json(path, manifest)
+        return {'sourceHashesMatch': False, 'pluginActiveRestored': False,
+                'errors': ['Deployment paths changed; restore the saved exact targets manually after reconciliation.']}
     for target in manifest['targets']:
         try:
             current = Path(target['path'])
@@ -331,6 +358,7 @@ def measure(path, manifest, root):
     signal.signal(signal.SIGTERM, interrupted)
     mutated = False
     try:
+        assert_layout(manifest, root)
         for target in manifest['targets']:
             if digest(Path(target['path']).read_bytes()) != target['originalSha256'] or digest(Path(target['prepared']).read_bytes()) != target['instrumentedSha256']:
                 raise Failure('Source changed since preparation; refusing to install instrumentation.')
@@ -346,6 +374,7 @@ def measure(path, manifest, root):
             warmups = []
             if kernel:
                 for sample in range(4):
+                    assert_layout(manifest, root)
                     client = request(manifest, 0, 1, 0, sample, 0, kernel=True)
                     row = shutdown_row(directory, sample)
                     if client['status'] != 200 or row['post_calls'] < 1:
@@ -354,6 +383,7 @@ def measure(path, manifest, root):
             report['warmups'] = warmups
             samples = []
             for sample, delay in enumerate([0, 2000] * 5, start=len(warmups)):
+                assert_layout(manifest, root)
                 client = request(manifest, 0, 2, 0, sample, delay, kernel=kernel)
                 row = shutdown_row(directory, sample)
                 samples.append({**row, **client, 'delayMs': delay})
@@ -384,11 +414,13 @@ def measure(path, manifest, root):
             count = 40 if manifest['phase'] == 'diagnostic' else 1000
             sample = 0
             for stage, active in enumerate(active_states):
+                assert_layout(manifest, root)
                 if manifest['phase'] == 'abab':
                     plugin_state(root, active)
                 before = bridge(root, manifest['database'], 'counters')
                 rows = []
                 for index in range(count + 24):
+                    assert_layout(manifest, root)
                     if index % 10 == 0:
                         report['lastResourceCheck'] = resources(root)
                     temperature = 0 if index < 4 else (1 if index < 24 else 2)
