@@ -14,6 +14,15 @@ measure = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(measure)
 
 
+@contextlib.contextmanager
+def restrictive_umask():
+    previous = os.umask(0o077)
+    try:
+        yield
+    finally:
+        os.umask(previous)
+
+
 class NativeHarnessTest(unittest.TestCase):
     def test_nearest_rank_percentile(self):
         result = measure.stats(list(range(100, 0, -1)))
@@ -130,7 +139,7 @@ class NativeHarnessTest(unittest.TestCase):
             write.assert_not_called()
             reload_fpm.assert_not_called()
 
-    def test_preparation_saves_candidates_without_touching_runtime(self):
+    def test_preparation_under_umask077_keeps_worker_access_and_private_backups(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve() / 'app'
             root.mkdir()
@@ -151,7 +160,7 @@ class NativeHarnessTest(unittest.TestCase):
             with patch.object(measure, 'app_root', return_value=root), patch.object(measure, 'preflight', return_value={}), \
                  patch.object(measure, 'STATE', state), patch.object(measure, 'command', command), \
                  patch.object(measure.os, 'chown'), patch.object(measure.pwd, 'getpwnam', return_value=types.SimpleNamespace(pw_uid=33, pw_gid=33)), \
-                 contextlib.redirect_stdout(stream):
+                 contextlib.redirect_stdout(stream), restrictive_umask():
                 measure.prepare(args)
             result = json.loads(stream.getvalue())
             manifest = json.loads(Path(result['prepared']).read_text())
@@ -160,6 +169,12 @@ class NativeHarnessTest(unittest.TestCase):
             self.assertEqual(manifest['state'], 'prepared')
             self.assertEqual(Path(manifest['targets'][0]['backup']).read_bytes(), original)
             self.assertNotIn(manifest['token'], stream.getvalue())
+            run = Path(result['prepared']).parent
+            for relative, mode in [('.', 0o710), ('backups', 0o700), ('prepared', 0o700),
+                                   ('manifest.json', 0o600), ('instrument-input.json', 0o600),
+                                   ('probe.php', 0o640), ('samples.jsonl', 0o600),
+                                   ('backups/0.php', 0o600), ('prepared/0.php', 0o600)]:
+                self.assertEqual((run / relative).stat().st_mode & 0o777, mode, relative)
 
     def fixture_manifest(self, directory, current=b'instrumented'):
         root = Path(directory).resolve()
@@ -227,7 +242,7 @@ class NativeHarnessTest(unittest.TestCase):
         with patch.object(measure.sys, 'platform', 'darwin'), patch.object(measure.sys, 'argv', ['measure.py', 'preflight', '--database=fixture_db']), self.assertRaises(measure.Failure):
             measure.main()
 
-    def test_main_creates_state_parent_before_preparation(self):
+    def test_main_under_umask077_creates_traversable_state_before_preparation(self):
         with tempfile.TemporaryDirectory() as directory:
             state = Path(directory) / 'nested/private-state'
             original_stat = Path.stat
@@ -239,12 +254,21 @@ class NativeHarnessTest(unittest.TestCase):
             def prepare(_args):
                 self.assertTrue(state.is_dir())
                 self.assertTrue((state / 'active.lock').exists())
+                self.assertEqual(state.stat().st_mode & 0o777, 0o711)
             with patch.object(measure.sys, 'platform', 'linux'), patch.object(measure.os, 'geteuid', return_value=0), \
                  patch.object(measure.sys, 'argv', ['measure.py', 'prepare', '--database=fixture_db', '--phase=terminate', '--ack-isolated-bench']), \
                  patch.object(measure, 'STATE', state), patch.object(Path, 'stat', stat), \
-                 patch.object(measure, 'prepare', side_effect=prepare) as prepared:
+                 patch.object(measure, 'prepare', side_effect=prepare) as prepared, restrictive_umask():
                 self.assertEqual(measure.main(), 0)
                 prepared.assert_called_once()
+
+    def test_inaccessible_bridge_fails_before_php_or_database(self):
+        with patch.object(measure.subprocess, 'run', return_value=types.SimpleNamespace(returncode=1)) as read, \
+             patch.object(measure, 'command') as command:
+            with self.assertRaisesRegex(measure.Failure, 'www-data cannot read the native bridge'):
+                measure.bridge(Path('/fixture'), 'fixture_db')
+        self.assertEqual(read.call_args.args[0], ['runuser', '-u', 'www-data', '--', 'test', '-r', str(measure.HERE / 'bridge.php')])
+        command.assert_not_called()
 
 
 if __name__ == '__main__':

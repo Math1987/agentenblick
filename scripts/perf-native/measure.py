@@ -94,7 +94,12 @@ def app_root(value):
 
 
 def bridge(root, database, action='preflight'):
-    raw = command(['php', HERE / 'bridge.php', root, database, action], cwd=root, user=True)
+    bridge_path = HERE / 'bridge.php'
+    readable = subprocess.run(['runuser', '-u', 'www-data', '--', 'test', '-r', str(bridge_path)],
+                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if readable.returncode != 0:
+        raise Failure('www-data cannot read the native bridge; make the kit parent directories traversable and bridge.php readable before preparation.')
+    raw = command(['php', bridge_path, root, database, action], cwd=root, user=True)
     return json.loads(raw)
 
 
@@ -164,6 +169,7 @@ def prepare(args):
     directory = STATE / (datetime.datetime.now().strftime('%Y%m%dT%H%M%S') + '-' + secrets.token_hex(5))
     directory.mkdir(mode=0o710)
     os.chown(directory, 0, group)
+    directory.chmod(0o710)
     (directory / 'backups').mkdir(mode=0o700)
     (directory / 'prepared').mkdir(mode=0o700)
     token, probe_path = secrets.token_hex(32), secrets.token_hex(16)
@@ -496,8 +502,9 @@ def main():
     if args.action in ['run', 'restore'] and not args.manifest:
         parser.error('run/restore require --manifest')
     STATE.mkdir(mode=0o711, parents=True, exist_ok=True)
-    if STATE.stat().st_uid != 0 or STATE.stat().st_mode & 0o022:
+    if STATE.is_symlink() or STATE.stat().st_uid != 0 or STATE.stat().st_mode & 0o022:
         raise Failure('Private state directory must be root-owned and not writable by group/others.')
+    STATE.chmod(0o711)
     with (STATE / 'active.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         if args.action == 'prepare':

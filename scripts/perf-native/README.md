@@ -36,6 +36,11 @@ It requires `php`, `curl`, Python 3.12, `runuser`, and the existing Shopware ven
 tree. The CLI must be PHP 8.3 and have the application's database extensions.
 Use the exact database name in the commands below; the bridge permits only a
 local MySQL endpoint and never prints the DSN or framework exception messages.
+The kit directory and its parents must be traversable by `www-data`, and
+`bridge.php` readable by that user; preflight reports inaccessible extraction
+permissions before attempting PHP or database access. The kit explicitly applies
+its state/run permissions even when SSM uses `umask 077`; backups and manifests
+remain private.
 
 Run from the checked-out kit; the root-only commands are explicit because they
 temporarily replace app files and reload **php8.3-fpm** on this dedicated host.
