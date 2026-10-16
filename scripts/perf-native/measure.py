@@ -25,6 +25,7 @@ ORIGIN = 'https://demo-shop.aithos.app'
 PLUGIN = 'custom/plugins/AithosAgentenblick'
 POPULATIONS = [('human_or_unknown', 'Mozilla/5.0 AgentenblickNativeBench/1.0'),
                ('declared_agent', 'GPTBot/1.0')]
+PRICE_FILTER_ID = re.compile(rb'(<div class="filter-range-dropdown filter-panel-item-dropdown dropdown-menu"[ \t\r\n]+id="filter-price-)([0-9]{1,19})(">)')
 METHODS = {
     'public/index.php': {},
     f'{PLUGIN}/src/Capture/ObservationSubscriber.php': {
@@ -309,7 +310,20 @@ def request(manifest, stage, temperature, population, sample, delay=None, kernel
         proof = json.loads(body)
         if proof != {'sample': sample, 'delayMs': delay, 'fpm': True}:
             raise Failure('FPM flush endpoint did not return the expected numeric fixture proof.')
+        canonical, replacements = body, 0
+    else:
+        canonical, replacements = canonical_storefront(body)
+    result.update({'bodyCanonicalBytes': len(canonical), 'bodyCanonicalSha256': digest(canonical),
+                   'bodyNormalizationCount': replacements})
     return result
+
+
+def canonical_storefront(body):
+    # Shopware 6.7.15.1 filter-range.html.twig generates precisely this ID with random().
+    # No price, text, whitespace, other attribute or other ID is normalized.
+    if len(PRICE_FILTER_ID.findall(body)) != 1 or body.count(b'id="filter-price-') != 1:
+        raise Failure('Expected exactly one native Shopware price-filter dropdown ID; HTML normalization refused.')
+    return PRICE_FILTER_ID.subn(lambda match: match[1] + b'0000000000' + match[3], body, count=1)
 
 
 def shutdown_row(directory, sample):
@@ -357,6 +371,13 @@ def measure(path, manifest, root):
                               'Local HTTPS homepage, sequential warmed sessions; not capacity, checkout or real-shop evidence.',
                               'Synthetic observations are retained in this disposable database; no implicit reset or SQL cleanup occurs.',
                               'The terminate phase checks fastcgi_finish_request only; kernel-terminate injects its delay inside the real plugin onTerminate method.']}
+    report['bodyComparison'] = {
+        'rawHashesAndSizesPreserved': True,
+        'storefrontNormalization': 'Only the decimal suffix in the single exact price-filter dropdown div ID is replaced with 0000000000; all other bytes remain unchanged.',
+        'source': 'Shopware 6.7.15.1 storefront/component/listing/filter/filter-range.html.twig: filterItemId uses random().',
+        'expectedReplacementsPerStorefrontResponse': 1,
+        'neutralFpmProbeIsNotNormalized': True,
+    }
     directory = path.parent
     def interrupted(_signum, _frame):
         raise Failure('Interrupted; restoring targeted sources and original activation.')
@@ -399,12 +420,14 @@ def measure(path, manifest, root):
             passed = all(row['status'] == 200 and row['clientMs'] < 1000 and row.get(delay_field, 0) >= 1900000000 for row in delayed)
             passed = passed and all(row['status'] == 200 and row['clientMs'] < 1000 for row in samples)
             if kernel:
-                bodies = {(row['bodyBytes'], row['bodySha256']) for row in samples}
-                passed = passed and len(bodies) == 1 and all(row['post_calls'] >= 1 for row in samples)
+                bodies = {(row['status'], row['bodyCanonicalBytes'], row['bodyCanonicalSha256']) for row in samples}
+                passed = passed and all(row['post_calls'] >= 1 for row in samples)
                 passed = passed and all(row['post_ns'] >= row['kernel_delay_ns'] >= 1900000000 for row in delayed)
                 passed = passed and all(row['kernel_delay_ns'] == 0 for row in samples if row['delayMs'] == 0)
                 report['kernelTerminateReleasedClient'] = passed
-                report['identicalMeasuredStatusBody'] = len(bodies) == 1
+                report['identicalMeasuredStatusBody'] = len({(row['status'], row['bodyBytes'], row['bodySha256']) for row in samples}) == 1
+                report['identicalCanonicalStatusBody'] = len(bodies) == 1
+                passed = passed and len(bodies) == 1 and all(row['bodyNormalizationCount'] == 1 for row in samples)
             else:
                 report['flushReleasedClient'] = passed
             after = bridge(root, manifest['database'], 'counters')
@@ -414,7 +437,7 @@ def measure(path, manifest, root):
                 raise Failure('Unexpected traffic during the response-release check.')
             report['observedCounts'] = changes
             if not passed:
-                raise Failure('Client release before the two-second worker delay was not established.')
+                raise Failure('Response-release timing or canonical storefront response equivalence was not established.')
         else:
             active_states = [True] if manifest['phase'] == 'diagnostic' else [False, True, False, True]
             count = 40 if manifest['phase'] == 'diagnostic' else 1000
@@ -450,10 +473,12 @@ def measure(path, manifest, root):
                 report['stages'].append(stage_report)
                 write_json(directory / 'report.json', report)
                 print(json.dumps({'stage': stage, 'active': active, 'post': stage_report['metrics']['post']}), flush=True)
-            bodies = {(row['status'], row['bodyBytes'], row['bodySha256']) for stage in report['stages'] for row in stage['samples'] if row['temperature'] == 2}
-            report['identicalMeasuredStatusBody'] = len(bodies) == 1
+            measured_rows = [row for stage in report['stages'] for row in stage['samples'] if row['temperature'] == 2]
+            bodies = {(row['status'], row['bodyCanonicalBytes'], row['bodyCanonicalSha256']) for row in measured_rows}
+            report['identicalMeasuredStatusBody'] = len({(row['status'], row['bodyBytes'], row['bodySha256']) for row in measured_rows}) == 1
+            report['identicalCanonicalStatusBody'] = len(bodies) == 1
             if len(bodies) != 1:
-                raise Failure('Homepage response varied; matched-response comparison was not established.')
+                raise Failure('Canonical homepage response varied; matched-response comparison was not established.')
             report['selectedPostMethodsBelow5MsForEachPopulation'] = all(metrics['post']['p95Ms'] < 5 for stage in report['stages'] if stage['active'] for metrics in stage['populations'].values())
     except BaseException as error:
         report['errors'].append(str(error) if isinstance(error, Failure) else type(error).__name__)

@@ -12,6 +12,7 @@ from unittest.mock import patch
 SPEC = importlib.util.spec_from_file_location('native_measure', Path(__file__).with_name('measure.py'))
 measure = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(measure)
+STOREFRONT = b'<html><div class="filter-range-dropdown filter-panel-item-dropdown dropdown-menu"\n id="filter-price-12345"><span>24.00 EUR</span><b id="other-7">Demo shirt</b></div></html>'
 
 
 @contextlib.contextmanager
@@ -34,7 +35,7 @@ class NativeHarnessTest(unittest.TestCase):
         def command(argv, **_kwargs):
             calls.append(argv)
             marker = argv[argv.index('--write-out') + 1].split('%{http_code}')[0]
-            return b'<html>fixture</html>' + marker.encode() + b'200 0.012'
+            return STOREFRONT + marker.encode() + b'200 0.012'
         with patch.object(measure, 'command', command):
             result = measure.request({'token': 'fixture-capability'}, 0, 2, 1, 4)
         argv = calls[0]
@@ -44,7 +45,9 @@ class NativeHarnessTest(unittest.TestCase):
         self.assertNotIn('--insecure', argv)
         self.assertNotIn('--location', argv)
         self.assertEqual(result['clientMs'], 12)
-        self.assertEqual(result['bodySha256'], measure.digest(b'<html>fixture</html>'))
+        self.assertEqual(result['bodySha256'], measure.digest(STOREFRONT))
+        self.assertEqual(result['bodyBytes'], len(STOREFRONT))
+        self.assertEqual(result['bodyNormalizationCount'], 1)
         self.assertNotIn('fixture-capability', json.dumps(result))
 
     def test_neutral_probe_requires_a_matching_real_fpm_acknowledgement(self):
@@ -60,10 +63,31 @@ class NativeHarnessTest(unittest.TestCase):
             self.assertEqual(argv[-1], 'https://demo-shop.aithos.app/')
             self.assertIn('X-Agentenblick-Native-Delay: 2000', argv)
             marker = argv[argv.index('--write-out') + 1].split('%{http_code}')[0]
-            return b'<html>Shopware</html>' + marker.encode() + b'200 0.02'
+            return STOREFRONT + marker.encode() + b'200 0.02'
         with patch.object(measure, 'command', command):
             result = measure.request({'token': 'fixture'}, 0, 2, 0, 1, 2000, kernel=True)
         self.assertEqual(result['status'], 200)
+
+    def test_canonicalization_only_masks_one_exact_random_price_filter_id(self):
+        expected, count = measure.canonical_storefront(STOREFRONT)
+        changed = STOREFRONT.replace(b'filter-price-12345', b'filter-price-9876543210')
+        self.assertNotEqual(measure.digest(STOREFRONT), measure.digest(changed))
+        self.assertEqual(measure.canonical_storefront(changed), (expected, count))
+        self.assertEqual(count, 1)
+        self.assertIn(b'id="other-7"', expected)
+        for original, replacement in [(b'24.00', b'25.00'), (b'Demo shirt', b'Another shirt'), (b'other-7', b'other-8')]:
+            canonical, count = measure.canonical_storefront(STOREFRONT.replace(original, replacement))
+            self.assertNotEqual(measure.digest(canonical), measure.digest(expected))
+            self.assertEqual(count, 1)
+
+    def test_canonicalization_rejects_missing_duplicate_or_changed_attribute_context(self):
+        for body in [b'<html>No filter</html>', STOREFRONT + STOREFRONT,
+                     STOREFRONT.replace(b'dropdown-menu', b'collapse'),
+                     STOREFRONT.replace(b'filter-price-12345', b'filter-price-secret'),
+                     STOREFRONT + b'<div id="filter-price-8">Unrelated</div>',
+                     STOREFRONT.replace(b'id="filter-price-12345">', b'id="filter-price-12345" data-other="x">')]:
+            with self.assertRaisesRegex(measure.Failure, 'normalization refused'):
+                measure.canonical_storefront(body)
 
     def test_shutdown_wait_ignores_an_incomplete_final_line(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -211,9 +235,9 @@ class NativeHarnessTest(unittest.TestCase):
                     self.assertEqual(target.read_bytes(), b'original')
                 plugin_state.assert_not_called()
 
-    def test_kernel_gate_requires_both_client_release_and_actual_worker_delay(self):
-        for valid_delay in [True, False]:
-            with self.subTest(valid_delay=valid_delay), tempfile.TemporaryDirectory() as directory:
+    def test_kernel_gate_separates_worker_timing_from_required_canonical_body_equivalence(self):
+        for valid_delay, same_body in [(True, True), (False, True), (True, False)]:
+            with self.subTest(valid_delay=valid_delay, same_body=same_body), tempfile.TemporaryDirectory() as directory:
                 path, manifest, _target = self.fixture_manifest(directory, b'original')
                 manifest.update({'state': 'prepared', 'phase': 'kernel-terminate', 'token': 'fixture'})
                 prepared = Path(directory) / 'prepared.php'
@@ -223,17 +247,23 @@ class NativeHarnessTest(unittest.TestCase):
                     delayed = sample >= 4 and sample % 2 == 1
                     ns = 2000000000 if delayed and valid_delay else 0
                     return {'post_calls': 1, 'post_ns': ns + 100, 'kernel_delay_ns': ns}
+                def request(_manifest, _stage, _temperature, _population, sample, _delay, **_kwargs):
+                    return {'status': 200, 'clientMs': 25, 'bodyBytes': 100, 'bodySha256': str(sample),
+                            'bodyCanonicalBytes': 100, 'bodyCanonicalSha256': 'fixture' if same_body else str(sample),
+                            'bodyNormalizationCount': 1}
                 with patch.object(measure, 'preflight', return_value={}), patch.object(measure, 'reload_fpm'), \
                      patch.object(measure, 'bridge', side_effect=[{}, {'none': 14}]), \
-                     patch.object(measure, 'request', return_value={'status': 200, 'clientMs': 25, 'bodyBytes': 100, 'bodySha256': 'fixture'}), \
+                     patch.object(measure, 'request', side_effect=request), \
                      patch.object(measure, 'shutdown_row', side_effect=row), patch.object(measure.os, 'chown'), \
                      patch.object(measure.time, 'sleep'), patch.object(measure.signal, 'signal'), \
                      patch.object(measure, 'restore', return_value={'sourceHashesMatch': True, 'pluginActiveRestored': True, 'errors': []}), \
                      contextlib.redirect_stdout(io.StringIO()):
                     status = measure.measure(path, manifest, Path(directory))
                 report = json.loads((Path(directory) / 'report.json').read_text())
-                self.assertEqual(status, 0 if valid_delay else 1)
+                self.assertEqual(status, 0 if valid_delay and same_body else 1)
                 self.assertEqual(report['kernelTerminateReleasedClient'], valid_delay)
+                self.assertEqual(report['identicalCanonicalStatusBody'], same_body)
+                self.assertFalse(report['identicalMeasuredStatusBody'])
                 self.assertEqual(len(report['warmups']), 4)
                 self.assertEqual(len(report['samples']), 10)
                 self.assertFalse(report['qualifiedProductionBudgets'])

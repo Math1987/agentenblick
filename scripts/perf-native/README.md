@@ -77,10 +77,12 @@ sudo python3 scripts/perf-native/measure.py run \
    instrumentation injects a two-second wait **inside the real plugin
    `ObservationSubscriber::onTerminate` method**, for loopback requests with the
    exact capability and delay header only. Every measured storefront response
-   must remain 200, byte-identical and below one second, while the delayed worker
-   timer must confirm at least 1.9 seconds. Unmarked/public requests never take
-   this delay branch. The report records `kernelTerminateReleasedClient` separately
-   from the neutral FPM proof. Stop before performance tests if this gate fails.
+   must remain 200, identical after the single normalization described below,
+   and below one second, while the delayed worker timer must confirm at least
+   1.9 seconds. Unmarked/public requests never take this delay branch. The report
+   records the timing proof as `kernelTerminateReleasedClient` independently of
+   body equivalence and the neutral FPM proof. The overall gate requires both
+   timing and canonical body equivalence. Stop before performance tests if it fails.
 3. **`diagnostic`**: prepare a fresh manifest with `--phase=diagnostic`, then run
    it explicitly. Four first requests and twenty warmups precede **40 measured**
    requests, half human/unknown UA and half GPTBot declared UA. It instruments
@@ -96,8 +98,18 @@ sudo python3 scripts/perf-native/measure.py run \
    timing, so termination work does not overlap the next request.
 
 The runner verifies 200 responses, closed numeric timers, the expected evidence
-counter changes and identical measured body hashes. Other traffic or differing
-responses invalidate the comparison. The two initial populations cover no
+counter changes and identical canonical body hashes. Shopware 6.7.15.1's
+`storefront/component/listing/filter/filter-range.html.twig` generates
+`filterItemId` with `random()`. The runner therefore replaces only the decimal
+suffix of `id="filter-price-…"` in the single exact
+`<div class="filter-range-dropdown filter-panel-item-dropdown dropdown-menu" …>`
+opening tag with `0000000000`. Missing, duplicate or unexpected attribute contexts
+are rejected. All other bytes, including prices, text, whitespace and other IDs,
+remain unchanged. Raw body sizes and SHA-256 hashes are preserved alongside
+canonical sizes, hashes and replacement counts; `identicalMeasuredStatusBody`
+reports raw equality and `identicalCanonicalStatusBody` reports canonical equality.
+The neutral JSON FPM probe is not normalized. Other traffic or any other response
+difference invalidates the comparison. The two initial populations cover no
 verified signatures/IPs, rDNS or cold key-directory requests. Four-population
 qualification requires a **separate non-public test fixture**, not local ranges
 assigned to real operators or changes to this production catalogue.
